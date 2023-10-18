@@ -6,5 +6,5 @@ sealed interface PickDestinationUiEffect {
 
     object Idle : PickDestinationUiEffect
 
-    data class DestinationAreaCodePicked(val destinationAreaCode: AreaCode) : PickDestinationUiEffect
+    data class DestinationAreaCodePicked(val defaultAreaCode: AreaCode, val areaCode: AreaCode) : PickDestinationUiEffect
 }

@@ -1,5 +1,6 @@
 package com.jun.tripguide_v2.feature.addtravel
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,11 +17,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Start
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -32,17 +35,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jun.tripguide_v2.core.designsystem.theme.Black
+import com.jun.tripguide_v2.core.designsystem.theme.Gray
 import com.jun.tripguide_v2.core.designsystem.theme.LightGray
+import com.jun.tripguide_v2.core.designsystem.theme.Sky
 import com.jun.tripguide_v2.core.designsystem.theme.SkyGray
-import com.jun.tripguide_v2.core.designsystem.theme.TravelGuideTheme
 import com.jun.tripguide_v2.core.model.MeansItems
 import com.jun.tripguide_v2.core.model.MeansType
-import com.jun.tripguide_v2.core.model.Travel
 
 @Composable
 fun AddTravelRoute(
@@ -50,6 +56,7 @@ fun AddTravelRoute(
     onPickDestinationClick: () -> Unit,
     onPickStartingPointClick: () -> Unit,
     destination: String?,
+    startingPoint: String?,
     viewModel: AddTravelViewModel = hiltViewModel()
 ) {
 
@@ -73,14 +80,12 @@ fun AddTravelRoute(
             ScreenSection(title = "여행지") {
                 AddTravelText(
                     text = destination ?: "여행지를 선택해 주세요.",
-                    icon = Icons.Default.Search,
                     onClick = onPickDestinationClick
                 )
             }
             ScreenSection(title = "출발 장소") {
                 AddTravelText(
-                    text = (effect as? AddTravelUiEffect.StartingPointPicked)?.areaCode?.name ?: "출발 장소를 입력해 주세요.",
-                    icon = Icons.Default.Start,
+                    text = startingPoint ?: "출발 장소를 입력해 주세요.",
                     onClick = onPickStartingPointClick
                 )
             }
@@ -109,6 +114,7 @@ private fun ScreenSection(
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .paddingFromBaseline(top = 60.dp, bottom = 16.dp)
                 .padding(horizontal = 15.dp)
@@ -150,23 +156,28 @@ fun BackButtonAndTitle(
 @Composable
 private fun AddTravelText(
     text: String,
-    icon: ImageVector,
     onClick: () -> Unit
 ) {
     Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .heightIn(min = 56.dp)
+            .border(
+                width = 1.dp,
+                color = Sky,
+                shape = RoundedCornerShape(5.dp)
+            )
             .clickable { onClick() }
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null
+        Text(
+            text = text,
+            color = Sky,
+            fontSize = 15.sp
         )
-        Text(text = text)
     }
-
 }
 
 @Composable
@@ -202,5 +213,11 @@ private fun TravelMeans(
 @Preview(showBackground = true)
 @Composable
 fun ScreenContentPreview() {
-
+    AddTravelRoute(
+        onBackClick = {},
+        onPickDestinationClick = {},
+        onPickStartingPointClick = {},
+        destination = null,
+        startingPoint = null,
+    )
 }

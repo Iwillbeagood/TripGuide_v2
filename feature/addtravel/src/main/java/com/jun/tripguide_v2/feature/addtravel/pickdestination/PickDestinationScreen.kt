@@ -1,7 +1,6 @@
 package com.jun.tripguide_v2.feature.addtravel.pickdestination
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,28 +20,19 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TimeInput
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -53,23 +43,23 @@ import com.jun.tripguide_v2.core.designsystem.theme.LightGray
 import com.jun.tripguide_v2.core.designsystem.theme.Sky
 import com.jun.tripguide_v2.core.designsystem.theme.White
 import com.jun.tripguide_v2.core.model.AreaCode
-import java.time.LocalTime
 
 @SuppressLint("RememberReturnType")
 @Composable
 fun PickDestinationScreen(
     onBackClick: () -> Unit,
-    onBackClickWithData: (AreaCode) -> Unit,
+    onBackClickWithData: (AreaCode, AreaCode) -> Unit,
     viewModel: PickDestinationViewModel = hiltViewModel()
 ) {
     val pickDestinationUiState by viewModel.pickDestinationUiState.collectAsStateWithLifecycle()
     val effect by viewModel.pickDestinationUiEffect.collectAsStateWithLifecycle()
 
     LaunchedEffect(effect) {
-        val destinationAreaCode = (effect as? PickDestinationUiEffect.DestinationAreaCodePicked)?.destinationAreaCode
+        val defaultAreaCode = (effect as? PickDestinationUiEffect.DestinationAreaCodePicked)?.defaultAreaCode
+        val areaCode = (effect as? PickDestinationUiEffect.DestinationAreaCodePicked)?.areaCode
 
-        if (destinationAreaCode != null)
-            onBackClickWithData(destinationAreaCode)
+        if (defaultAreaCode != null && areaCode != null)
+            onBackClickWithData(defaultAreaCode, areaCode)
     }
 
     Column(
@@ -97,7 +87,6 @@ fun AreaCodeItems(
     when (uiState) {
         is PickDestinationUiState.Loading -> PickDestinationLoading()
         is PickDestinationUiState.AreaCodes -> {
-            Log.d("TAG", "AreaCodeItems: ")
             AreaCodeItems(
                 defaultAreaCodes = uiState.defaultAreaCodes,
                 areaCodes = uiState.areaCodes,

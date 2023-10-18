@@ -1,3 +1,13 @@
 /build
 /local.properties
 /gradle.properties
+
+# Gradle files
+.gradle
+
+### Android ###
+# Built application files
+*.apk
+*.aar
+*.ap_
+*.aab

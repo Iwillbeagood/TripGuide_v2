@@ -53,8 +53,6 @@ class PickDestinationViewModel @Inject constructor(
         }
 
         contentJob = viewModelScope.launch {
-            _pickDestinationUiState.value = PickDestinationUiState.Loading
-
             val areaCodes = if (selectedDefaultAreaCode.name == "전체") {
                 null
             } else {
@@ -77,8 +75,17 @@ class PickDestinationViewModel @Inject constructor(
             contentJob?.cancel()
         }
 
+        val uiState = pickDestinationUiState.value
+
+        if (uiState !is PickDestinationUiState.AreaCodes) {
+            return
+        }
+
         contentJob = viewModelScope.launch {
-            _pickDestinationUiEffect.value = PickDestinationUiEffect.DestinationAreaCodePicked(areaCode)
+
+            val defaultAreaCode = uiState.defaultAreaCodes.find { it.isSelected }!!
+
+            _pickDestinationUiEffect.value = PickDestinationUiEffect.DestinationAreaCodePicked(defaultAreaCode, areaCode)
         }
     }
 }

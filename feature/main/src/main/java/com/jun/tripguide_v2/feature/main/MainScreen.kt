@@ -50,12 +50,14 @@ internal fun MainScreen(
                 onBottomItemClicked = { navigator.navigate(it) }
             )
         },
-        floatingActionButton = { ItemAddFAB(
-            visible = navigator.shouldShowBottomBar(),
-            onClicked = {
-                navigator.navigateAddTravel()
-            }
-        )}
+        floatingActionButton = {
+            ItemAddFAB(
+                visible = navigator.shouldShowBottomBar(),
+                onClicked = {
+                    navigator.navigateAddTravel()
+                }
+            )
+        }
     ) {
         Box(
             modifier = Modifier
@@ -124,9 +126,11 @@ private fun NavigationGraph(
         )
         addTravelNavGraph(
             onBackClick = navigator::popBackStackIfNotHome,
-            onBackClickWithData = { navigator.popBackStackWithData("destination", it.name) },
+            onBackClickWithData = { defaultAreaCode, areaCode ->
+                navigator.popBackStackWithData("destination", "${defaultAreaCode.name} ${areaCode.name}")
+            },
             onPickTravelInfoClick = navigator::navigatePickDestination,
-            onPickStartingPointClick = { TODO() },
+            onPickStartingPointClick = navigator::navigatePickStartingPoint,
         )
     }
 }
@@ -134,7 +138,7 @@ private fun NavigationGraph(
 @Composable
 fun ItemAddFAB(
     visible: Boolean,
-    onClicked : () -> Unit
+    onClicked: () -> Unit
 ) {
     FloatingActionButton(
         modifier = Modifier
