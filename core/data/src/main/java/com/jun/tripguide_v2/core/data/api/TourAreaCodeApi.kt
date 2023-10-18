@@ -1,6 +1,6 @@
 package com.jun.tripguide_v2.core.data.api
 
-import com.jun.tripguide_v2.core.data.api.model.areaCode.AreaCodeResponse
+import com.jun.tripguide_v2.core.data.api.model.areacode.AreaCodeResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.QueryMap

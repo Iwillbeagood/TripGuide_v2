@@ -1,31 +1,31 @@
-package com.jun.tripguide_v2.core.data.api.model.areaCode;
+package com.jun.tripguide_v2.core.data.api.model.areacode;
 
 @kotlinx.serialization.Serializable
-@kotlin.Metadata(mv = {1, 8, 0}, k = 1, xi = 48, d1 = {"\u0000F\n\u0002\u0018\u0002\n\u0002\u0010\u0000\n\u0000\n\u0002\u0010\b\n\u0000\n\u0002\u0010 \n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u0007\n\u0002\u0010\u000b\n\u0002\b\u0003\n\u0002\u0010\u000e\n\u0000\n\u0002\u0010\u0002\n\u0002\b\u0002\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u0003\b\u0087\b\u0018\u0000 \u001d2\u00020\u0001:\u0002\u001c\u001dB)\b\u0017\u0012\u0006\u0010\u0002\u001a\u00020\u0003\u0012\u000e\u0010\u0004\u001a\n\u0012\u0004\u0012\u00020\u0006\u0018\u00010\u0005\u0012\b\u0010\u0007\u001a\u0004\u0018\u00010\b\u00a2\u0006\u0002\u0010\tB\u0013\u0012\f\u0010\u0004\u001a\b\u0012\u0004\u0012\u00020\u00060\u0005\u00a2\u0006\u0002\u0010\nJ\u000f\u0010\r\u001a\b\u0012\u0004\u0012\u00020\u00060\u0005H\u00c6\u0003J\u0019\u0010\u000e\u001a\u00020\u00002\u000e\b\u0002\u0010\u0004\u001a\b\u0012\u0004\u0012\u00020\u00060\u0005H\u00c6\u0001J\u0013\u0010\u000f\u001a\u00020\u00102\b\u0010\u0011\u001a\u0004\u0018\u00010\u0001H\u00d6\u0003J\t\u0010\u0012\u001a\u00020\u0003H\u00d6\u0001J\t\u0010\u0013\u001a\u00020\u0014H\u00d6\u0001J!\u0010\u0015\u001a\u00020\u00162\u0006\u0010\u0017\u001a\u00020\u00002\u0006\u0010\u0018\u001a\u00020\u00192\u0006\u0010\u001a\u001a\u00020\u001bH\u00c7\u0001R\u0017\u0010\u0004\u001a\b\u0012\u0004\u0012\u00020\u00060\u0005\u00a2\u0006\b\n\u0000\u001a\u0004\b\u000b\u0010\f\u00a8\u0006\u001e"}, d2 = {"Lcom/jun/tripguide_v2/core/data/api/model/areaCode/Items;", "", "seen1", "", "item", "", "Lcom/jun/tripguide_v2/core/data/api/model/areaCode/AreaCodeItem;", "serializationConstructorMarker", "Lkotlinx/serialization/internal/SerializationConstructorMarker;", "(ILjava/util/List;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V", "(Ljava/util/List;)V", "getItem", "()Ljava/util/List;", "component1", "copy", "equals", "", "other", "hashCode", "toString", "", "write$Self", "", "self", "output", "Lkotlinx/serialization/encoding/CompositeEncoder;", "serialDesc", "Lkotlinx/serialization/descriptors/SerialDescriptor;", "$serializer", "Companion", "data_debug"})
+@kotlin.Metadata(mv = {1, 8, 0}, k = 1, xi = 48, d1 = {"\u0000F\n\u0002\u0018\u0002\n\u0002\u0010\u0000\n\u0000\n\u0002\u0010\b\n\u0000\n\u0002\u0010 \n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u0007\n\u0002\u0010\u000b\n\u0002\b\u0003\n\u0002\u0010\u000e\n\u0000\n\u0002\u0010\u0002\n\u0002\b\u0002\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u0003\b\u0087\b\u0018\u0000 \u001d2\u00020\u0001:\u0002\u001c\u001dB)\b\u0017\u0012\u0006\u0010\u0002\u001a\u00020\u0003\u0012\u000e\u0010\u0004\u001a\n\u0012\u0004\u0012\u00020\u0006\u0018\u00010\u0005\u0012\b\u0010\u0007\u001a\u0004\u0018\u00010\b\u00a2\u0006\u0002\u0010\tB\u0013\u0012\f\u0010\u0004\u001a\b\u0012\u0004\u0012\u00020\u00060\u0005\u00a2\u0006\u0002\u0010\nJ\u000f\u0010\r\u001a\b\u0012\u0004\u0012\u00020\u00060\u0005H\u00c6\u0003J\u0019\u0010\u000e\u001a\u00020\u00002\u000e\b\u0002\u0010\u0004\u001a\b\u0012\u0004\u0012\u00020\u00060\u0005H\u00c6\u0001J\u0013\u0010\u000f\u001a\u00020\u00102\b\u0010\u0011\u001a\u0004\u0018\u00010\u0001H\u00d6\u0003J\t\u0010\u0012\u001a\u00020\u0003H\u00d6\u0001J\t\u0010\u0013\u001a\u00020\u0014H\u00d6\u0001J!\u0010\u0015\u001a\u00020\u00162\u0006\u0010\u0017\u001a\u00020\u00002\u0006\u0010\u0018\u001a\u00020\u00192\u0006\u0010\u001a\u001a\u00020\u001bH\u00c7\u0001R\u0017\u0010\u0004\u001a\b\u0012\u0004\u0012\u00020\u00060\u0005\u00a2\u0006\b\n\u0000\u001a\u0004\b\u000b\u0010\f\u00a8\u0006\u001e"}, d2 = {"Lcom/jun/tripguide_v2/core/data/api/model/areacode/Items;", "", "seen1", "", "item", "", "Lcom/jun/tripguide_v2/core/data/api/model/areacode/AreaCodeItem;", "serializationConstructorMarker", "Lkotlinx/serialization/internal/SerializationConstructorMarker;", "(ILjava/util/List;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V", "(Ljava/util/List;)V", "getItem", "()Ljava/util/List;", "component1", "copy", "equals", "", "other", "hashCode", "toString", "", "write$Self", "", "self", "output", "Lkotlinx/serialization/encoding/CompositeEncoder;", "serialDesc", "Lkotlinx/serialization/descriptors/SerialDescriptor;", "$serializer", "Companion", "data_debug"})
 public final class Items {
     @org.jetbrains.annotations.NotNull
-    private final java.util.List<com.jun.tripguide_v2.core.data.api.model.areaCode.AreaCodeItem> item = null;
+    private final java.util.List<com.jun.tripguide_v2.core.data.api.model.areacode.AreaCodeItem> item = null;
     @org.jetbrains.annotations.NotNull
-    public static final com.jun.tripguide_v2.core.data.api.model.areaCode.Items.Companion Companion = null;
+    public static final com.jun.tripguide_v2.core.data.api.model.areacode.Items.Companion Companion = null;
     
     public Items(@org.jetbrains.annotations.NotNull
-    java.util.List<com.jun.tripguide_v2.core.data.api.model.areaCode.AreaCodeItem> item) {
+    java.util.List<com.jun.tripguide_v2.core.data.api.model.areacode.AreaCodeItem> item) {
         super();
     }
     
     @org.jetbrains.annotations.NotNull
-    public final java.util.List<com.jun.tripguide_v2.core.data.api.model.areaCode.AreaCodeItem> getItem() {
+    public final java.util.List<com.jun.tripguide_v2.core.data.api.model.areacode.AreaCodeItem> getItem() {
         return null;
     }
     
     @org.jetbrains.annotations.NotNull
-    public final java.util.List<com.jun.tripguide_v2.core.data.api.model.areaCode.AreaCodeItem> component1() {
+    public final java.util.List<com.jun.tripguide_v2.core.data.api.model.areacode.AreaCodeItem> component1() {
         return null;
     }
     
     @org.jetbrains.annotations.NotNull
-    public final com.jun.tripguide_v2.core.data.api.model.areaCode.Items copy(@org.jetbrains.annotations.NotNull
-    java.util.List<com.jun.tripguide_v2.core.data.api.model.areaCode.AreaCodeItem> item) {
+    public final com.jun.tripguide_v2.core.data.api.model.areacode.Items copy(@org.jetbrains.annotations.NotNull
+    java.util.List<com.jun.tripguide_v2.core.data.api.model.areacode.AreaCodeItem> item) {
         return null;
     }
     
@@ -48,16 +48,16 @@ public final class Items {
     
     @kotlin.jvm.JvmStatic
     public static final void write$Self(@org.jetbrains.annotations.NotNull
-    com.jun.tripguide_v2.core.data.api.model.areaCode.Items self, @org.jetbrains.annotations.NotNull
+    com.jun.tripguide_v2.core.data.api.model.areacode.Items self, @org.jetbrains.annotations.NotNull
     kotlinx.serialization.encoding.CompositeEncoder output, @org.jetbrains.annotations.NotNull
     kotlinx.serialization.descriptors.SerialDescriptor serialDesc) {
     }
     
-    @kotlin.Metadata(mv = {1, 8, 0}, k = 1, xi = 48, d1 = {"\u00006\n\u0000\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\b\u0002\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0010\u0011\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0000\n\u0002\u0010\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u0002\b\u00c7\u0002\u0018\u00002\b\u0012\u0004\u0012\u00020\u00020\u0001B\u0007\b\u0002\u00a2\u0006\u0002\u0010\u0003J\u0018\u0010\b\u001a\f\u0012\b\u0012\u0006\u0012\u0002\b\u00030\n0\tH\u00d6\u0001\u00a2\u0006\u0002\u0010\u000bJ\u0011\u0010\f\u001a\u00020\u00022\u0006\u0010\r\u001a\u00020\u000eH\u00d6\u0001J\u0019\u0010\u000f\u001a\u00020\u00102\u0006\u0010\u0011\u001a\u00020\u00122\u0006\u0010\u0013\u001a\u00020\u0002H\u00d6\u0001R\u0014\u0010\u0004\u001a\u00020\u00058VX\u00d6\u0005\u00a2\u0006\u0006\u001a\u0004\b\u0006\u0010\u0007\u00a8\u0006\u0014"}, d2 = {"com/jun/tripguide_v2/core/data/api/model/areaCode/Items.$serializer", "Lkotlinx/serialization/internal/GeneratedSerializer;", "Lcom/jun/tripguide_v2/core/data/api/model/areaCode/Items;", "()V", "descriptor", "Lkotlinx/serialization/descriptors/SerialDescriptor;", "getDescriptor", "()Lkotlinx/serialization/descriptors/SerialDescriptor;", "childSerializers", "", "Lkotlinx/serialization/KSerializer;", "()[Lkotlinx/serialization/KSerializer;", "deserialize", "decoder", "Lkotlinx/serialization/encoding/Decoder;", "serialize", "", "encoder", "Lkotlinx/serialization/encoding/Encoder;", "value", "data_debug"})
+    @kotlin.Metadata(mv = {1, 8, 0}, k = 1, xi = 48, d1 = {"\u00006\n\u0000\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\b\u0002\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0010\u0011\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0000\n\u0002\u0010\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u0002\b\u00c7\u0002\u0018\u00002\b\u0012\u0004\u0012\u00020\u00020\u0001B\u0007\b\u0002\u00a2\u0006\u0002\u0010\u0003J\u0018\u0010\b\u001a\f\u0012\b\u0012\u0006\u0012\u0002\b\u00030\n0\tH\u00d6\u0001\u00a2\u0006\u0002\u0010\u000bJ\u0011\u0010\f\u001a\u00020\u00022\u0006\u0010\r\u001a\u00020\u000eH\u00d6\u0001J\u0019\u0010\u000f\u001a\u00020\u00102\u0006\u0010\u0011\u001a\u00020\u00122\u0006\u0010\u0013\u001a\u00020\u0002H\u00d6\u0001R\u0014\u0010\u0004\u001a\u00020\u00058VX\u00d6\u0005\u00a2\u0006\u0006\u001a\u0004\b\u0006\u0010\u0007\u00a8\u0006\u0014"}, d2 = {"com/jun/tripguide_v2/core/data/api/model/areacode/Items.$serializer", "Lkotlinx/serialization/internal/GeneratedSerializer;", "Lcom/jun/tripguide_v2/core/data/api/model/areacode/Items;", "()V", "descriptor", "Lkotlinx/serialization/descriptors/SerialDescriptor;", "getDescriptor", "()Lkotlinx/serialization/descriptors/SerialDescriptor;", "childSerializers", "", "Lkotlinx/serialization/KSerializer;", "()[Lkotlinx/serialization/KSerializer;", "deserialize", "decoder", "Lkotlinx/serialization/encoding/Decoder;", "serialize", "", "encoder", "Lkotlinx/serialization/encoding/Encoder;", "value", "data_debug"})
     @java.lang.Deprecated
-    public static final class $serializer implements kotlinx.serialization.internal.GeneratedSerializer<com.jun.tripguide_v2.core.data.api.model.areaCode.Items> {
+    public static final class $serializer implements kotlinx.serialization.internal.GeneratedSerializer<com.jun.tripguide_v2.core.data.api.model.areacode.Items> {
         @org.jetbrains.annotations.NotNull
-        public static final com.jun.tripguide_v2.core.data.api.model.areaCode.Items.$serializer INSTANCE = null;
+        public static final com.jun.tripguide_v2.core.data.api.model.areacode.Items.$serializer INSTANCE = null;
         
         private $serializer() {
             super();
@@ -71,7 +71,7 @@ public final class Items {
         
         @java.lang.Override
         @org.jetbrains.annotations.NotNull
-        public com.jun.tripguide_v2.core.data.api.model.areaCode.Items deserialize(@org.jetbrains.annotations.NotNull
+        public com.jun.tripguide_v2.core.data.api.model.areacode.Items deserialize(@org.jetbrains.annotations.NotNull
         kotlinx.serialization.encoding.Decoder decoder) {
             return null;
         }
@@ -85,7 +85,7 @@ public final class Items {
         @java.lang.Override
         public void serialize(@org.jetbrains.annotations.NotNull
         kotlinx.serialization.encoding.Encoder encoder, @org.jetbrains.annotations.NotNull
-        com.jun.tripguide_v2.core.data.api.model.areaCode.Items value) {
+        com.jun.tripguide_v2.core.data.api.model.areacode.Items value) {
         }
         
         @java.lang.Override
@@ -95,7 +95,7 @@ public final class Items {
         }
     }
     
-    @kotlin.Metadata(mv = {1, 8, 0}, k = 1, xi = 48, d1 = {"\u0000\u0016\n\u0002\u0018\u0002\n\u0002\u0010\u0000\n\u0002\b\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0000\b\u0086\u0003\u0018\u00002\u00020\u0001B\u0007\b\u0002\u00a2\u0006\u0002\u0010\u0002J\u000f\u0010\u0003\u001a\b\u0012\u0004\u0012\u00020\u00050\u0004H\u00c6\u0001\u00a8\u0006\u0006"}, d2 = {"Lcom/jun/tripguide_v2/core/data/api/model/areaCode/Items$Companion;", "", "()V", "serializer", "Lkotlinx/serialization/KSerializer;", "Lcom/jun/tripguide_v2/core/data/api/model/areaCode/Items;", "data_debug"})
+    @kotlin.Metadata(mv = {1, 8, 0}, k = 1, xi = 48, d1 = {"\u0000\u0016\n\u0002\u0018\u0002\n\u0002\u0010\u0000\n\u0002\b\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0000\b\u0086\u0003\u0018\u00002\u00020\u0001B\u0007\b\u0002\u00a2\u0006\u0002\u0010\u0002J\u000f\u0010\u0003\u001a\b\u0012\u0004\u0012\u00020\u00050\u0004H\u00c6\u0001\u00a8\u0006\u0006"}, d2 = {"Lcom/jun/tripguide_v2/core/data/api/model/areacode/Items$Companion;", "", "()V", "serializer", "Lkotlinx/serialization/KSerializer;", "Lcom/jun/tripguide_v2/core/data/api/model/areacode/Items;", "data_debug"})
     public static final class Companion {
         
         private Companion() {
@@ -103,7 +103,7 @@ public final class Items {
         }
         
         @org.jetbrains.annotations.NotNull
-        public final kotlinx.serialization.KSerializer<com.jun.tripguide_v2.core.data.api.model.areaCode.Items> serializer() {
+        public final kotlinx.serialization.KSerializer<com.jun.tripguide_v2.core.data.api.model.areacode.Items> serializer() {
             return null;
         }
     }

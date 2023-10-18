@@ -1,5 +1,6 @@
 package com.jun.tripguide_v2.feature.addtravel
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,9 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Start
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -34,21 +32,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.jun.tripguide_v2.core.designsystem.theme.Black
-import com.jun.tripguide_v2.core.designsystem.theme.Gray
 import com.jun.tripguide_v2.core.designsystem.theme.LightGray
 import com.jun.tripguide_v2.core.designsystem.theme.Sky
 import com.jun.tripguide_v2.core.designsystem.theme.SkyGray
 import com.jun.tripguide_v2.core.model.MeansItems
 import com.jun.tripguide_v2.core.model.MeansType
+import com.jun.tripguide_v2.core.ui.BackButtonAndTitle
 
 @Composable
 fun AddTravelRoute(
@@ -76,7 +71,7 @@ fun AddTravelRoute(
                 .verticalScroll(rememberScrollState())
         ) {
             Spacer(Modifier.height(16.dp))
-            BackButtonAndTitle(onBackClick = onBackClick)
+            BackButtonAndTitle(onBackClick = onBackClick, title = "여행 기본 정보")
             ScreenSection(title = "여행지") {
                 AddTravelText(
                     text = destination ?: "여행지를 선택해 주세요.",
@@ -120,36 +115,6 @@ private fun ScreenSection(
                 .padding(horizontal = 15.dp)
         )
         content()
-    }
-}
-
-@Composable
-fun BackButtonAndTitle(
-    onBackClick: () -> Unit
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(20.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 15.dp)
-    ) {
-        Surface(
-            onClick = onBackClick,
-            modifier = Modifier.size(40.dp),
-
-            ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "BACK",
-                modifier = Modifier.align(Alignment.CenterVertically)
-            )
-        }
-
-        Text(
-            text = "여행 기본 정보",
-            style = MaterialTheme.typography.headlineMedium,
-        )
     }
 }
 

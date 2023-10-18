@@ -1,6 +1,6 @@
 package com.jun.tripguide_v2.core.data.api
 
-import com.jun.tripguide_v2.core.data.api.model.areaCode.AreaCodeResponse
+import com.jun.tripguide_v2.core.data.api.model.areacode.AreaCodeResponse
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream

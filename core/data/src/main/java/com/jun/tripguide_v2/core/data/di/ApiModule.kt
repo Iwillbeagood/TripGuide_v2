@@ -1,6 +1,7 @@
 package com.jun.tripguide_v2.core.data.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.jun.tripguide_v2.core.data.api.KakaoKeywordApi
 import com.jun.tripguide_v2.core.data.api.TourAreaCodeApi
 import dagger.Module
 import dagger.Provides
@@ -49,6 +50,19 @@ object ApiModule {
             .addConverterFactory(converterFactory)
             .client(okHttpClient).build()
             .create(TourAreaCodeApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideKakaoLocalKeywordApi(
+        okHttpClient: OkHttpClient,
+        converterFactory: Converter.Factory,
+    ): KakaoKeywordApi {
+        return Retrofit.Builder()
+            .baseUrl("https://dapi.kakao.com/")
+            .addConverterFactory(converterFactory)
+            .client(okHttpClient).build()
+            .create(KakaoKeywordApi::class.java)
     }
 
     @Provides

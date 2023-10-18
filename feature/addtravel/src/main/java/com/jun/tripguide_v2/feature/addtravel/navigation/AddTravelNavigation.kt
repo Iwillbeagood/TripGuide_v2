@@ -3,9 +3,11 @@ package com.jun.tripguide_v2.feature.addtravel.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.jun.tripguide_v2.core.model.Address
 import com.jun.tripguide_v2.core.model.AreaCode
 import com.jun.tripguide_v2.feature.addtravel.AddTravelRoute
-import com.jun.tripguide_v2.feature.addtravel.pickdestination.PickDestinationScreen
+import com.jun.tripguide_v2.feature.addtravel.areapicker.AreaPickerScreen
+import com.jun.tripguide_v2.feature.addtravel.startingpicker.StartingPickerScreen
 
 fun NavController.navigateAddTravel() {
     navigate(AddTravelRoute.route)
@@ -21,7 +23,8 @@ fun NavController.navigatePickStartingPoint() {
 
 fun NavGraphBuilder.addTravelNavGraph(
     onBackClick: () -> Unit,
-    onBackClickWithData: (AreaCode, AreaCode) -> Unit,
+    onBackClickAreaCodes: (AreaCode, AreaCode) -> Unit,
+    onBackClickAddress: (Address) -> Unit,
     onPickTravelInfoClick: () -> Unit,
     onPickStartingPointClick: () -> Unit
 ) {
@@ -43,16 +46,19 @@ fun NavGraphBuilder.addTravelNavGraph(
     composable(
         route = AddTravelRoute.route_pick_destination
     ) {
-        PickDestinationScreen(
+        AreaPickerScreen(
             onBackClick = onBackClick,
-            onBackClickWithData = onBackClickWithData
+            onBackClickWithData = onBackClickAreaCodes
         )
     }
 
     composable(
         route = AddTravelRoute.route_pick_starting_point
     ) {
-
+        StartingPickerScreen(
+            onBackClick = onBackClick,
+            onBackClickAddress = onBackClickAddress
+        )
     }
 }
 

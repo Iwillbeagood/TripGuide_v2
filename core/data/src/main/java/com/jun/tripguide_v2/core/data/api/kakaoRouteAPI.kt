@@ -1,6 +1,6 @@
 package com.jun.tripguide_v2.core.data.api
 
-import com.example.tripguide.model.kakaoroute.KakaoRoute
+import com.jun.tripguide_v2.core.data.api.model.kakaoroute.KakaoRoute
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header

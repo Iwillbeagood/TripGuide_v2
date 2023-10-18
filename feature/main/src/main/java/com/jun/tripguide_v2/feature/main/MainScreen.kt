@@ -126,8 +126,11 @@ private fun NavigationGraph(
         )
         addTravelNavGraph(
             onBackClick = navigator::popBackStackIfNotHome,
-            onBackClickWithData = { defaultAreaCode, areaCode ->
+            onBackClickAreaCodes = { defaultAreaCode, areaCode ->
                 navigator.popBackStackWithData("destination", "${defaultAreaCode.name} ${areaCode.name}")
+            },
+            onBackClickAddress = { address ->
+                navigator.popBackStackWithData("address", address.name)
             },
             onPickTravelInfoClick = navigator::navigatePickDestination,
             onPickStartingPointClick = navigator::navigatePickStartingPoint,
