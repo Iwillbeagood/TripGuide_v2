@@ -1,0 +1,13 @@
+plugins {
+    id("jun.android.library")
+    id("jun.android.compose")
+    id("org.jetbrains.kotlin.android")
+}
+
+android {
+    namespace = "com.jun.tripguide_v2.core.designsystem"
+}
+
+dependencies {
+    implementation(libs.androidx.appcompat)
+}
