@@ -2,6 +2,8 @@ package com.jun.tripguide_v2.core.data.repository
 
 import com.jun.tripguide_v2.core.data.api.FakeTourAreaCodeApi
 import com.jun.tripguide_v2.core.data.repository.Temp.queryParams
+import com.jun.tripguide_v2.core.data.repository.tourapi.AreaCodeRepository
+import com.jun.tripguide_v2.core.data.repository.tourapi.DefaultAreaCodeRepository
 import com.jun.tripguide_v2.core.model.AreaCode
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe

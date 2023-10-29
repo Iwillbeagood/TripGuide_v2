@@ -11,6 +11,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { setUrl("https://jitpack.io") }
     }
 }
 
@@ -21,16 +22,16 @@ include(
     ":core:designsystem",
     ":core:data",
     ":core:domain",
-    ":core:navigation",
     ":core:model",
-    ":core:datastore",
+    ":core:database",
     ":core:ui",
 
     ":feature:main",
     ":feature:mytravel",
     ":feature:setting",
     ":feature:recommend",
-    ":feature:addtravel"
-)
 
-include(":core:database")
+    ":feature:addtravel",
+    ":feature:travelroute",
+    ":feature:addtourist",
+)

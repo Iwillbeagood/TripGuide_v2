@@ -11,3 +11,14 @@
 *.aar
 *.ap_
 *.aab
+
+
+# Android Studio
+/*/build/
+/*/local.properties
+/*/out
+/*/*/build
+/*/*/production
+*.ipr
+*~
+*.swp

@@ -17,6 +17,7 @@ okhttp = "4.11.0"
 retrofit = "2.9.0"
 retrofitKotlinxSerializationJson = "1.0.0"
 kotlinxSerializationJson = "1.5.1"
+kotlinxParcelize = "1.6.0"
 kotlinxDatetime = "0.2.1"
 kotlinxImmutable = "0.3.5"
 
@@ -47,6 +48,7 @@ glanceExperimentalTools = "0.2.2"
 junit = "1.1.5"
 material = "1.9.0"
 constraintlayout = "2.1.4"
+wheelPicker = "1.1.11"
 
 [libraries]
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
@@ -92,7 +94,7 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 kotlinx-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxImmutable" }
 
 landscapist-bom = { group = "com.github.skydoves", name = "landscapist-bom", version.ref = "landscapist" }
-landscapist-coil = { group = "com.github.skydoves", name = "landscapist-coil" }
+landscapist-coil = { group = "com.github.skydoves", name = "landscapist-coil", version.ref = "landscapist" }
 landscapist-placeholder = { group = "com.github.skydoves", name = "landscapist-placeholder" }
 landscapist-animation = { group = "com.github.skydoves", name = "landscapist-animation" }
 
@@ -129,6 +131,8 @@ glance-tools-appwidget-host = { group = "com.google.android.glance.tools", name 
 junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+
+wheelPicker = { module = "com.github.commandiron:WheelPickerCompose", version.ref = "wheelPicker"}
 
 [bundles]
 

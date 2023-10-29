@@ -16,7 +16,7 @@ val SkyGray = Color(0xFFCCE6F3)
 
 val White = Color(0xFFFFFFFF)
 val PaleGray = Color(0xFFF9F9F9)
-val PaperGray = Color(0xFFFDFDFD)
+val PaperGray = Color(0xFFF2F5F5)
 val LightGray = Color(0xFFDCDCDC)
 val Gray = Color(0xFFC2C2C2)
 val DuskGray = Color(0xFF868686)
