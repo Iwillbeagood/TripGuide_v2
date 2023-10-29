@@ -8,7 +8,7 @@ class GetTravelByIdUsecase @Inject constructor(
     private val travelRepository: TravelRepository
 ) {
 
-    suspend operator fun invoke(id: Int): Travel {
+    suspend operator fun invoke(id: String): Travel {
         return travelRepository.getTravelById(id)
     }
 }

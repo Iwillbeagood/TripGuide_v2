@@ -12,4 +12,12 @@ object TempConst {
         "serviceKey" to TOUR_API_KEY,
         "_type" to "json"
     )
+
+    val baseListQueryParams = mutableMapOf(
+        "numOfRows" to "10",
+        "MobileOS" to "AND",
+        "MobileApp" to "TripGuide_v2",
+        "serviceKey" to TOUR_API_KEY,
+        "_type" to "json"
+    )
 }
