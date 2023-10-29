@@ -1,11 +1,11 @@
 package com.jun.tripguide_v2.feature.addtravel
 
-import android.annotation.SuppressLint
+import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,18 +14,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Icon
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,64 +33,114 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.jun.tripguide_v2.core.designsystem.theme.LightGray
+import com.jun.tripguide_v2.core.designsystem.component.CustomTopAppBar
+import com.jun.tripguide_v2.core.designsystem.component.TopAppBarNavigationType
+import com.jun.tripguide_v2.core.designsystem.theme.PaperGray
 import com.jun.tripguide_v2.core.designsystem.theme.Sky
-import com.jun.tripguide_v2.core.designsystem.theme.SkyGray
-import com.jun.tripguide_v2.core.model.MeansItems
+import com.jun.tripguide_v2.core.designsystem.theme.White
+import com.jun.tripguide_v2.core.model.DestinationCode
 import com.jun.tripguide_v2.core.model.MeansType
-import com.jun.tripguide_v2.core.ui.BackButtonAndTitle
+import com.jun.tripguide_v2.feature.addtravel.component.TimePickerSection
+import com.jun.tripguide_v2.feature.addtravel.component.TravelDurationDatePicker
+import com.jun.tripguide_v2.feature.addtravel.util.toStringType
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun AddTravelRoute(
     onBackClick: () -> Unit,
-    onPickDestinationClick: () -> Unit,
-    onPickStartingPointClick: () -> Unit,
-    destination: String?,
+    onAreaPickerClick: () -> Unit,
+    onStartingPickerClick: () -> Unit,
+    onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
+    destination: DestinationCode?,
     startingPoint: String?,
+    onAddTravelComplete: (String) -> Unit,
     viewModel: AddTravelViewModel = hiltViewModel()
 ) {
+    val scrollState = rememberScrollState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val effect by viewModel.uiEffect.collectAsStateWithLifecycle()
 
-    val addTravelUiState by viewModel.addTravelUiState.collectAsStateWithLifecycle()
-    val effect by viewModel.addTravelUiEffect.collectAsStateWithLifecycle()
-
-    LaunchedEffect(effect) {
-
+    LaunchedEffect(true) {
+        viewModel.errorFlow.collectLatest { onShowErrorSnackBar(it) }
     }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize()
-    ) { padding ->
+    LaunchedEffect(effect) {
+        if (effect is AddTravelUiEffect.AddTravelComplete) {
+            onAddTravelComplete((effect as AddTravelUiEffect.AddTravelComplete).travelId)
+            viewModel.resetUiEffect()
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(PaperGray)
+            .systemBarsPadding()
+    ) {
+        CustomTopAppBar(
+            title = "여행 기본 정보",
+            navigationType = TopAppBarNavigationType.Back,
+            onNavigationClick = onBackClick
+        )
         Column(
             modifier = Modifier
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
         ) {
-            Spacer(Modifier.height(16.dp))
-            BackButtonAndTitle(onBackClick = onBackClick, title = "여행 기본 정보")
             ScreenSection(title = "여행지") {
                 AddTravelText(
-                    text = destination ?: "여행지를 선택해 주세요.",
-                    onClick = onPickDestinationClick
+                    text = destination?.destinationString ?: "여행지를 선택해 주세요.",
+                    onClick = onAreaPickerClick
                 )
             }
             ScreenSection(title = "출발 장소") {
                 AddTravelText(
                     text = startingPoint ?: "출발 장소를 입력해 주세요.",
-                    onClick = onPickStartingPointClick
+                    onClick = onStartingPickerClick
                 )
             }
             ScreenSection(title = "여행 일정") {
-                DatePicker()
+                AddTravelText(
+                    text = (uiState as? AddTravelUiState.Success)?.duration?.toStringType()
+                        ?: "여행 일정을 선택해 주세요.",
+                    onClick = {
+                        viewModel.dialogState(true)
+                    }
+                )
             }
             ScreenSection(title = "이동 수단") {
                 TravelMeans(
-                    meansItems = (addTravelUiState as AddTravelUiState.MeansItemState).meansItems
-                ) { selectedType ->
-
-                }
+                    meansItems = (uiState as AddTravelUiState.Success).meansItems,
+                    onItemClick = { meansType ->
+                        viewModel.meansItemPicked(meansType)
+                    }
+                )
             }
+            TimePickerSection(
+                visibility = arrayOf(
+                    MeansType.CAR,
+                    MeansType.PUBLIC_TRANS
+                ).contains((uiState as AddTravelUiState.Success).meansItems.find { it.isSelected }?.type),
+                onStartTimePicked = { viewModel.startTimePicked(it) },
+                onEndTimePicked = { viewModel.endTimePicked(it) }
+            )
+            // "비행기, 기차 이용시 출발역, 도착역, 출발공항, 도착공항, 출발시간, 도착시간, API를 통해 입력"
+            Spacer(Modifier.height(32.dp))
+            AddTravelCompleteBtn(
+                onClick = {
+                    viewModel.addTravelComplete(
+                        destination = destination ?: DestinationCode("", "", ""),
+                        startingPoint = startingPoint ?: ""
+                    )
+                }
+            )
         }
     }
+
+    TravelDurationDatePicker(
+        visibility = (effect as? AddTravelUiEffect.ShowDialogForTravelDuration)?.visibility ?: false,
+        onBackClick = { viewModel.dialogState(false) },
+        onTravelDurationPick = { viewModel.durationPicked(it) }
+    )
 }
 
 @Composable
@@ -104,18 +149,18 @@ private fun ScreenSection(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    Spacer(Modifier.height(16.dp))
     Column(modifier) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .paddingFromBaseline(top = 60.dp, bottom = 16.dp)
+                .paddingFromBaseline(top = 40.dp, bottom = 20.dp)
                 .padding(horizontal = 15.dp)
         )
         content()
     }
+    Spacer(Modifier.height(25.dp))
 }
 
 @Composable
@@ -129,6 +174,7 @@ private fun AddTravelText(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
+            .background(White)
             .heightIn(min = 56.dp)
             .border(
                 width = 1.dp,
@@ -139,39 +185,32 @@ private fun AddTravelText(
     ) {
         Text(
             text = text,
+            fontWeight = FontWeight.Bold,
             color = Sky,
-            fontSize = 15.sp
+            fontSize = 16.sp
         )
     }
 }
 
 @Composable
-private fun DatePicker() {
-
-}
-
-@Composable
-private fun TravelMeans(
-    meansItems: List<MeansItems>,
-    onItemClick: (MeansType) -> Unit
+fun AddTravelCompleteBtn(
+    onClick: () -> Unit
 ) {
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp)
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(Sky),
+        shape = RoundedCornerShape(5.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .heightIn(min = 56.dp)
     ) {
-
-        items(meansItems) { item ->
-            MeansItem(
-                drawable = item.drawable,
-                text = item.type.value,
-                color = if (item.isSelected) SkyGray else LightGray,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        onItemClick(item.type)
-                    }
-            )
-        }
+        Text(
+            text = "선택 완료",
+            fontWeight = FontWeight.Bold,
+            color = White,
+            fontSize = 20.sp
+        )
     }
 }
 
@@ -180,9 +219,11 @@ private fun TravelMeans(
 fun ScreenContentPreview() {
     AddTravelRoute(
         onBackClick = {},
-        onPickDestinationClick = {},
-        onPickStartingPointClick = {},
+        onAreaPickerClick = {},
+        onStartingPickerClick = {},
+        onShowErrorSnackBar = {},
         destination = null,
         startingPoint = null,
+        {}
     )
 }

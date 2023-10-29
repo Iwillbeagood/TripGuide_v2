@@ -6,7 +6,8 @@ import androidx.navigation.compose.composable
 import com.jun.tripguide_v2.core.model.Address
 import com.jun.tripguide_v2.core.model.AreaCode
 import com.jun.tripguide_v2.feature.addtravel.AddTravelRoute
-import com.jun.tripguide_v2.feature.addtravel.areapicker.AreaPickerScreen
+import com.jun.tripguide_v2.feature.addtravel.areapicker.AreaPickerRoute
+import com.jun.tripguide_v2.feature.addtravel.areapicker.mapper.toDestinationData
 import com.jun.tripguide_v2.feature.addtravel.startingpicker.StartingPickerScreen
 
 fun NavController.navigateAddTravel() {
@@ -26,7 +27,9 @@ fun NavGraphBuilder.addTravelNavGraph(
     onBackClickAreaCodes: (AreaCode, AreaCode) -> Unit,
     onBackClickAddress: (Address) -> Unit,
     onPickTravelInfoClick: () -> Unit,
-    onPickStartingPointClick: () -> Unit
+    onPickStartingPointClick: () -> Unit,
+    onAddTravelComplete: (String) -> Unit,
+    onShowErrorSnackBar: (throwable: Throwable?) -> Unit
 ) {
     composable(
         route = AddTravelRoute.route
@@ -36,17 +39,19 @@ fun NavGraphBuilder.addTravelNavGraph(
 
         AddTravelRoute(
             onBackClick = onBackClick,
-            onPickDestinationClick = onPickTravelInfoClick,
-            onPickStartingPointClick = onPickStartingPointClick,
-            destination = destination,
+            onAreaPickerClick = onPickTravelInfoClick,
+            onStartingPickerClick = onPickStartingPointClick,
+            onShowErrorSnackBar = onShowErrorSnackBar,
+            destination = destination?.toDestinationData(),
             startingPoint = startingPoint,
+            onAddTravelComplete = onAddTravelComplete
         )
     }
 
     composable(
         route = AddTravelRoute.route_pick_destination
     ) {
-        AreaPickerScreen(
+        AreaPickerRoute(
             onBackClick = onBackClick,
             onBackClickWithData = onBackClickAreaCodes
         )
@@ -68,6 +73,4 @@ object AddTravelRoute {
     const val route_pick_destination = "route_pick_destination"
 
     const val route_pick_starting_point = "route_starting_point"
-
-    fun detailRoute(travelId: Int): String = "$route/$travelId"
 }

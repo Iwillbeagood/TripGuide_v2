@@ -1,77 +1,166 @@
 package com.jun.tripguide_v2.feature.addtravel
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jun.tripguide_v2.core.domain.usecase.GetAreaCodeUsecase
-import com.jun.tripguide_v2.core.domain.usecase.GetDefaultAreaCodeUsecase
-import com.jun.tripguide_v2.core.model.AreaCode
+import com.jun.tripguide_v2.core.domain.usecase.InsertDefaultTravelUsecase
+import com.jun.tripguide_v2.core.model.DestinationCode
+import com.jun.tripguide_v2.core.model.Duration
 import com.jun.tripguide_v2.core.model.MeansType
+import com.jun.tripguide_v2.core.model.Travel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.LocalTime
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class AddTravelViewModel @Inject constructor(
-
+    private val insertDefaultTravelUsecase: InsertDefaultTravelUsecase
 ) : ViewModel() {
 
-    private val _addTravelUiState =
-        MutableStateFlow<AddTravelUiState>(AddTravelUiState.MeansItemState())
-    val addTravelUiState: StateFlow<AddTravelUiState> = _addTravelUiState
+    private val _errorFlow = MutableSharedFlow<Throwable>()
+    val errorFlow: SharedFlow<Throwable> get() = _errorFlow
 
-    init {
-//        viewModelScope.launch {
-//            combine(
-//                addTravelUiState,
-//                getDefaultAreaCodeUsecase()
-//            ) { addTravelUiState, defaultAreaCodes ->
-//                when (addTravelUiState) {
-//                    AddTravelUiState.Loading -> addTravelUiState
-//                    is AddTravelUiState.MeansItemState -> addTravelUiState
-//                    is AddTravelUiState.PickDestination -> {
-//                        addTravelUiState.copy(defaultAreaCodes = defaultAreaCodes)
-//                    }
-//                }
-//            }.collect { _addTravelUiState.value = it }
-//        }
+    private val _uiState =
+        MutableStateFlow<AddTravelUiState>(AddTravelUiState.Success())
+    val uiState: StateFlow<AddTravelUiState> = _uiState
+
+    private val _uiEffect = MutableStateFlow<AddTravelUiEffect>(AddTravelUiEffect.Idle)
+    val uiEffect: StateFlow<AddTravelUiEffect> = _uiEffect
+
+    private var contentJob: Job? = null
+
+    fun durationPicked(duration: Duration) {
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
+
+        val uiState = uiState.value
+
+        if (uiState !is AddTravelUiState.Success) return
+
+        contentJob = viewModelScope.launch {
+            _uiState.value = uiState.copy(
+                duration = duration
+            )
+            dialogState(false)
+        }
     }
 
-    private val _addTravelUiEffect = MutableStateFlow<AddTravelUiEffect>(AddTravelUiEffect.Idle)
-    val addTravelUiEffect: StateFlow<AddTravelUiEffect> = _addTravelUiEffect
-
-    // 여행 목적지를 선택한 경우에 UI로 보낼 effect
-    fun destinationPicked(areaCode: AreaCode) {
-
-    }
-
-    // 여행 출발지를 선택한 경우에 UI로 보낼 effect
-    fun startingPointPicked() {
-
-    }
-
-    // 여행 이동 수단을 선택한 경우에 UI로 보낼 effect
     fun meansItemPicked(type: MeansType) {
-        val uiState = addTravelUiState.value
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
 
-        if (uiState !is AddTravelUiState.MeansItemState) return
+        val uiState = uiState.value
 
-        _addTravelUiState.value = uiState.copy(
-            meansItems = uiState.meansItems.map {
-                it.copy(
-                    isSelected = it.type == type
-                )
-            }
-        )
+        if (uiState !is AddTravelUiState.Success) return
+
+        contentJob = viewModelScope.launch {
+            _uiState.value = uiState.copy(
+                meansItems = uiState.meansItems.map {
+                    it.copy(
+                        isSelected = it.type == type
+                    )
+                }
+            )
+        }
     }
 
+    fun dialogState(visibility: Boolean) {
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
+
+        contentJob = viewModelScope.launch {
+            _uiEffect.value = AddTravelUiEffect.ShowDialogForTravelDuration(visibility)
+        }
+    }
+
+    fun startTimePicked(startTime: LocalTime) {
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
+
+        val uiState = uiState.value
+
+        if (uiState !is AddTravelUiState.Success) return
+
+        contentJob = viewModelScope.launch {
+            _uiState.value = uiState.copy(
+                startTime = startTime
+            )
+        }
+    }
+
+    fun endTimePicked(endTime: LocalTime) {
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
+
+        val uiState = uiState.value
+
+        if (uiState !is AddTravelUiState.Success) return
+
+        contentJob = viewModelScope.launch {
+            _uiState.value = uiState.copy(
+                endTime = endTime
+            )
+        }
+    }
+
+    fun addTravelComplete(
+        destination: DestinationCode,
+        startingPoint: String
+    ) {
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
+
+        val uiState = uiState.value
+
+        if (uiState !is AddTravelUiState.Success) return
+
+        contentJob = viewModelScope.launch {
+            flow {
+                emit(
+                    insertDefaultTravelUsecase(
+                        Travel(
+                            travelId = UUID.randomUUID().toString(),
+                            destination = destination,
+                            startingPoint = startingPoint,
+                            startDate = uiState.duration!!.startDate,
+                            endDate = uiState.duration.endDate,
+                            startTime = uiState.startTime!!,
+                            endTime = uiState.endTime!!,
+                            meansType = uiState.meansItems.find { it.isSelected }?.type
+                                ?: MeansType.CAR
+                        )
+                    )
+                )
+            }.catch { throwable ->
+                _errorFlow.emit(throwable)
+            }.collect { travelId ->
+                _uiEffect.value = AddTravelUiEffect.AddTravelComplete(travelId = travelId)
+            }
+        }
+    }
+
+    fun resetUiEffect() {
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
+
+        contentJob = viewModelScope.launch {
+            _uiEffect.value = AddTravelUiEffect.Idle
+        }
+    }
 }
