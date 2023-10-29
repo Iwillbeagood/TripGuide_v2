@@ -2,8 +2,8 @@ package com.jun.tripguide_v2.feature.addtravel.areapicker
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jun.tripguide_v2.core.domain.usecase.GetAreaCodeUsecase
-import com.jun.tripguide_v2.core.domain.usecase.GetDefaultAreaCodeUsecase
+import com.jun.tripguide_v2.core.domain.usecase.tourapi.GetAreaCodeUsecase
+import com.jun.tripguide_v2.core.domain.usecase.tourapi.GetDefaultAreaCodeUsecase
 import com.jun.tripguide_v2.core.model.AreaCode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job

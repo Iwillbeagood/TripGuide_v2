@@ -13,16 +13,23 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
@@ -30,18 +37,86 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import com.jun.tripguide_v2.core.designsystem.R
+import com.jun.tripguide_v2.core.designsystem.theme.SkyGray
+import com.jun.tripguide_v2.core.model.DestinationCode
 import com.jun.tripguide_v2.feature.addtravel.navigation.addTravelNavGraph
+import com.jun.tripguide_v2.feature.main.R.string
 import com.jun.tripguide_v2.feature.mytravel.navigation.myTravelNavGraph
 import com.jun.tripguide_v2.feature.recommend.navigation.recommendNavGraph
 import com.jun.tripguide_v2.feature.setting.navigation.settingNavGraph
+import com.jun.tripguide_v2.feature.travelroute.navigation.travelRouteNavGraph
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun MainScreen(
     navigator: MainNavigator = rememberMainNavigator()
 ) {
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    var contentJob: Job? = null
+    val coroutineScope = rememberCoroutineScope()
+    val localContextResource = LocalContext.current.resources
+    val onShowErrorSnackBar: (throwable: Throwable?) -> Unit = { throwable ->
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
+        contentJob = coroutineScope.launch {
+            snackBarHostState.showSnackbar(
+                when (throwable) {
+                    is NullPointerException -> localContextResource.getString(string.error_message_null_pointer)
+                    else -> localContextResource.getString(string.error_message_unknown)
+                }
+            )
+        }
+    }
+
     Scaffold(
+        content = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+            ) {
+                NavHost(
+                    navController = navigator.navController,
+                    startDestination = navigator.startDestination
+                ) {
+                    myTravelNavGraph(
+
+                    )
+                    recommendNavGraph(
+
+                    )
+                    settingNavGraph(
+
+                    )
+                    addTravelNavGraph(
+                        onBackClick = { navigator.popBackStackIfNotHome() },
+                        onBackClickAreaCodes = { areaCode, sigunguCode ->
+                            navigator.popBackStackWithData(
+                                "destination",
+                                "${areaCode.code}/${sigunguCode.code}/${areaCode.name} ${sigunguCode.name}"
+                            )
+                        },
+                        onBackClickAddress = { address ->
+                            navigator.popBackStackWithData("startingPoint", address.name)
+                        },
+                        onPickTravelInfoClick = { navigator.navigatePickDestination() },
+                        onPickStartingPointClick = { navigator.navigatePickStartingPoint() },
+                        onAddTravelComplete = { travelId ->
+                            navigator.navigateTravelRoute(travelId)
+                        },
+                        onShowErrorSnackBar = onShowErrorSnackBar
+                    )
+                    travelRouteNavGraph(
+                        onBackClick = { navigator.popBackStackIfNotHome() },
+                    )
+                }
+            }
+        },
         bottomBar = {
             MainBottomBar(
                 visible = navigator.shouldShowBottomBar(),
@@ -53,22 +128,14 @@ internal fun MainScreen(
         floatingActionButton = {
             ItemAddFAB(
                 visible = navigator.shouldShowBottomBar(),
+                icon = Icons.Filled.Add,
                 onClicked = {
                     navigator.navigateAddTravel()
                 }
             )
-        }
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-        ) {
-            NavigationGraph(
-                navigator = navigator
-            )
-        }
-    }
+        },
+        snackbarHost = { SnackbarHost(snackBarHostState) }
+    )
 }
 
 @Composable
@@ -108,50 +175,20 @@ private fun MainBottomBar(
 }
 
 @Composable
-private fun NavigationGraph(
-    navigator: MainNavigator
-) {
-    NavHost(
-        navController = navigator.navController,
-        startDestination = navigator.startDestination
-    ) {
-        myTravelNavGraph(
-
-        )
-        recommendNavGraph(
-
-        )
-        settingNavGraph(
-
-        )
-        addTravelNavGraph(
-            onBackClick = navigator::popBackStackIfNotHome,
-            onBackClickAreaCodes = { defaultAreaCode, areaCode ->
-                navigator.popBackStackWithData("destination", "${defaultAreaCode.name} ${areaCode.name}")
-            },
-            onBackClickAddress = { address ->
-                navigator.popBackStackWithData("address", address.name)
-            },
-            onPickTravelInfoClick = navigator::navigatePickDestination,
-            onPickStartingPointClick = navigator::navigatePickStartingPoint,
-        )
-    }
-}
-
-@Composable
 fun ItemAddFAB(
     visible: Boolean,
+    icon: ImageVector,
     onClicked: () -> Unit
 ) {
-    FloatingActionButton(
-        modifier = Modifier
-            .padding(5.dp)
-            .alpha(if (visible) 1f else 0f),
+    if (!visible) return
+    ExtendedFloatingActionButton(
         onClick = onClicked,
         shape = CircleShape,
-        containerColor = Color.White,
-        contentColor = Color.Black
+        containerColor = SkyGray,
+        contentColor = Color.Black,
+        modifier = Modifier.padding(1.dp)
     ) {
-        Icon(Icons.Filled.Add, "Floating action button.")
+        Icon(icon, "Floating action button.")
+        Text(text = "일정 추가")
     }
 }

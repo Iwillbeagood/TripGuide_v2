@@ -1,29 +1,20 @@
 package com.jun.tripguide_v2.feature.addtravel.areapicker
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,23 +22,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jun.tripguide_v2.core.designsystem.component.CustomTopAppBar
+import com.jun.tripguide_v2.core.designsystem.component.TopAppBarNavigationType
 import com.jun.tripguide_v2.core.designsystem.theme.Black
 import com.jun.tripguide_v2.core.designsystem.theme.Gray
 import com.jun.tripguide_v2.core.designsystem.theme.LightGray
+import com.jun.tripguide_v2.core.designsystem.theme.PaperGray
 import com.jun.tripguide_v2.core.designsystem.theme.Sky
 import com.jun.tripguide_v2.core.designsystem.theme.White
 import com.jun.tripguide_v2.core.model.AreaCode
 import com.jun.tripguide_v2.core.ui.BackButtonAndTitle
 
-@SuppressLint("RememberReturnType")
 @Composable
-fun AreaPickerScreen(
+fun AreaPickerRoute(
     onBackClick: () -> Unit,
     onBackClickWithData: (AreaCode, AreaCode) -> Unit,
     viewModel: AreaPickerViewModel = hiltViewModel()
@@ -66,11 +58,13 @@ fun AreaPickerScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 16.dp)
     ) {
-        BackButtonAndTitle(onBackClick = onBackClick, title = "여행지")
-        Spacer(Modifier.height(16.dp))
-        AreaCodeItems(
+        CustomTopAppBar(
+            title = "여행지",
+            navigationType = TopAppBarNavigationType.Close,
+            onNavigationClick = onBackClick
+        )
+        AreaCodeContent(
             uiState = uiState,
             onClickAreaItem = { viewModel.areaPicked(it) },
             onClickDefaultAreaCodeItem = { viewModel.upDateDefaultAreaCodeState(it) }
@@ -80,7 +74,7 @@ fun AreaPickerScreen(
 }
 
 @Composable
-fun AreaCodeItems(
+fun AreaCodeContent(
     uiState: AreaPickerUiState,
     onClickAreaItem: (AreaCode) -> Unit,
     onClickDefaultAreaCodeItem: (AreaCode) -> Unit
@@ -88,7 +82,7 @@ fun AreaCodeItems(
     when (uiState) {
         is AreaPickerUiState.Loading -> AreaPickerLoading()
         is AreaPickerUiState.AreaCodes -> {
-            AreaCodeItems(
+            AreaCodeScreen(
                 defaultAreaCodes = uiState.defaultAreaCodes,
                 areaCodes = uiState.areaCodes,
                 onClickAreaItem = onClickAreaItem,
@@ -109,7 +103,7 @@ private fun AreaPickerLoading() {
 }
 
 @Composable
-fun AreaCodeItems(
+fun AreaCodeScreen(
     defaultAreaCodes: List<AreaCode>,
     areaCodes: List<AreaCode>?,
     onClickAreaItem: (AreaCode) -> Unit,
@@ -121,7 +115,7 @@ fun AreaCodeItems(
         AreaCodeItemsColumn(
             areaCodes = defaultAreaCodes,
             onClickAreaItem = { onClickDefaultAreaCodeItem(it) },
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1.3f)
         )
         Divider(
             color = Black,
@@ -158,7 +152,7 @@ fun AreaCodeItemsColumn(
             AreaItem(
                 text = item.name,
                 textColor = if (item.isSelected || isDefaultAreaCodeSelected) Sky else Gray,
-                color = if (item.isSelected || isDefaultAreaCodeSelected) White else LightGray,
+                color = if (item.isSelected || isDefaultAreaCodeSelected) PaperGray else LightGray,
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
@@ -191,6 +185,5 @@ fun AreaItem(
                 .background(color)
                 .padding(16.dp)
         )
-
     }
 }

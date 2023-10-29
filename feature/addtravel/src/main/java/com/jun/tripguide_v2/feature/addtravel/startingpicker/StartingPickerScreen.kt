@@ -33,8 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jun.tripguide_v2.core.designsystem.component.CustomTopAppBar
+import com.jun.tripguide_v2.core.designsystem.component.TopAppBarNavigationType
+import com.jun.tripguide_v2.core.designsystem.theme.Black
 import com.jun.tripguide_v2.core.designsystem.theme.Gray
-import com.jun.tripguide_v2.core.designsystem.theme.Sky
+import com.jun.tripguide_v2.core.designsystem.theme.PaperGray
 import com.jun.tripguide_v2.core.designsystem.theme.White
 import com.jun.tripguide_v2.core.model.Address
 import com.jun.tripguide_v2.core.ui.BackButtonAndTitle
@@ -48,6 +51,7 @@ fun StartingPickerScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val effect by viewModel.uiEffect.collectAsStateWithLifecycle()
+    val keyword by viewModel.keyword.collectAsStateWithLifecycle()
 
     LaunchedEffect(effect) {
         val startingPoint = (effect as? StartingPickerUiEffect.StartingPicked)?.address
@@ -59,14 +63,17 @@ fun StartingPickerScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 5.dp)
+            .background(PaperGray)
     ) {
-        BackButtonAndTitle(onBackClick = onBackClick, title = "출발 장소")
-        Spacer(Modifier.height(16.dp))
+        CustomTopAppBar(
+            title = "출발 장소",
+            navigationType = TopAppBarNavigationType.Close,
+            onNavigationClick = onBackClick
+        )
         SearchView(
-            value = (uiState as? StartingPickerUiState.Keyword)?.keyword ?: "",
+            value = keyword,
             onValueChange = { viewModel.searchAddress(it) },
-            onValueClear = viewModel::clearKeyword
+            onValueClear = { viewModel.clearKeyword() }
         )
         AddressItemsColumn(
             addresses = (uiState as? StartingPickerUiState.Addresses)?.addresses ?: emptyList(),
@@ -86,7 +93,7 @@ fun SearchView(
         onValueChange = onValueChange,
         modifier = Modifier
             .fillMaxWidth(),
-        textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+        textStyle = TextStyle(color = Color.Black, fontSize = 18.sp),
         leadingIcon = {
             Icon(
                 Icons.Default.Search,
@@ -122,18 +129,20 @@ fun AddressItemsColumn(
     onClickAddressItem: (Address) -> Unit,
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
     ) {
         items(
             items = addresses,
-            key = { item -> item.name }
+            key = { item -> item.id }
         ) { item ->
             AddressItem(
                 address = item,
-                textColor = Sky,
+                textColor = Black,
                 color = White,
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(PaperGray)
                     .clickable {
                         onClickAddressItem(item)
                     }
@@ -154,25 +163,27 @@ fun AddressItem(
     color: Color,
     modifier: Modifier
 ) {
-    Column {
+    Column(
+        modifier = modifier.background(PaperGray)
+    ) {
         Text(
             text = address.name,
             color = textColor,
             fontSize = 15.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Left,
-            modifier = modifier
-                .background(color)
-                .padding(16.dp)
+            modifier = Modifier
+                .background(PaperGray)
+                .padding(start = 16.dp, top = 16.dp)
         )
         Text(
             text = address.address,
             color = textColor,
             fontSize = 10.sp,
             textAlign = TextAlign.Left,
-            modifier = modifier
-                .background(color)
-                .padding(16.dp)
+            modifier = Modifier
+                .background(PaperGray)
+                .padding(start = 16.dp, top = 5.dp, bottom = 16.dp)
         )
 
     }

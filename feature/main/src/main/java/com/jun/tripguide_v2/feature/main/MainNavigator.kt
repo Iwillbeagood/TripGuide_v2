@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.jun.tripguide_v2.feature.addtravel.navigation.AddTravelRoute
 import com.jun.tripguide_v2.feature.addtravel.navigation.navigateAddTravel
 import com.jun.tripguide_v2.feature.addtravel.navigation.navigatePickDestination
 import com.jun.tripguide_v2.feature.addtravel.navigation.navigatePickStartingPoint
@@ -15,6 +16,7 @@ import com.jun.tripguide_v2.feature.mytravel.navigation.MyTravelRoute
 import com.jun.tripguide_v2.feature.mytravel.navigation.navigateMyTravel
 import com.jun.tripguide_v2.feature.recommend.navigation.navigateRecommend
 import com.jun.tripguide_v2.feature.setting.navigation.navigateSetting
+import com.jun.tripguide_v2.feature.travelroute.navigation.navigateTravelRoute
 
 internal class MainNavigator(
     val navController: NavHostController
@@ -59,7 +61,11 @@ internal class MainNavigator(
         navController.navigatePickStartingPoint()
     }
 
-    fun popBackStackWithData(key: String, value: String) {
+    fun navigateTravelRoute(travelId: String) {
+        navController.navigateTravelRoute(travelId)
+    }
+
+    fun popBackStackWithData(key: String, value: Any) {
         val previousBackStackEntry = navController.previousBackStackEntry
         previousBackStackEntry?.savedStateHandle?.set(key, value)
 
