@@ -15,7 +15,5 @@ interface TravelDao {
     suspend fun upDateTravel(travelEntity: TravelEntity)
 
     @Query("SELECT * FROM travels WHERE travelId = :id")
-    suspend fun getTravelById(id: Int): TravelEntity
-
-
+    suspend fun getTravelById(id: String): TravelEntity
 }
