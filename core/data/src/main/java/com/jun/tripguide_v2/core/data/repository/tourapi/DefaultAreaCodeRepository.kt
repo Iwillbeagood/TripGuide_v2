@@ -1,9 +1,8 @@
-package com.jun.tripguide_v2.core.data.repository
+package com.jun.tripguide_v2.core.data.repository.tourapi
 
 import com.jun.tripguide_v2.core.data.api.TourAreaCodeApi
 import com.jun.tripguide_v2.core.data.mapper.toData
 import com.jun.tripguide_v2.core.model.AreaCode
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 internal class DefaultAreaCodeRepository @Inject constructor(

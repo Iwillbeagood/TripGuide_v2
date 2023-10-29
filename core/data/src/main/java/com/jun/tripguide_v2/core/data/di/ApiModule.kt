@@ -2,6 +2,7 @@ package com.jun.tripguide_v2.core.data.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.jun.tripguide_v2.core.data.api.KakaoKeywordApi
+import com.jun.tripguide_v2.core.data.api.TourAreaBaseListApi
 import com.jun.tripguide_v2.core.data.api.TourAreaCodeApi
 import dagger.Module
 import dagger.Provides
@@ -33,23 +34,35 @@ object ApiModule {
 
     @Provides
     @Singleton
-    fun provideConverterFactory(
-        json: Json,
-    ): Converter.Factory {
-        return json.asConverterFactory("application/json".toMediaType())
-    }
+    fun provideConverterFactory(json: Json): Converter.Factory =
+        json.asConverterFactory("application/json".toMediaType())
+
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(
+        okHttpClient: OkHttpClient,
+        converterFactory: Converter.Factory,
+    ): Retrofit =
+        Retrofit.Builder()
+            .baseUrl("http://apis.data.go.kr/B551011/KorService1/")
+            .addConverterFactory(converterFactory)
+            .client(okHttpClient).build()
 
     @Provides
     @Singleton
     fun provideTourAreaCodeApi(
-        okHttpClient: OkHttpClient,
-        converterFactory: Converter.Factory,
+        retrofit: Retrofit
     ): TourAreaCodeApi {
-        return Retrofit.Builder()
-            .baseUrl("http://apis.data.go.kr/B551011/KorService1/")
-            .addConverterFactory(converterFactory)
-            .client(okHttpClient).build()
-            .create(TourAreaCodeApi::class.java)
+        return retrofit.create(TourAreaCodeApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTourAreaBaseListApi(
+        retrofit: Retrofit
+    ): TourAreaBaseListApi {
+        return retrofit.create(TourAreaBaseListApi::class.java)
     }
 
     @Provides

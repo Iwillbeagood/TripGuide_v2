@@ -1,4 +1,4 @@
-package com.jun.tripguide_v2.core.data.repository
+package com.jun.tripguide_v2.core.data.repository.tourapi
 
 import com.jun.tripguide_v2.core.model.AreaCode
 

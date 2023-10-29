@@ -8,5 +8,5 @@ interface TravelRepository {
 
     suspend fun updateTravel(travel: Travel)
 
-    suspend fun getTravelById(id: Int): Travel
+    suspend fun getTravelById(id: String): Travel
 }

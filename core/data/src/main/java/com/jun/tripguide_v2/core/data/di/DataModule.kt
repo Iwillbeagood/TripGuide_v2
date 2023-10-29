@@ -1,11 +1,13 @@
 package com.jun.tripguide_v2.core.data.di
 
-import com.jun.tripguide_v2.core.data.repository.AreaCodeRepository
-import com.jun.tripguide_v2.core.data.repository.DefaultAreaCodeRepository
+import com.jun.tripguide_v2.core.data.repository.tourapi.AreaCodeRepository
+import com.jun.tripguide_v2.core.data.repository.tourapi.DefaultAreaCodeRepository
 import com.jun.tripguide_v2.core.data.repository.DefaultKakaoKeywordRepository
 import com.jun.tripguide_v2.core.data.repository.DefaultTravelRepository
 import com.jun.tripguide_v2.core.data.repository.KakaoKeywordRepository
 import com.jun.tripguide_v2.core.data.repository.TravelRepository
+import com.jun.tripguide_v2.core.data.repository.tourapi.AreaBaseListRepository
+import com.jun.tripguide_v2.core.data.repository.tourapi.DefaultAreaBaseListRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -19,6 +21,11 @@ internal abstract class DataModule {
     abstract fun bindsAreaCodeRepository(
         repository: DefaultAreaCodeRepository
     ): AreaCodeRepository
+
+    @Binds
+    abstract fun bindsAreaBaseListRepository(
+        repository: DefaultAreaBaseListRepository
+    ): AreaBaseListRepository
 
     @Binds
     abstract fun bindsTravelRepository(

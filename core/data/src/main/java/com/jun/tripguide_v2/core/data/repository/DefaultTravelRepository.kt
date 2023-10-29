@@ -10,14 +10,14 @@ class DefaultTravelRepository @Inject constructor(
 ) : TravelRepository {
 
     override suspend fun insertTravel(travel: Travel) {
-        travelDao.insertTravel(travel.toData())
+        return travelDao.insertTravel(travel.toData())
     }
 
     override suspend fun updateTravel(travel: Travel) {
         travelDao.upDateTravel(travel.toData())
     }
 
-    override suspend fun getTravelById(id: Int): Travel {
+    override suspend fun getTravelById(id: String): Travel {
         return travelDao.getTravelById(id).toData()
     }
 }
