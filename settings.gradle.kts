@@ -31,7 +31,7 @@ include(
     ":feature:setting",
     ":feature:recommend",
 
-    ":feature:addtravel",
-    ":feature:travelroute",
-    ":feature:addtourist",
+    ":feature:travel-init",
+    ":feature:travel-recommend",
+    ":feature:travel-search",
 )

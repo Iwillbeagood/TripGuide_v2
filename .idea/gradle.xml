@@ -32,13 +32,13 @@
             <option value="$PROJECT_DIR$/core/model" />
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/feature" />
-            <option value="$PROJECT_DIR$/feature/addtourist" />
-            <option value="$PROJECT_DIR$/feature/addtravel" />
             <option value="$PROJECT_DIR$/feature/main" />
             <option value="$PROJECT_DIR$/feature/mytravel" />
             <option value="$PROJECT_DIR$/feature/recommend" />
             <option value="$PROJECT_DIR$/feature/setting" />
-            <option value="$PROJECT_DIR$/feature/travelroute" />
+            <option value="$PROJECT_DIR$/feature/travel-init" />
+            <option value="$PROJECT_DIR$/feature/travel-recommend" />
+            <option value="$PROJECT_DIR$/feature/travel-search" />
           </set>
         </option>
       </GradleProjectSettings>
