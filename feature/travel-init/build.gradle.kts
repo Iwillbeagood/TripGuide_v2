@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.jun.tripguide_v2.feature.addtravel"
+    namespace = "com.jun.tripguide_v2.feature.travel_init"
 }
 
 dependencies {

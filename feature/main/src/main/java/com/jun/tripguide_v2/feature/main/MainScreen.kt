@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -26,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -38,13 +36,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import com.jun.tripguide_v2.core.designsystem.R
 import com.jun.tripguide_v2.core.designsystem.theme.SkyGray
-import com.jun.tripguide_v2.core.model.DestinationCode
-import com.jun.tripguide_v2.feature.addtravel.navigation.addTravelNavGraph
+import com.jun.tripguide_v2.feature.addtourist.navigation.travelSearchNavGraph
+import com.jun.tripguide_v2.feature.addtravel.navigation.travelInitNavGraph
 import com.jun.tripguide_v2.feature.main.R.string
 import com.jun.tripguide_v2.feature.mytravel.navigation.myTravelNavGraph
 import com.jun.tripguide_v2.feature.recommend.navigation.recommendNavGraph
 import com.jun.tripguide_v2.feature.setting.navigation.settingNavGraph
-import com.jun.tripguide_v2.feature.travelroute.navigation.travelRouteNavGraph
+import com.jun.tripguide_v2.feature.travelroute.navigation.travelRecommendNavGraph
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Job
@@ -93,7 +91,7 @@ internal fun MainScreen(
                     settingNavGraph(
 
                     )
-                    addTravelNavGraph(
+                    travelInitNavGraph(
                         onBackClick = { navigator.popBackStackIfNotHome() },
                         onBackClickAreaCodes = { areaCode, sigunguCode ->
                             navigator.popBackStackWithData(
@@ -106,13 +104,20 @@ internal fun MainScreen(
                         },
                         onPickTravelInfoClick = { navigator.navigatePickDestination() },
                         onPickStartingPointClick = { navigator.navigatePickStartingPoint() },
-                        onAddTravelComplete = { travelId ->
-                            navigator.navigateTravelRoute(travelId)
+                        onTravelInitComplete = { travelId ->
+                            navigator.navigateTravelRecommend(travelId)
                         },
                         onShowErrorSnackBar = onShowErrorSnackBar
                     )
-                    travelRouteNavGraph(
+                    travelRecommendNavGraph(
                         onBackClick = { navigator.popBackStackIfNotHome() },
+                        onShowErrorSnackBar = onShowErrorSnackBar,
+                        onTravelRouteComplete = { navigator.navigateTouristSearch() }
+                    )
+                    travelSearchNavGraph(
+                        onBackClick = { navigator.popBackStackIfNotHome() },
+                        onShowErrorSnackBar = onShowErrorSnackBar,
+                        onTravelSearchComplete = {}
                     )
                 }
             }
@@ -130,7 +135,7 @@ internal fun MainScreen(
                 visible = navigator.shouldShowBottomBar(),
                 icon = Icons.Filled.Add,
                 onClicked = {
-                    navigator.navigateAddTravel()
+                    navigator.navigateTravelInit()
                 }
             )
         },

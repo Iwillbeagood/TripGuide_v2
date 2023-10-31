@@ -6,15 +6,20 @@ import androidx.lifecycle.viewModelScope
 import com.jun.tripguide_v2.core.domain.usecase.tourapi.GetAreaBaseListUsecase
 import com.jun.tripguide_v2.core.domain.usecase.tourapi.GetSigunguBaseListUsecase
 import com.jun.tripguide_v2.core.domain.usecase.GetTravelByIdUsecase
+import com.jun.tripguide_v2.core.domain.usecase.InsertRouteUsecase
 import com.jun.tripguide_v2.core.domain.usecase.tourapi.GetAreaBaseListWithTypeUsecase
 import com.jun.tripguide_v2.core.domain.usecase.tourapi.GetSigunguBaseListByTypeUsecase
 import com.jun.tripguide_v2.core.model.FilterValue
+import com.jun.tripguide_v2.core.model.Route
 import com.jun.tripguide_v2.core.model.Tourist
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
@@ -23,19 +28,23 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
-class TravelRouteViewModel @Inject constructor(
+class TravelRecommendViewModel @Inject constructor(
     private val getTravelByIdUsecase: GetTravelByIdUsecase,
     private val getAreaBaseListUsecase: GetAreaBaseListUsecase,
     private val getSigunguBaseListUsecase: GetSigunguBaseListUsecase,
     private val getAreaBaseListWithTypeUsecase: GetAreaBaseListWithTypeUsecase,
-    private val getSigunguBaseListByTypeUsecase: GetSigunguBaseListByTypeUsecase
+    private val getSigunguBaseListByTypeUsecase: GetSigunguBaseListByTypeUsecase,
+    private val insertRouteUsecase: InsertRouteUsecase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<TravelRouteUiState>(TravelRouteUiState.Loading)
-    val uiState: StateFlow<TravelRouteUiState> = _uiState
+    private val _errorFlow = MutableSharedFlow<Throwable>()
+    val errorFlow: SharedFlow<Throwable> get() = _errorFlow
 
-    private val _uiEffect = MutableStateFlow<TravelRouteUiEffect>(TravelRouteUiEffect.Idle)
-    val uiEffect: StateFlow<TravelRouteUiEffect> = _uiEffect
+    private val _uiState = MutableStateFlow<TravelRecommendUiState>(TravelRecommendUiState.Loading)
+    val uiState: StateFlow<TravelRecommendUiState> = _uiState
+
+    private val _uiEffect = MutableStateFlow<TravelRecommendUiEffect>(TravelRecommendUiEffect.Idle)
+    val uiEffect: StateFlow<TravelRecommendUiEffect> = _uiEffect
 
     private var contentJob: Job? = null
 
@@ -64,7 +73,8 @@ class TravelRouteViewModel @Inject constructor(
                 travelFlow,
                 touristInfoFlow
             ) { travel, touristInfoList ->
-                TravelRouteUiState.Success(
+                Log.d("TAG", "fetchTourist: $travel")
+                TravelRecommendUiState.Success(
                     travel = travel,
                     touristList = touristInfoList
                 )
@@ -79,7 +89,7 @@ class TravelRouteViewModel @Inject constructor(
 
         val uiState = uiState.value
 
-        if (uiState !is TravelRouteUiState.Success) return
+        if (uiState !is TravelRecommendUiState.Success) return
 
         _uiState.value = uiState.copy(
             pageNo = uiState.pageNo + 1
@@ -98,7 +108,7 @@ class TravelRouteViewModel @Inject constructor(
 
         val uiState = uiState.value
 
-        if (uiState !is TravelRouteUiState.Success) return
+        if (uiState !is TravelRecommendUiState.Success) return
 
         val travel = uiState.travel
         val pageNo = uiState.pageNo.toString()
@@ -157,7 +167,7 @@ class TravelRouteViewModel @Inject constructor(
 
         val uiState = uiState.value
 
-        if (uiState !is TravelRouteUiState.Success) return
+        if (uiState !is TravelRecommendUiState.Success) return
 
         contentJob = viewModelScope.launch {
             _uiState.value = uiState.copy(
@@ -179,7 +189,7 @@ class TravelRouteViewModel @Inject constructor(
 
         val uiState = uiState.value
 
-        if (uiState !is TravelRouteUiState.Success) return
+        if (uiState !is TravelRecommendUiState.Success) return
 
         contentJob = viewModelScope.launch {
             _uiState.value = uiState.copy(
@@ -195,7 +205,7 @@ class TravelRouteViewModel @Inject constructor(
 
         val uiState = uiState.value
 
-        if (uiState !is TravelRouteUiState.Success) return
+        if (uiState !is TravelRecommendUiState.Success) return
 
         Log.d("TAG", "changeSortBy: $value")
         contentJob = viewModelScope.launch {
@@ -216,7 +226,7 @@ class TravelRouteViewModel @Inject constructor(
 
         val uiState = uiState.value
 
-        if (uiState !is TravelRouteUiState.Success) return
+        if (uiState !is TravelRecommendUiState.Success) return
 
         contentJob = viewModelScope.launch {
             _uiState.value = uiState.copy(
@@ -235,7 +245,7 @@ class TravelRouteViewModel @Inject constructor(
         }
 
         contentJob = viewModelScope.launch {
-            _uiEffect.value = TravelRouteUiEffect.ScrollToFirstItem
+            _uiEffect.value = TravelRecommendUiEffect.ScrollToFirstItem
         }
     }
 
@@ -245,7 +255,49 @@ class TravelRouteViewModel @Inject constructor(
         }
 
         contentJob = viewModelScope.launch {
-            _uiEffect.value = TravelRouteUiEffect.Idle
+            _uiEffect.value = TravelRecommendUiEffect.Idle
+        }
+    }
+
+    fun travelRecommendComplete() {
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
+
+        val uiState = uiState.value
+
+        if (uiState !is TravelRecommendUiState.Success) return
+
+        if (uiState.selectedTourist.isEmpty()) {
+            _uiEffect.value = TravelRecommendUiEffect.TravelRecommendComplete
+            return
+        }
+
+        contentJob = viewModelScope.launch {
+            flow {
+                emit(
+                    insertRouteUsecase(
+                        uiState.selectedTourist.mapIndexed { index, tourist ->
+                            Route(
+                                orderNum = index,
+                                travelId = uiState.travel.travelId,
+                                title = tourist.title,
+                                address = tourist.address,
+                                typeId = tourist.typeId,
+                                firstImage = tourist.firstImage,
+                                mapX = tourist.mapX,
+                                mapY = tourist.mapY,
+                                startTime = 0,
+                                endTime = 0
+                            )
+                        }
+                    )
+                )
+            }.catch { throwable ->
+                _errorFlow.emit(throwable)
+            }.collect {
+                _uiEffect.value = TravelRecommendUiEffect.TravelRecommendComplete
+            }
         }
     }
 }

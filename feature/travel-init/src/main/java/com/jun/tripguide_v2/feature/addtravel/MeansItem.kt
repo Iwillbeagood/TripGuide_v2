@@ -3,7 +3,6 @@ package com.jun.tripguide_v2.feature.addtravel
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,13 +27,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jun.tripguide_v2.core.designsystem.theme.Gray
-import com.jun.tripguide_v2.core.designsystem.theme.LightGray
 import com.jun.tripguide_v2.core.designsystem.theme.Sky
 import com.jun.tripguide_v2.core.designsystem.theme.SkyGray
 import com.jun.tripguide_v2.core.designsystem.theme.TravelGuideTheme
 import com.jun.tripguide_v2.core.designsystem.theme.White
 import com.jun.tripguide_v2.core.model.MeansItems
 import com.jun.tripguide_v2.core.model.MeansType
+import com.jun.tripguide_v2.feature.travel_init.R
 
 @Composable
 fun TravelMeans(

@@ -6,9 +6,9 @@ import com.jun.tripguide_v2.core.model.Tourist
 import com.jun.tripguide_v2.core.model.TouristType
 import com.jun.tripguide_v2.core.model.Travel
 
-sealed interface TravelRouteUiState {
+sealed interface TravelRecommendUiState {
 
-    object Loading : TravelRouteUiState
+    object Loading : TravelRecommendUiState
 
     data class Success(
         val pageNo: Int = 1,
@@ -17,7 +17,7 @@ sealed interface TravelRouteUiState {
         val sortByList : List<FilterValue> = SortBy.getValues(),
         val touristTypeList : List<FilterValue> = TouristType.getValues(),
         val dialogVisibility: Boolean = false
-    ): TravelRouteUiState {
+    ): TravelRecommendUiState {
         val selectedTourist : List<Tourist>
             get() = touristList.filter { it.isSelected }
     }

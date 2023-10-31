@@ -5,51 +5,51 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.jun.tripguide_v2.core.model.Address
 import com.jun.tripguide_v2.core.model.AreaCode
-import com.jun.tripguide_v2.feature.addtravel.AddTravelRoute
+import com.jun.tripguide_v2.feature.addtravel.TravelInitRoute
 import com.jun.tripguide_v2.feature.addtravel.areapicker.AreaPickerRoute
 import com.jun.tripguide_v2.feature.addtravel.areapicker.mapper.toDestinationData
 import com.jun.tripguide_v2.feature.addtravel.startingpicker.StartingPickerScreen
 
-fun NavController.navigateAddTravel() {
-    navigate(AddTravelRoute.route)
+fun NavController.navigateTravelInit() {
+    navigate(TravelInitRoute.route)
 }
 
 fun NavController.navigatePickDestination() {
-    navigate(AddTravelRoute.route_pick_destination)
+    navigate(TravelInitRoute.route_pick_destination)
 }
 
 fun NavController.navigatePickStartingPoint() {
-    navigate(AddTravelRoute.route_pick_starting_point)
+    navigate(TravelInitRoute.route_pick_starting_point)
 }
 
-fun NavGraphBuilder.addTravelNavGraph(
+fun NavGraphBuilder.travelInitNavGraph(
     onBackClick: () -> Unit,
     onBackClickAreaCodes: (AreaCode, AreaCode) -> Unit,
     onBackClickAddress: (Address) -> Unit,
     onPickTravelInfoClick: () -> Unit,
     onPickStartingPointClick: () -> Unit,
-    onAddTravelComplete: (String) -> Unit,
+    onTravelInitComplete: (String) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit
 ) {
     composable(
-        route = AddTravelRoute.route
+        route = TravelInitRoute.route
     ) { navBackStackEntry ->
         val destination = navBackStackEntry.savedStateHandle.get<String>("destination")
         val startingPoint = navBackStackEntry.savedStateHandle.get<String>("startingPoint")
 
-        AddTravelRoute(
+        TravelInitRoute(
             onBackClick = onBackClick,
             onAreaPickerClick = onPickTravelInfoClick,
             onStartingPickerClick = onPickStartingPointClick,
             onShowErrorSnackBar = onShowErrorSnackBar,
             destination = destination?.toDestinationData(),
             startingPoint = startingPoint,
-            onAddTravelComplete = onAddTravelComplete
+            onTravelInitComplete = onTravelInitComplete
         )
     }
 
     composable(
-        route = AddTravelRoute.route_pick_destination
+        route = TravelInitRoute.route_pick_destination
     ) {
         AreaPickerRoute(
             onBackClick = onBackClick,
@@ -58,7 +58,7 @@ fun NavGraphBuilder.addTravelNavGraph(
     }
 
     composable(
-        route = AddTravelRoute.route_pick_starting_point
+        route = TravelInitRoute.route_pick_starting_point
     ) {
         StartingPickerScreen(
             onBackClick = onBackClick,
@@ -67,8 +67,8 @@ fun NavGraphBuilder.addTravelNavGraph(
     }
 }
 
-object AddTravelRoute {
-    const val route = "add_travel"
+object TravelInitRoute {
+    const val route = "travel_init"
 
     const val route_pick_destination = "route_pick_destination"
 

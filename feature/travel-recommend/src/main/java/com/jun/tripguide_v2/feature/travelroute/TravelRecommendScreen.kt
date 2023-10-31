@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -20,7 +19,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -54,15 +53,22 @@ import com.jun.tripguide_v2.core.designsystem.theme.White
 import com.jun.tripguide_v2.core.model.FilterValue
 import com.jun.tripguide_v2.core.model.Tourist
 import com.jun.tripguide_v2.feature.travelroute.component.FilterTouristDialog
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun TravelRoute(
+fun TravelRecommendRoute(
     travelId: String,
     onBackClick: () -> Unit,
-    viewModel: TravelRouteViewModel = hiltViewModel()
+    onTravelRecommendComplete: () -> Unit,
+    onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
+    viewModel: TravelRecommendViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val uiEffect by viewModel.uiEffect.collectAsStateWithLifecycle()
+
+    LaunchedEffect(true) {
+        viewModel.errorFlow.collectLatest { onShowErrorSnackBar(it) }
+    }
 
     val listState = rememberLazyListState()
     LaunchedEffect(listState.canScrollForward) {
@@ -72,9 +78,16 @@ fun TravelRoute(
     }
 
     LaunchedEffect(uiEffect) {
-        if (uiEffect is TravelRouteUiEffect.ScrollToFirstItem) {
-            listState.scrollToItem(0)
-            viewModel.resetUiEffect()
+        when(uiEffect) {
+            TravelRecommendUiEffect.Idle,
+            TravelRecommendUiEffect.ScrollToFirstItem -> {
+                listState.scrollToItem(0)
+                viewModel.resetUiEffect()
+            }
+            TravelRecommendUiEffect.TravelRecommendComplete -> {
+                onTravelRecommendComplete()
+                viewModel.resetUiEffect()
+            }
         }
     }
 
@@ -90,7 +103,7 @@ fun TravelRoute(
             onNavigationClick = onBackClick,
             actionButtons = {
                 IconButton(
-                    onClick = {  },
+                    onClick = { viewModel.travelRecommendComplete() },
                     modifier = Modifier.size(48.dp)
                 ) {
                     Icon(
@@ -100,25 +113,17 @@ fun TravelRoute(
                 }
             }
         )
-        Box {
-            TravelRouteContent(
-                uiState = uiState,
-                listState = listState,
-                onFilterClick = { viewModel.changeDialogVisibility() },
-                onSelectTourist = { tourist -> viewModel.changeTouristSelection(tourist) },
-                onDialogBackClick = { viewModel.changeDialogVisibility() },
-                onFilterByItemClick = { viewModel.fetchNewTourist(isFilter = true) } ,
-                sortByItemClick = { value -> viewModel.changeSortBy(value) },
-                typeByItemClick = { value -> viewModel.changeTouristTypeBy(value) }
-            )
-            ScrollToFirstItemButton(
-                visible = listState.canScrollBackward,
-                icon = Icons.Default.KeyboardArrowUp,
-                onClicked = {
-                    viewModel.scrollToFirstItem()
-                }
-            )
-        }
+        TravelRecommendContent(
+            uiState = uiState,
+            listState = listState,
+            onFilterClick = { viewModel.changeDialogVisibility() },
+            onSelectTourist = { tourist -> viewModel.changeTouristSelection(tourist) },
+            onDialogBackClick = { viewModel.changeDialogVisibility() },
+            onFilterByItemClick = { viewModel.fetchNewTourist(isFilter = true) } ,
+            sortByItemClick = { value -> viewModel.changeSortBy(value) },
+            typeByItemClick = { value -> viewModel.changeTouristTypeBy(value) },
+            scrollToFirstItem = { viewModel.scrollToFirstItem() }
+        )
     }
 
     LaunchedEffect(travelId) {
@@ -127,8 +132,8 @@ fun TravelRoute(
 }
 
 @Composable
-private fun TravelRouteContent(
-    uiState: TravelRouteUiState,
+private fun TravelRecommendContent(
+    uiState: TravelRecommendUiState,
     listState: LazyListState,
     onFilterClick: () -> Unit,
     onSelectTourist: (Tourist) -> Unit,
@@ -136,11 +141,12 @@ private fun TravelRouteContent(
     onFilterByItemClick: () -> Unit,
     sortByItemClick: (FilterValue) -> Unit,
     typeByItemClick: (FilterValue) -> Unit,
+    scrollToFirstItem: () -> Unit,
 ) {
     when (uiState) {
-        TravelRouteUiState.Loading -> TravelRouteLoading()
-        is TravelRouteUiState.Success -> {
-            TravelRouteScreen(
+        TravelRecommendUiState.Loading -> TravelRecommendLoading()
+        is TravelRecommendUiState.Success -> {
+            TravelRecommendScreen(
                 listState = listState,
                 touristList = uiState.touristList,
                 selectedTouristList = uiState.selectedTourist,
@@ -155,13 +161,14 @@ private fun TravelRouteContent(
                 onSelectTourist = onSelectTourist,
                 onDialogBackClick = onDialogBackClick,
                 onFilterByItemClick = onFilterByItemClick,
+                scrollToFirstItem = scrollToFirstItem,
             )
         }
     }
 }
 
 @Composable
-private fun TravelRouteScreen(
+private fun TravelRecommendScreen(
     listState: LazyListState,
     touristList: List<Tourist>,
     selectedTouristList: List<Tourist>,
@@ -176,19 +183,20 @@ private fun TravelRouteScreen(
     onSelectTourist: (Tourist) -> Unit,
     onDialogBackClick: () -> Unit,
     onFilterByItemClick: () -> Unit,
+    scrollToFirstItem: () -> Unit,
 ) {
     if (selectedTouristList.isNotEmpty()) {
         SelectedTourist(
             selectedTouristList = selectedTouristList,
             onClickSelectedTourist = onSelectTourist
         )
-        Spacer(modifier = Modifier.height(7.dp))
     }
     TouristLazyColumn(
         listState = listState,
         touristList = touristList,
         onClickTourist = { TODO() },
-        onSelectTourist = onSelectTourist
+        scrollToFirstItem = scrollToFirstItem,
+        onSelectTourist = onSelectTourist,
     ) {
         FilterTourist(
             onFilterClick = onFilterClick,
@@ -208,7 +216,7 @@ private fun TravelRouteScreen(
 }
 
 @Composable
-private fun TravelRouteLoading() {
+private fun TravelRecommendLoading() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         CircularProgressIndicator()
     }
@@ -319,30 +327,38 @@ private fun TouristLazyColumn(
     touristList: List<Tourist>,
     onClickTourist: (Tourist) -> Unit,
     onSelectTourist: (Tourist) -> Unit,
+    scrollToFirstItem: () -> Unit,
     content: @Composable () -> Unit
 ) {
-    LazyColumn(state = listState) {
-        item {
-            content()
-        }
+    Box {
+        LazyColumn(state = listState) {
+            item {
+                content()
+            }
 
-        items(
-            items = touristList,
-            key = { item -> item.id }
-        ) { tourist ->
-            TouristItem(
-                title = tourist.title,
-                address = tourist.address,
-                imageUrl = tourist.firstImage,
-                selected = tourist.isSelected,
-                onSelectTourist = { onSelectTourist(tourist) },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clickable {
-                        onClickTourist(tourist)
-                    }
-            )
+            items(
+                items = touristList,
+                key = { item -> item.id }
+            ) { tourist ->
+                TouristItem(
+                    title = tourist.title,
+                    address = tourist.address,
+                    imageUrl = tourist.firstImage,
+                    selected = tourist.isSelected,
+                    onSelectTourist = { onSelectTourist(tourist) },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable {
+                            onClickTourist(tourist)
+                        }
+                )
+            }
         }
+        ScrollToFirstItemButton(
+            visible = listState.canScrollBackward,
+            icon = Icons.Default.KeyboardArrowUp,
+            onClicked = scrollToFirstItem
+        )
     }
 }
 
@@ -355,12 +371,12 @@ fun ScrollToFirstItemButton(
     if (!visible) return
 
     Button(
-        shape = CircleShape,
+        shape = RoundedCornerShape(percent = 50),
         onClick = onClicked,
-        colors = ButtonDefaults.buttonColors(Sky.copy(alpha = 0.5f)),
+        colors = ButtonDefaults.buttonColors(Sky.copy(alpha = 0.8f)),
         modifier = Modifier
-            .padding(10.dp)
             .fillMaxSize()
+            .padding(10.dp)
             .wrapContentSize(Alignment.BottomEnd)
     )  {
         Icon(icon, null)

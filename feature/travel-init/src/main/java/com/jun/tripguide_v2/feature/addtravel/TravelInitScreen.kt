@@ -1,6 +1,5 @@
 package com.jun.tripguide_v2.feature.addtravel
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -46,15 +45,15 @@ import com.jun.tripguide_v2.feature.addtravel.util.toStringType
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun AddTravelRoute(
+fun TravelInitRoute(
     onBackClick: () -> Unit,
     onAreaPickerClick: () -> Unit,
     onStartingPickerClick: () -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     destination: DestinationCode?,
     startingPoint: String?,
-    onAddTravelComplete: (String) -> Unit,
-    viewModel: AddTravelViewModel = hiltViewModel()
+    onTravelInitComplete: (String) -> Unit,
+    viewModel: TravelInitViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -65,8 +64,8 @@ fun AddTravelRoute(
     }
 
     LaunchedEffect(effect) {
-        if (effect is AddTravelUiEffect.AddTravelComplete) {
-            onAddTravelComplete((effect as AddTravelUiEffect.AddTravelComplete).travelId)
+        if (effect is TravelInitUiEffect.TravelInitComplete) {
+            onTravelInitComplete((effect as TravelInitUiEffect.TravelInitComplete).travelId)
             viewModel.resetUiEffect()
         }
     }
@@ -87,20 +86,20 @@ fun AddTravelRoute(
                 .verticalScroll(scrollState)
         ) {
             ScreenSection(title = "여행지") {
-                AddTravelText(
+                TravelInitText(
                     text = destination?.destinationString ?: "여행지를 선택해 주세요.",
                     onClick = onAreaPickerClick
                 )
             }
             ScreenSection(title = "출발 장소") {
-                AddTravelText(
+                TravelInitText(
                     text = startingPoint ?: "출발 장소를 입력해 주세요.",
                     onClick = onStartingPickerClick
                 )
             }
             ScreenSection(title = "여행 일정") {
-                AddTravelText(
-                    text = (uiState as? AddTravelUiState.Success)?.duration?.toStringType()
+                TravelInitText(
+                    text = (uiState as? TravelInitUiState.Success)?.duration?.toStringType()
                         ?: "여행 일정을 선택해 주세요.",
                     onClick = {
                         viewModel.dialogState(true)
@@ -109,7 +108,7 @@ fun AddTravelRoute(
             }
             ScreenSection(title = "이동 수단") {
                 TravelMeans(
-                    meansItems = (uiState as AddTravelUiState.Success).meansItems,
+                    meansItems = (uiState as TravelInitUiState.Success).meansItems,
                     onItemClick = { meansType ->
                         viewModel.meansItemPicked(meansType)
                     }
@@ -119,13 +118,13 @@ fun AddTravelRoute(
                 visibility = arrayOf(
                     MeansType.CAR,
                     MeansType.PUBLIC_TRANS
-                ).contains((uiState as AddTravelUiState.Success).meansItems.find { it.isSelected }?.type),
+                ).contains((uiState as TravelInitUiState.Success).meansItems.find { it.isSelected }?.type),
                 onStartTimePicked = { viewModel.startTimePicked(it) },
                 onEndTimePicked = { viewModel.endTimePicked(it) }
             )
             // "비행기, 기차 이용시 출발역, 도착역, 출발공항, 도착공항, 출발시간, 도착시간, API를 통해 입력"
             Spacer(Modifier.height(32.dp))
-            AddTravelCompleteBtn(
+            TravelInitCompleteBtn(
                 onClick = {
                     viewModel.addTravelComplete(
                         destination = destination ?: DestinationCode("", "", ""),
@@ -137,7 +136,7 @@ fun AddTravelRoute(
     }
 
     TravelDurationDatePicker(
-        visibility = (effect as? AddTravelUiEffect.ShowDialogForTravelDuration)?.visibility ?: false,
+        visibility = (effect as? TravelInitUiEffect.ShowDialogForTravelDuration)?.visibility ?: false,
         onBackClick = { viewModel.dialogState(false) },
         onTravelDurationPick = { viewModel.durationPicked(it) }
     )
@@ -164,7 +163,7 @@ private fun ScreenSection(
 }
 
 @Composable
-private fun AddTravelText(
+private fun TravelInitText(
     text: String,
     onClick: () -> Unit
 ) {
@@ -193,7 +192,7 @@ private fun AddTravelText(
 }
 
 @Composable
-fun AddTravelCompleteBtn(
+fun TravelInitCompleteBtn(
     onClick: () -> Unit
 ) {
     Button(
@@ -217,7 +216,7 @@ fun AddTravelCompleteBtn(
 @Preview(showBackground = true)
 @Composable
 fun ScreenContentPreview() {
-    AddTravelRoute(
+    TravelInitRoute(
         onBackClick = {},
         onAreaPickerClick = {},
         onStartingPickerClick = {},

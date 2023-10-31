@@ -1,6 +1,5 @@
 package com.jun.tripguide_v2.feature.addtravel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jun.tripguide_v2.core.domain.usecase.InsertDefaultTravelUsecase
@@ -22,7 +21,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
-class AddTravelViewModel @Inject constructor(
+class TravelInitViewModel @Inject constructor(
     private val insertDefaultTravelUsecase: InsertDefaultTravelUsecase
 ) : ViewModel() {
 
@@ -30,11 +29,11 @@ class AddTravelViewModel @Inject constructor(
     val errorFlow: SharedFlow<Throwable> get() = _errorFlow
 
     private val _uiState =
-        MutableStateFlow<AddTravelUiState>(AddTravelUiState.Success())
-    val uiState: StateFlow<AddTravelUiState> = _uiState
+        MutableStateFlow<TravelInitUiState>(TravelInitUiState.Success())
+    val uiState: StateFlow<TravelInitUiState> = _uiState
 
-    private val _uiEffect = MutableStateFlow<AddTravelUiEffect>(AddTravelUiEffect.Idle)
-    val uiEffect: StateFlow<AddTravelUiEffect> = _uiEffect
+    private val _uiEffect = MutableStateFlow<TravelInitUiEffect>(TravelInitUiEffect.Idle)
+    val uiEffect: StateFlow<TravelInitUiEffect> = _uiEffect
 
     private var contentJob: Job? = null
 
@@ -45,7 +44,7 @@ class AddTravelViewModel @Inject constructor(
 
         val uiState = uiState.value
 
-        if (uiState !is AddTravelUiState.Success) return
+        if (uiState !is TravelInitUiState.Success) return
 
         contentJob = viewModelScope.launch {
             _uiState.value = uiState.copy(
@@ -62,7 +61,7 @@ class AddTravelViewModel @Inject constructor(
 
         val uiState = uiState.value
 
-        if (uiState !is AddTravelUiState.Success) return
+        if (uiState !is TravelInitUiState.Success) return
 
         contentJob = viewModelScope.launch {
             _uiState.value = uiState.copy(
@@ -81,7 +80,7 @@ class AddTravelViewModel @Inject constructor(
         }
 
         contentJob = viewModelScope.launch {
-            _uiEffect.value = AddTravelUiEffect.ShowDialogForTravelDuration(visibility)
+            _uiEffect.value = TravelInitUiEffect.ShowDialogForTravelDuration(visibility)
         }
     }
 
@@ -92,7 +91,7 @@ class AddTravelViewModel @Inject constructor(
 
         val uiState = uiState.value
 
-        if (uiState !is AddTravelUiState.Success) return
+        if (uiState !is TravelInitUiState.Success) return
 
         contentJob = viewModelScope.launch {
             _uiState.value = uiState.copy(
@@ -108,7 +107,7 @@ class AddTravelViewModel @Inject constructor(
 
         val uiState = uiState.value
 
-        if (uiState !is AddTravelUiState.Success) return
+        if (uiState !is TravelInitUiState.Success) return
 
         contentJob = viewModelScope.launch {
             _uiState.value = uiState.copy(
@@ -127,7 +126,7 @@ class AddTravelViewModel @Inject constructor(
 
         val uiState = uiState.value
 
-        if (uiState !is AddTravelUiState.Success) return
+        if (uiState !is TravelInitUiState.Success) return
 
         contentJob = viewModelScope.launch {
             flow {
@@ -149,7 +148,7 @@ class AddTravelViewModel @Inject constructor(
             }.catch { throwable ->
                 _errorFlow.emit(throwable)
             }.collect { travelId ->
-                _uiEffect.value = AddTravelUiEffect.AddTravelComplete(travelId = travelId)
+                _uiEffect.value = TravelInitUiEffect.TravelInitComplete(travelId = travelId)
             }
         }
     }
@@ -160,7 +159,7 @@ class AddTravelViewModel @Inject constructor(
         }
 
         contentJob = viewModelScope.launch {
-            _uiEffect.value = AddTravelUiEffect.Idle
+            _uiEffect.value = TravelInitUiEffect.Idle
         }
     }
 }

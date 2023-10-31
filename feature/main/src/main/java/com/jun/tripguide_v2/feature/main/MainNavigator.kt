@@ -8,15 +8,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.jun.tripguide_v2.feature.addtravel.navigation.AddTravelRoute
-import com.jun.tripguide_v2.feature.addtravel.navigation.navigateAddTravel
+import com.jun.tripguide_v2.feature.addtourist.navigation.navigateTravelSearchRoute
+import com.jun.tripguide_v2.feature.addtravel.navigation.navigateTravelInit
 import com.jun.tripguide_v2.feature.addtravel.navigation.navigatePickDestination
 import com.jun.tripguide_v2.feature.addtravel.navigation.navigatePickStartingPoint
 import com.jun.tripguide_v2.feature.mytravel.navigation.MyTravelRoute
 import com.jun.tripguide_v2.feature.mytravel.navigation.navigateMyTravel
 import com.jun.tripguide_v2.feature.recommend.navigation.navigateRecommend
 import com.jun.tripguide_v2.feature.setting.navigation.navigateSetting
-import com.jun.tripguide_v2.feature.travelroute.navigation.navigateTravelRoute
+import com.jun.tripguide_v2.feature.travelroute.navigation.navigateTravelRecommend
 
 internal class MainNavigator(
     val navController: NavHostController
@@ -49,8 +49,8 @@ internal class MainNavigator(
         }
     }
 
-    fun navigateAddTravel() {
-        navController.navigateAddTravel()
+    fun navigateTravelInit() {
+        navController.navigateTravelInit()
     }
 
     fun navigatePickDestination() {
@@ -61,8 +61,12 @@ internal class MainNavigator(
         navController.navigatePickStartingPoint()
     }
 
-    fun navigateTravelRoute(travelId: String) {
-        navController.navigateTravelRoute(travelId)
+    fun navigateTravelRecommend(travelId: String) {
+        navController.navigateTravelRecommend(travelId)
+    }
+
+    fun navigateTouristSearch() {
+        navController.navigateTravelSearchRoute()
     }
 
     fun popBackStackWithData(key: String, value: Any) {
