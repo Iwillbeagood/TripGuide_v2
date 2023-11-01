@@ -1,9 +1,10 @@
 package com.jun.tripguide_v2.core.data.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.jun.tripguide_v2.core.data.api.KakaoKeywordApi
-import com.jun.tripguide_v2.core.data.api.TourAreaBaseListApi
-import com.jun.tripguide_v2.core.data.api.TourAreaCodeApi
+import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoKeywordApi
+import com.jun.tripguide_v2.core.data.api.tourapi.TourAreaBaseListApi
+import com.jun.tripguide_v2.core.data.api.tourapi.TourAreaCodeApi
+import com.jun.tripguide_v2.core.data.api.tourapi.TourSearchKeywordApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -63,6 +64,14 @@ object ApiModule {
         retrofit: Retrofit
     ): TourAreaBaseListApi {
         return retrofit.create(TourAreaBaseListApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTourKeywordApi(
+        retrofit: Retrofit
+    ): TourSearchKeywordApi {
+        return retrofit.create(TourSearchKeywordApi::class.java)
     }
 
     @Provides

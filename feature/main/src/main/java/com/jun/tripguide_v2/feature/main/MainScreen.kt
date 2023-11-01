@@ -36,13 +36,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import com.jun.tripguide_v2.core.designsystem.R
 import com.jun.tripguide_v2.core.designsystem.theme.SkyGray
-import com.jun.tripguide_v2.feature.addtourist.navigation.travelSearchNavGraph
-import com.jun.tripguide_v2.feature.addtravel.navigation.travelInitNavGraph
+import com.jun.tripguide_v2.feature.travelSearch.navigation.travelSearchNavGraph
+import com.jun.tripguide_v2.feature.travelInit.navigation.travelInitNavGraph
 import com.jun.tripguide_v2.feature.main.R.string
 import com.jun.tripguide_v2.feature.mytravel.navigation.myTravelNavGraph
 import com.jun.tripguide_v2.feature.recommend.navigation.recommendNavGraph
 import com.jun.tripguide_v2.feature.setting.navigation.settingNavGraph
-import com.jun.tripguide_v2.feature.travelroute.navigation.travelRecommendNavGraph
+import com.jun.tripguide_v2.feature.travelRecommend.navigation.travelRecommendNavGraph
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Job

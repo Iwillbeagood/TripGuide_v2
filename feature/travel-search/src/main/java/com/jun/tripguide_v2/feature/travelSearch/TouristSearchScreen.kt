@@ -1,0 +1,205 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
+package com.jun.tripguide_v2.feature.travelSearch
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jun.tripguide_v2.core.designsystem.component.CustomLoading
+import com.jun.tripguide_v2.core.designsystem.component.CustomSearchView
+import com.jun.tripguide_v2.core.designsystem.component.CustomTopAppBar
+import com.jun.tripguide_v2.core.designsystem.component.ScrollUpButton
+import com.jun.tripguide_v2.core.designsystem.component.SelectedTourist
+import com.jun.tripguide_v2.core.designsystem.component.SelectedTouristItem
+import com.jun.tripguide_v2.core.designsystem.component.TopAppBarNavigationType
+import com.jun.tripguide_v2.core.designsystem.component.TouristItem
+import com.jun.tripguide_v2.core.designsystem.theme.LightGray
+import com.jun.tripguide_v2.core.designsystem.theme.PaperGray
+import com.jun.tripguide_v2.core.designsystem.theme.White
+import com.jun.tripguide_v2.core.model.Tourist
+import kotlinx.coroutines.flow.collectLatest
+
+@Composable
+fun TravelSearchRoute(
+    onBackClick: () -> Unit,
+    onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
+    onTravelSearchComplete: () -> Unit,
+    viewModel: TravelSearchViewModel = hiltViewModel()
+) {
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiEffect by viewModel.uiEffect.collectAsStateWithLifecycle()
+    val keyword by viewModel.keyword.collectAsStateWithLifecycle()
+
+    LaunchedEffect(true) {
+        viewModel.errorFlow.collectLatest { onShowErrorSnackBar(it) }
+    }
+
+    val listState = rememberLazyListState()
+    LaunchedEffect(listState.canScrollForward) {
+        if (!listState.canScrollForward) {
+            viewModel.searchNextPageTourist()
+        }
+    }
+
+    LaunchedEffect(uiEffect) {
+        when (uiEffect) {
+            TravelSearchUiEffect.Idle,
+            TravelSearchUiEffect.ScrollToFirstItem -> {
+                listState.scrollToItem(0)
+                viewModel.resetUiEffect()
+            }
+
+            TravelSearchUiEffect.TravelSearchComplete -> {
+                viewModel.resetUiEffect()
+            }
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(PaperGray)
+            .systemBarsPadding()
+    ) {
+        CustomTopAppBar(
+            title = "여행 장소 검색",
+            navigationType = TopAppBarNavigationType.Back,
+            onNavigationClick = onBackClick,
+            actionButtons = {
+                IconButton(
+                    onClick = { viewModel.travelSearchComplete() },
+                    modifier = Modifier.size(48.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowForward,
+                        contentDescription = null,
+                    )
+                }
+            }
+        )
+        CustomSearchView(
+            value = keyword,
+            onValueChange = { viewModel.searchTourist(it) },
+            onValueClear = { viewModel.clearKeyword() }
+        )
+        Spacer(modifier = Modifier.height(5.dp))
+        TravelSearchContent(
+            uiState = uiState,
+            listState = listState,
+            scrollToFirstItem = { viewModel.scrollToFirstItem() },
+            onSelectTourist = { tourist -> viewModel.changeTouristSelection(tourist) },
+        )
+    }
+}
+
+@Composable
+fun TravelSearchContent(
+    uiState: TravelSearchUiState,
+    listState: LazyListState,
+    scrollToFirstItem: () -> Unit,
+    onSelectTourist: (Tourist) -> Unit
+) {
+    when (uiState) {
+        TravelSearchUiState.Loading -> CustomLoading()
+        is TravelSearchUiState.TouristList -> {
+            TravelSearchScreen(
+                listState = listState,
+                scrollToFirstItem = scrollToFirstItem,
+                touristList = uiState.touristList,
+                selectedTouristList = uiState.selectedTourist,
+                onSelectTourist = onSelectTourist
+            )
+        }
+    }
+}
+
+@Composable
+fun TravelSearchScreen(
+    listState: LazyListState,
+    scrollToFirstItem: () -> Unit,
+    touristList: List<Tourist>,
+    selectedTouristList: List<Tourist>,
+    onSelectTourist: (Tourist) -> Unit
+) {
+    SelectedTourist(
+        visible= selectedTouristList.isNotEmpty(),
+        selectedTouristList = selectedTouristList,
+        onClickSelectedTourist = onSelectTourist
+    )
+    TouristLazyColumn(
+        listState = listState,
+        touristList = touristList,
+        onClickTourist = { TODO() },
+        scrollToFirstItem = scrollToFirstItem,
+        onSelectTourist = onSelectTourist,
+    )
+}
+
+@Composable
+private fun TouristLazyColumn(
+    listState: LazyListState,
+    touristList: List<Tourist>,
+    onClickTourist: (Tourist) -> Unit,
+    onSelectTourist: (Tourist) -> Unit,
+    scrollToFirstItem: () -> Unit,
+) {
+    Box {
+        LazyColumn(state = listState) {
+            items(
+                items = touristList,
+                key = { item -> item.id }
+            ) { tourist ->
+                TouristItem(
+                    title = tourist.title,
+                    address = tourist.address,
+                    imageUrl = tourist.firstImage,
+                    selected = tourist.isSelected,
+                    onSelectTourist = { onSelectTourist(tourist) },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable {
+                            onClickTourist(tourist)
+                        }
+                )
+            }
+        }
+        ScrollUpButton(
+            visible = listState.canScrollBackward,
+            icon = Icons.Default.KeyboardArrowUp,
+            onClicked = scrollToFirstItem
+        )
+    }
+}

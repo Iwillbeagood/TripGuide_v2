@@ -3,7 +3,7 @@ package com.jun.tripguide_v2.core.data.mapper
 import com.jun.tripguide_v2.core.model.DestinationCode
 import com.jun.tripguide_v2.core.model.MeansType
 import com.jun.tripguide_v2.core.model.Travel
-import com.jun.tripguide_v2_core.database.TravelEntity
+import com.jun.tripguide_v2_core.database.entity.TravelEntity
 
 fun Travel.toData(): TravelEntity = TravelEntity(
     travelId = this.travelId,

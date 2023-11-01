@@ -6,15 +6,7 @@ object TempConst {
     const val KAKAO_API_KEY = "KakaoAK 666dd8d84bdf766d402bd0f500e08a4d"
 
     val queryParams = mutableMapOf(
-        "numOfRows" to "30",
-        "MobileOS" to "AND",
-        "MobileApp" to "TripGuide_v2",
-        "serviceKey" to TOUR_API_KEY,
-        "_type" to "json"
-    )
-
-    val baseListQueryParams = mutableMapOf(
-        "numOfRows" to "10",
+        "numOfRows" to "20",
         "MobileOS" to "AND",
         "MobileApp" to "TripGuide_v2",
         "serviceKey" to TOUR_API_KEY,

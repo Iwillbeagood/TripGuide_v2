@@ -1,6 +1,6 @@
 package com.jun.tripguide_v2.core.data.repository
 
-import com.jun.tripguide_v2.core.data.api.KakaoKeywordApi
+import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoKeywordApi
 import com.jun.tripguide_v2.core.data.mapper.toData
 import com.jun.tripguide_v2.core.model.Address
 import javax.inject.Inject

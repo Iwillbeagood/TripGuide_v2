@@ -8,15 +8,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.jun.tripguide_v2.feature.addtourist.navigation.navigateTravelSearchRoute
-import com.jun.tripguide_v2.feature.addtravel.navigation.navigateTravelInit
-import com.jun.tripguide_v2.feature.addtravel.navigation.navigatePickDestination
-import com.jun.tripguide_v2.feature.addtravel.navigation.navigatePickStartingPoint
+import com.jun.tripguide_v2.feature.travelSearch.navigation.navigateTravelSearchRoute
+import com.jun.tripguide_v2.feature.travelInit.navigation.navigatePickDestination
+import com.jun.tripguide_v2.feature.travelInit.navigation.navigatePickStartingPoint
+import com.jun.tripguide_v2.feature.travelInit.navigation.navigateTravelInit
 import com.jun.tripguide_v2.feature.mytravel.navigation.MyTravelRoute
 import com.jun.tripguide_v2.feature.mytravel.navigation.navigateMyTravel
 import com.jun.tripguide_v2.feature.recommend.navigation.navigateRecommend
 import com.jun.tripguide_v2.feature.setting.navigation.navigateSetting
-import com.jun.tripguide_v2.feature.travelroute.navigation.navigateTravelRecommend
+import com.jun.tripguide_v2.feature.travelRecommend.navigation.navigateTravelRecommend
 
 internal class MainNavigator(
     val navController: NavHostController

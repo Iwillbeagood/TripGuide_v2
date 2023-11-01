@@ -1,6 +1,7 @@
 package com.jun.tripguide_v2.core.data.api
 
-import com.jun.tripguide_v2.core.data.api.model.kakaokeyword.KakaoKeywordResponse
+import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoKeywordApi
+import com.jun.tripguide_v2.core.data.api.kakaoapi.model.kakaokeyword.KakaoKeywordResponse
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
