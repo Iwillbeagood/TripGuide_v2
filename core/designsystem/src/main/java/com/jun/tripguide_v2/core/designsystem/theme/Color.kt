@@ -17,7 +17,7 @@ val LightSky = Color(0xFFEFFAFF)
 
 val White = Color(0xFFFFFFFF)
 val PaleGray = Color(0xFFF9F9F9)
-val PaperGray = Color(0xFFFCFCFC)
+val PaperGray = Color(0xFFF8F8F8)
 val LightGray = Color(0xFFDCDCDC)
 val Gray = Color(0xFFC2C2C2)
 val DuskGray = Color(0xFF868686)
