@@ -1,4 +1,4 @@
-package com.jun.tripguide_v2.core.data.repository
+package com.jun.tripguide_v2.core.data.repository.kakao
 
 import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoKeywordApi
 import com.jun.tripguide_v2.core.data.mapper.toData

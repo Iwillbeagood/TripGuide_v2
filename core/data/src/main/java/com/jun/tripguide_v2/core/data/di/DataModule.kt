@@ -2,9 +2,9 @@ package com.jun.tripguide_v2.core.data.di
 
 import com.jun.tripguide_v2.core.data.repository.tourapi.AreaCodeRepository
 import com.jun.tripguide_v2.core.data.repository.tourapi.DefaultAreaCodeRepository
-import com.jun.tripguide_v2.core.data.repository.DefaultKakaoKeywordRepository
+import com.jun.tripguide_v2.core.data.repository.kakao.DefaultKakaoKeywordRepository
 import com.jun.tripguide_v2.core.data.repository.room.DefaultTravelRepository
-import com.jun.tripguide_v2.core.data.repository.KakaoKeywordRepository
+import com.jun.tripguide_v2.core.data.repository.kakao.KakaoKeywordRepository
 import com.jun.tripguide_v2.core.data.repository.room.TravelRepository
 import com.jun.tripguide_v2.core.data.repository.room.DefaultRouteRepository
 import com.jun.tripguide_v2.core.data.repository.room.RouteRepository
