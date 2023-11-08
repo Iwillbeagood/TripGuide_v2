@@ -1,19 +1,12 @@
 package com.jun.tripguide_v2.feature.travelRecommend
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jun.tripguide_v2.core.domain.usecase.tourapi.GetAreaBaseListUsecase
-import com.jun.tripguide_v2.core.domain.usecase.tourapi.GetSigunguBaseListUsecase
-import com.jun.tripguide_v2.core.domain.usecase.GetTravelByIdUsecase
-import com.jun.tripguide_v2.core.domain.usecase.InsertRouteUsecase
-import com.jun.tripguide_v2.core.domain.usecase.tourapi.GetAreaBaseListWithTypeUsecase
-import com.jun.tripguide_v2.core.domain.usecase.tourapi.GetSigunguBaseListByTypeUsecase
+import com.jun.tripguide_v2.core.domain.usecase.tourapi.GetTouristsUsecase
+import com.jun.tripguide_v2.core.domain.usecase.room.InsertRouteUsecase
 import com.jun.tripguide_v2.core.model.FilterValue
-import com.jun.tripguide_v2.core.model.Route
 import com.jun.tripguide_v2.core.model.Tourist
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,27 +14,22 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class TravelRecommendViewModel @Inject constructor(
-    private val getTravelByIdUsecase: GetTravelByIdUsecase,
-    private val getAreaBaseListUsecase: GetAreaBaseListUsecase,
-    private val getSigunguBaseListUsecase: GetSigunguBaseListUsecase,
-    private val getAreaBaseListWithTypeUsecase: GetAreaBaseListWithTypeUsecase,
-    private val getSigunguBaseListByTypeUsecase: GetSigunguBaseListByTypeUsecase,
+    private val getTouristsUsecase: GetTouristsUsecase,
     private val insertRouteUsecase: InsertRouteUsecase
 ) : ViewModel() {
 
     private val _errorFlow = MutableSharedFlow<Throwable>()
     val errorFlow: SharedFlow<Throwable> get() = _errorFlow
 
-    private val _uiState = MutableStateFlow<TravelRecommendUiState>(TravelRecommendUiState.Loading)
-    val uiState: StateFlow<TravelRecommendUiState> = _uiState
+    private val _recommendUiState =
+        MutableStateFlow<TravelRecommendUiState>(TravelRecommendUiState.Loading)
+    val recommendUiState: StateFlow<TravelRecommendUiState> = _recommendUiState
 
     private val _uiEffect = MutableStateFlow<TravelRecommendUiEffect>(TravelRecommendUiEffect.Idle)
     val uiEffect: StateFlow<TravelRecommendUiEffect> = _uiEffect
@@ -50,34 +38,21 @@ class TravelRecommendViewModel @Inject constructor(
 
     fun fetchTourist(travelId: String) {
         viewModelScope.launch {
-            val travelFlow = flow { emit(getTravelByIdUsecase(travelId)) }
-
-            val touristInfoFlow = travelFlow.flatMapConcat { travel ->
-                flow {
-                    emit(
-                        if (travel.destination.sigunguCode == "0") {
-                            getAreaBaseListUsecase("1", "P", travel.destination.areaCode)
-                        } else {
-                            getSigunguBaseListUsecase(
-                                "1",
-                                "P",
-                                travel.destination.areaCode,
-                                travel.destination.sigunguCode
-                            )
-                        }
-                    )
-                }
-            }
-
             combine(
-                travelFlow,
-                touristInfoFlow
-            ) { travel, touristInfoList ->
-                TravelRecommendUiState.Success(
-                    travel = travel,
-                    touristList = touristInfoList
-                )
-            }.collect { _uiState.value = it }
+                recommendUiState,
+                getTouristsUsecase(travelId)
+            ) { uiState, tourists ->
+                when (uiState) {
+                    TravelRecommendUiState.Loading -> {
+                        TravelRecommendUiState.Success(
+                            travelId = travelId,
+                            tourists = tourists
+                        )
+                    }
+
+                    is TravelRecommendUiState.Success -> uiState
+                }
+            }.collect { _recommendUiState.value = it }
         }
     }
 
@@ -86,74 +61,61 @@ class TravelRecommendViewModel @Inject constructor(
             contentJob?.cancel()
         }
 
-        val uiState = uiState.value
+        val uiState = recommendUiState.value
 
         if (uiState !is TravelRecommendUiState.Success) return
 
-        _uiState.value = uiState.copy(
+        _recommendUiState.value = uiState.copy(
             pageNo = uiState.pageNo + 1
         )
 
-        fetchNewTourist(isNewPage = true)
+        fetchNewTourist(isNextPage = true)
     }
 
     fun fetchNewTourist(
-        isFilter: Boolean = false,
-        isNewPage: Boolean = false
+        isNextPage: Boolean = false
     ) {
         if (contentJob != null) {
             contentJob?.cancel()
         }
 
-        val uiState = uiState.value
+        val uiState = recommendUiState.value
 
         if (uiState !is TravelRecommendUiState.Success) return
 
-        val travel = uiState.travel
-        val pageNo = uiState.pageNo.toString()
-
         contentJob = viewModelScope.launch {
 
-            val selectedSort = uiState.sortByList.find { it.isSelected }?.value ?: "P"
-            val selectedType = uiState.touristTypeList.find { it.isSelected }?.value ?: ""
+            val selectedArrange = uiState.selectedArrange.value
+            val selectedContentType = uiState.selectedContent.value
 
-            val tourist = if (selectedType == "") {
-                if (travel.destination.sigunguCode == "0") {
-                    getAreaBaseListUsecase(pageNo, selectedSort, travel.destination.areaCode)
-                } else {
-                    getSigunguBaseListUsecase(
-                        pageNo,
-                        selectedSort,
-                        travel.destination.areaCode,
-                        travel.destination.sigunguCode
-                    )
-                }
-            } else {
-                if (travel.destination.sigunguCode == "0") {
-                    getAreaBaseListWithTypeUsecase(pageNo, selectedSort, travel.destination.areaCode, selectedType)
-                } else {
-                    getSigunguBaseListByTypeUsecase(
-                        pageNo,
-                        selectedSort,
-                        travel.destination.areaCode,
-                        travel.destination.sigunguCode,
-                        selectedType
-                    )
-                }
-            }
-
-            if (isFilter) {
-                _uiState.value = uiState.copy(
-                    touristList = tourist,
-                    dialogVisibility = false
+            combine(
+                recommendUiState,
+                getTouristsUsecase(
+                    travelId = uiState.travelId,
+                    pageNo = if (isNextPage) uiState.pageNo.toString() else "1",
+                    arrange = selectedArrange,
+                    contentType = selectedContentType
                 )
-            }
-
-            if (isNewPage) {
-                _uiState.value = uiState.copy(
-                    touristList = uiState.touristList + tourist,
-                    dialogVisibility = false
-                )
+            ) { uiState, tourists ->
+                when (uiState) {
+                    TravelRecommendUiState.Loading -> uiState
+                    is TravelRecommendUiState.Success -> {
+                        if (isNextPage) {
+                            uiState.copy(
+                                tourists = uiState.tourists + tourists,
+                                dialogVisibility = false
+                            )
+                        } else {
+                            uiState.copy(
+                                pageNo = 1,
+                                tourists = tourists,
+                                dialogVisibility = false
+                            )
+                        }
+                    }
+                }
+            }.collect {
+                _recommendUiState.value = it
             }
         }
     }
@@ -164,13 +126,13 @@ class TravelRecommendViewModel @Inject constructor(
             contentJob?.cancel()
         }
 
-        val uiState = uiState.value
+        val uiState = recommendUiState.value
 
         if (uiState !is TravelRecommendUiState.Success) return
 
         contentJob = viewModelScope.launch {
-            _uiState.value = uiState.copy(
-                touristList = uiState.touristList.map {
+            _recommendUiState.value = uiState.copy(
+                tourists = uiState.tourists.map {
                     if (it == tourist) {
                         it.copy(isSelected = !it.isSelected)
                     } else {
@@ -186,12 +148,12 @@ class TravelRecommendViewModel @Inject constructor(
             contentJob?.cancel()
         }
 
-        val uiState = uiState.value
+        val uiState = recommendUiState.value
 
         if (uiState !is TravelRecommendUiState.Success) return
 
         contentJob = viewModelScope.launch {
-            _uiState.value = uiState.copy(
+            _recommendUiState.value = uiState.copy(
                 dialogVisibility = !uiState.dialogVisibility
             )
         }
@@ -202,14 +164,13 @@ class TravelRecommendViewModel @Inject constructor(
             contentJob?.cancel()
         }
 
-        val uiState = uiState.value
+        val uiState = recommendUiState.value
 
         if (uiState !is TravelRecommendUiState.Success) return
 
-        Log.d("TAG", "changeSortBy: $value")
         contentJob = viewModelScope.launch {
-            _uiState.value = uiState.copy(
-                sortByList = uiState.sortByList.map {
+            _recommendUiState.value = uiState.copy(
+                arrangeTypes = uiState.arrangeTypes.map {
                     it.copy(
                         isSelected = it == value
                     )
@@ -223,13 +184,13 @@ class TravelRecommendViewModel @Inject constructor(
             contentJob?.cancel()
         }
 
-        val uiState = uiState.value
+        val uiState = recommendUiState.value
 
         if (uiState !is TravelRecommendUiState.Success) return
 
         contentJob = viewModelScope.launch {
-            _uiState.value = uiState.copy(
-                touristTypeList = uiState.touristTypeList.map {
+            _recommendUiState.value = uiState.copy(
+                contentTypes = uiState.contentTypes.map {
                     it.copy(
                         isSelected = it == value
                     )
@@ -263,40 +224,18 @@ class TravelRecommendViewModel @Inject constructor(
             contentJob?.cancel()
         }
 
-        val uiState = uiState.value
+        val uiState = recommendUiState.value
 
         if (uiState !is TravelRecommendUiState.Success) return
 
-        if (uiState.selectedTourist.isEmpty()) {
+        if (uiState.selectedTourists.isEmpty()) {
             _uiEffect.value = TravelRecommendUiEffect.TravelRecommendComplete
             return
         }
 
         contentJob = viewModelScope.launch {
-            flow {
-                emit(
-                    insertRouteUsecase(
-                        uiState.selectedTourist.mapIndexed { index, tourist ->
-                            Route(
-                                orderNum = index,
-                                travelId = uiState.travel.travelId,
-                                title = tourist.title,
-                                address = tourist.address,
-                                typeId = tourist.typeId,
-                                firstImage = tourist.firstImage,
-                                mapX = tourist.mapX,
-                                mapY = tourist.mapY,
-                                startTime = 0,
-                                endTime = 0
-                            )
-                        }
-                    )
-                )
-            }.catch { throwable ->
-                _errorFlow.emit(throwable)
-            }.collect {
-                _uiEffect.value = TravelRecommendUiEffect.TravelRecommendComplete
-            }
+            insertRouteUsecase(uiState.travelId, uiState.selectedTourists)
+            _uiEffect.value = TravelRecommendUiEffect.TravelRecommendComplete
         }
     }
 }

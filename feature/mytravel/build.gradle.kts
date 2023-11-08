@@ -6,3 +6,8 @@ plugins {
 android {
     namespace = "com.jun.tripguide_v2.feature.mytravel"
 }
+
+dependencies {
+    implementation(libs.landscapist.coil)
+    implementation(libs.landscapist.animation)
+}

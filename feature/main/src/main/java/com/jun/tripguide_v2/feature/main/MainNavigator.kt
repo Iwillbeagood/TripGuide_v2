@@ -14,6 +14,7 @@ import com.jun.tripguide_v2.feature.travelInit.navigation.navigatePickStartingPo
 import com.jun.tripguide_v2.feature.travelInit.navigation.navigateTravelInit
 import com.jun.tripguide_v2.feature.mytravel.navigation.MyTravelRoute
 import com.jun.tripguide_v2.feature.mytravel.navigation.navigateMyTravel
+import com.jun.tripguide_v2.feature.mytravelPlan.navigation.navigateTravelPlan
 import com.jun.tripguide_v2.feature.recommend.navigation.navigateRecommend
 import com.jun.tripguide_v2.feature.setting.navigation.navigateSetting
 import com.jun.tripguide_v2.feature.travelRecommend.navigation.navigateTravelRecommend
@@ -65,8 +66,16 @@ internal class MainNavigator(
         navController.navigateTravelRecommend(travelId)
     }
 
-    fun navigateTouristSearch() {
-        navController.navigateTravelSearchRoute()
+    fun navigateTouristSearch(travelId: String) {
+        navController.navigateTravelSearchRoute(travelId)
+    }
+
+    fun navigateTravelPlan(travelId: String) {
+        navController.navigateTravelPlan(travelId)
+    }
+
+    fun popBackUntilStart() {
+        navController.popBackStack(route = startDestination, inclusive = false)
     }
 
     fun popBackStackWithData(key: String, value: Any) {

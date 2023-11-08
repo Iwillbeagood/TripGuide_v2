@@ -39,6 +39,7 @@ import com.jun.tripguide_v2.core.designsystem.theme.Sky
 import com.jun.tripguide_v2.core.designsystem.theme.White
 import com.jun.tripguide_v2.core.model.DestinationCode
 import com.jun.tripguide_v2.core.model.MeansType
+import com.jun.tripguide_v2.core.model.StartingPoint
 import com.jun.tripguide_v2.feature.travelInit.component.TimePickerSection
 import com.jun.tripguide_v2.feature.travelInit.component.TravelDurationDatePicker
 import com.jun.tripguide_v2.feature.travelInit.util.toStringType
@@ -51,7 +52,7 @@ fun TravelInitRoute(
     onStartingPickerClick: () -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     destination: DestinationCode?,
-    startingPoint: String?,
+    startingPoint: StartingPoint?,
     onTravelInitComplete: (String) -> Unit,
     viewModel: TravelInitViewModel = hiltViewModel()
 ) {
@@ -93,7 +94,7 @@ fun TravelInitRoute(
             }
             ScreenSection(title = "출발 장소") {
                 TravelInitText(
-                    text = startingPoint ?: "출발 장소를 입력해 주세요.",
+                    text = startingPoint?.name ?: "출발 장소를 입력해 주세요.",
                     onClick = onStartingPickerClick
                 )
             }
@@ -128,7 +129,7 @@ fun TravelInitRoute(
                 onClick = {
                     viewModel.addTravelComplete(
                         destination = destination ?: DestinationCode("", "", ""),
-                        startingPoint = startingPoint ?: ""
+                        startingPoint = startingPoint ?: StartingPoint("", "", "")
                     )
                 }
             )

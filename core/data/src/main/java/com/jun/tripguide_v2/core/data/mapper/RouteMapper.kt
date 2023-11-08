@@ -11,20 +11,21 @@ fun RouteEntity.toData(): Route = Route(
     typeId = this.typeId,
     firstImage = this.firstImage,
     mapX = this.mapX,
-    mapY = this.mapX,
+    mapY = this.mapY,
     startTime = this.startTime,
     endTime = this.endTime
 )
 
 fun Route.toData(): RouteEntity = RouteEntity(
     orderNum = this.orderNum,
+    plusCode = this.plusCode,
     parentId = this.travelId,
     title = this.title,
     address = this.address,
     typeId = this.typeId,
     firstImage = this.firstImage,
     mapX = this.mapX,
-    mapY = this.mapX,
+    mapY = this.mapY,
     startTime = this.startTime,
     endTime = this.endTime
 )

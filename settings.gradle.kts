@@ -28,10 +28,11 @@ include(
 
     ":feature:main",
     ":feature:mytravel",
+    ":feature:mytravel-plan",
     ":feature:setting",
     ":feature:recommend",
 
     ":feature:travel-init",
     ":feature:travel-recommend",
-    ":feature:travel-search",
+    ":feature:travel-search"
 )

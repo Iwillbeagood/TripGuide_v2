@@ -1,4 +1,4 @@
-package com.jun.tripguide_v2.core.domain.usecase
+package com.jun.tripguide_v2.core.domain.usecase.room
 
 import com.jun.tripguide_v2.core.data.repository.room.TravelRepository
 import com.jun.tripguide_v2.core.model.Travel

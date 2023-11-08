@@ -17,4 +17,7 @@ interface TravelDao {
 
     @Query("SELECT * FROM travels WHERE travelId = :id")
     suspend fun getTravelById(id: String): TravelEntity
+
+    @Query("SELECT * FROM travels")
+    suspend fun getTravels(): List<TravelEntity>
 }

@@ -11,14 +11,15 @@ import androidx.room.PrimaryKey
     foreignKeys = [
         ForeignKey(
             entity = TravelEntity::class,
-            parentColumns = ["travelId"],
-            childColumns = ["parentId"],
+            parentColumns = arrayOf("travelId"),
+            childColumns = arrayOf("parentId"),
             onDelete = CASCADE
         )
     ]
 )
 data class RouteEntity(
     @PrimaryKey(autoGenerate = true) val routeId: Int = 0,
+    val plusCode: String,
     val orderNum: Int,
     @ColumnInfo(name = "parentId") val parentId: String,
     val title: String,

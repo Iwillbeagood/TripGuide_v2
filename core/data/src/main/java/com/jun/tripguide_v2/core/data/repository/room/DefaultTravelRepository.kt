@@ -20,4 +20,8 @@ class DefaultTravelRepository @Inject constructor(
     override suspend fun getTravelById(id: String): Travel {
         return travelDao.getTravelById(id).toData()
     }
+
+    override suspend fun getTravels(): List<Travel> {
+        return travelDao.getTravels().map { it.toData() }
+    }
 }

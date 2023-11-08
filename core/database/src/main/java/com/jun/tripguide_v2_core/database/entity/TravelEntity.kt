@@ -17,6 +17,8 @@ data class TravelEntity(
     val areaCode: String,
     val sigunguCode: String,
     val startingPoint: String,
+    val startingX: String,
+    val startingY: String,
     val startDate: Long,
     val endDate: Long,
     val startTime: LocalTime,

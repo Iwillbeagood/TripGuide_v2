@@ -7,7 +7,8 @@ import com.jun.tripguide_v2.core.model.Address
 import com.jun.tripguide_v2.core.model.AreaCode
 import com.jun.tripguide_v2.feature.travelInit.TravelInitRoute
 import com.jun.tripguide_v2.feature.travelInit.areapicker.AreaPickerRoute
-import com.jun.tripguide_v2.feature.travelInit.areapicker.mapper.toDestinationData
+import com.jun.tripguide_v2.feature.travelInit.mapper.toDestinationCode
+import com.jun.tripguide_v2.feature.travelInit.mapper.toStartingPoint
 import com.jun.tripguide_v2.feature.travelInit.startingpicker.StartingPickerScreen
 
 fun NavController.navigateTravelInit() {
@@ -42,8 +43,8 @@ fun NavGraphBuilder.travelInitNavGraph(
             onAreaPickerClick = onPickTravelInfoClick,
             onStartingPickerClick = onPickStartingPointClick,
             onShowErrorSnackBar = onShowErrorSnackBar,
-            destination = destination?.toDestinationData(),
-            startingPoint = startingPoint,
+            destination = destination.toDestinationCode(),
+            startingPoint = startingPoint.toStartingPoint(),
             onTravelInitComplete = onTravelInitComplete
         )
     }

@@ -10,10 +10,10 @@ import com.jun.tripguide_v2_core.database.entity.RouteEntity
 interface RouteDao {
 
     @Insert
-    suspend fun insertRouteAll(routeEntity: List<RouteEntity>)
+    suspend fun insertRouteAll(vararg routeEntity: RouteEntity)
 
     @Update
-    suspend fun upDateRoute(routeEntity: List<RouteEntity>)
+    suspend fun upDateRoute(vararg routeEntity: RouteEntity)
 
     @Query("SELECT * FROM routes WHERE parentId = :id")
     suspend fun getTravelRoute(id: String): List<RouteEntity>

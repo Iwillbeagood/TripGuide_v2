@@ -8,6 +8,7 @@ android {
 
 dependencies {
     implementation(projects.feature.mytravel)
+    implementation(projects.feature.mytravelPlan)
     implementation(projects.feature.recommend)
     implementation(projects.feature.setting)
     implementation(projects.feature.travelInit)

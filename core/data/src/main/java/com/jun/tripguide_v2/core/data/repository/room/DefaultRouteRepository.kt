@@ -10,11 +10,11 @@ class DefaultRouteRepository @Inject constructor(
 ) : RouteRepository {
 
     override suspend fun insertRouteAll(routeList: List<Route>) {
-        routeDao.insertRouteAll(routeList.map { it.toData() })
+        routeDao.insertRouteAll(*routeList.map { it.toData() }.toTypedArray())
     }
 
     override suspend fun upDateRoute(routeList: List<Route>) {
-        routeDao.upDateRoute(routeList.map { it.toData() })
+        routeDao.upDateRoute(*routeList.map { it.toData() }.toTypedArray())
     }
 
     override suspend fun getTravelRoute(id: String): List<Route> {

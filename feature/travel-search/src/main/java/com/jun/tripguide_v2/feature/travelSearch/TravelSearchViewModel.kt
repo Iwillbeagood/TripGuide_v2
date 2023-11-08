@@ -2,6 +2,7 @@ package com.jun.tripguide_v2.feature.travelSearch
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jun.tripguide_v2.core.domain.usecase.room.InsertRouteUsecase
 import com.jun.tripguide_v2.core.domain.usecase.tourapi.GetKeywordListUsecase
 import com.jun.tripguide_v2.core.model.Tourist
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TravelSearchViewModel @Inject constructor(
-    private val getKeywordListUsecase: GetKeywordListUsecase
+    private val getKeywordListUsecase: GetKeywordListUsecase,
+    private val insertRouteUsecase: InsertRouteUsecase,
 ) : ViewModel() {
 
     private val _keyword = MutableStateFlow("")
@@ -25,13 +27,21 @@ class TravelSearchViewModel @Inject constructor(
     private val _errorFlow = MutableSharedFlow<Throwable>()
     val errorFlow: SharedFlow<Throwable> get() = _errorFlow
 
-    private val _uiState = MutableStateFlow<TravelSearchUiState>(TravelSearchUiState.TouristList())
-    val uiState: StateFlow<TravelSearchUiState> = _uiState
+    private val _travelSearchUiState = MutableStateFlow<TravelSearchUiState>(TravelSearchUiState.Success())
+    val travelSearchUiState: StateFlow<TravelSearchUiState> = _travelSearchUiState
 
-    private val _uiEffect = MutableStateFlow<TravelSearchUiEffect>(TravelSearchUiEffect.Idle)
-    val uiEffect: StateFlow<TravelSearchUiEffect> = _uiEffect
+    private val _travelSearchUiEffect = MutableStateFlow<TravelSearchUiEffect>(TravelSearchUiEffect.Idle)
+    val travelSearchUiEffect: StateFlow<TravelSearchUiEffect> = _travelSearchUiEffect
 
     private var contentJob: Job? = null
+
+    fun setTravelId(travelId: String) {
+        viewModelScope.launch {
+            _travelSearchUiState.value = TravelSearchUiState.Success(
+                travelId = travelId
+            )
+        }
+    }
 
     fun searchTourist(keyword: String) {
         if (keyword == "") return
@@ -40,16 +50,16 @@ class TravelSearchViewModel @Inject constructor(
             contentJob?.cancel()
         }
 
+        val uiState = travelSearchUiState.value
+
+        if (uiState !is TravelSearchUiState.Success) return
+
         contentJob = viewModelScope.launch {
             _keyword.value = keyword
-            _uiState.value = TravelSearchUiState.TouristList(
-                touristList = getKeywordListUsecase(keyword)
+            _travelSearchUiState.value = uiState.copy(
+                tourists = getKeywordListUsecase(keyword)
             )
         }
-    }
-
-    fun searchNextPageTourist() {
-
     }
 
     fun changeTouristSelection(tourist: Tourist) {
@@ -57,13 +67,13 @@ class TravelSearchViewModel @Inject constructor(
             contentJob?.cancel()
         }
 
-        val uiState = uiState.value
+        val uiState = travelSearchUiState.value
 
-        if (uiState !is TravelSearchUiState.TouristList) return
+        if (uiState !is TravelSearchUiState.Success) return
 
         contentJob = viewModelScope.launch {
-            _uiState.value = uiState.copy(
-                touristList = uiState.touristList.map {
+            _travelSearchUiState.value = uiState.copy(
+                tourists = uiState.tourists.map {
                     if (it == tourist) {
                         it.copy(isSelected = !it.isSelected)
                     } else {
@@ -90,7 +100,7 @@ class TravelSearchViewModel @Inject constructor(
         }
 
         contentJob = viewModelScope.launch {
-            _uiEffect.value = TravelSearchUiEffect.ScrollToFirstItem
+            _travelSearchUiEffect.value = TravelSearchUiEffect.ScrollToFirstItem
         }
     }
 
@@ -100,11 +110,27 @@ class TravelSearchViewModel @Inject constructor(
         }
 
         contentJob = viewModelScope.launch {
-            _uiEffect.value = TravelSearchUiEffect.Idle
+            _travelSearchUiEffect.value = TravelSearchUiEffect.Idle
         }
     }
 
     fun travelSearchComplete() {
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
 
+        val uiState = travelSearchUiState.value
+
+        if (uiState !is TravelSearchUiState.Success) return
+
+        if (uiState.selectedTourists.isEmpty()) {
+            _travelSearchUiEffect.value = TravelSearchUiEffect.TravelSearchComplete
+            return
+        }
+
+        contentJob = viewModelScope.launch {
+            insertRouteUsecase(uiState.travelId, uiState.selectedTourists)
+            _travelSearchUiEffect.value = TravelSearchUiEffect.TravelSearchComplete
+        }
     }
 }

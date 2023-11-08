@@ -2,10 +2,11 @@ package com.jun.tripguide_v2.feature.travelInit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jun.tripguide_v2.core.domain.usecase.InsertDefaultTravelUsecase
+import com.jun.tripguide_v2.core.domain.usecase.room.InsertDefaultTravelUsecase
 import com.jun.tripguide_v2.core.model.DestinationCode
 import com.jun.tripguide_v2.core.model.Duration
 import com.jun.tripguide_v2.core.model.MeansType
+import com.jun.tripguide_v2.core.model.StartingPoint
 import com.jun.tripguide_v2.core.model.Travel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -118,7 +119,7 @@ class TravelInitViewModel @Inject constructor(
 
     fun addTravelComplete(
         destination: DestinationCode,
-        startingPoint: String
+        startingPoint: StartingPoint
     ) {
         if (contentJob != null) {
             contentJob?.cancel()

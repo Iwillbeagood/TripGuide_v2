@@ -1,39 +1,29 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.jun.tripguide_v2.feature.travelSearch
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -42,36 +32,30 @@ import com.jun.tripguide_v2.core.designsystem.component.CustomSearchView
 import com.jun.tripguide_v2.core.designsystem.component.CustomTopAppBar
 import com.jun.tripguide_v2.core.designsystem.component.ScrollUpButton
 import com.jun.tripguide_v2.core.designsystem.component.SelectedTourist
-import com.jun.tripguide_v2.core.designsystem.component.SelectedTouristItem
 import com.jun.tripguide_v2.core.designsystem.component.TopAppBarNavigationType
 import com.jun.tripguide_v2.core.designsystem.component.TouristItem
-import com.jun.tripguide_v2.core.designsystem.theme.LightGray
 import com.jun.tripguide_v2.core.designsystem.theme.PaperGray
-import com.jun.tripguide_v2.core.designsystem.theme.White
 import com.jun.tripguide_v2.core.model.Tourist
 import kotlinx.coroutines.flow.collectLatest
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TravelSearchRoute(
+    travelId: String,
     onBackClick: () -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     onTravelSearchComplete: () -> Unit,
     viewModel: TravelSearchViewModel = hiltViewModel()
 ) {
 
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val uiEffect by viewModel.uiEffect.collectAsStateWithLifecycle()
+    val uiState by viewModel.travelSearchUiState.collectAsStateWithLifecycle()
+    val uiEffect by viewModel.travelSearchUiEffect.collectAsStateWithLifecycle()
     val keyword by viewModel.keyword.collectAsStateWithLifecycle()
+    val listState = rememberLazyListState()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(true) {
         viewModel.errorFlow.collectLatest { onShowErrorSnackBar(it) }
-    }
-
-    val listState = rememberLazyListState()
-    LaunchedEffect(listState.canScrollForward) {
-        if (!listState.canScrollForward) {
-            viewModel.searchNextPageTourist()
-        }
     }
 
     LaunchedEffect(uiEffect) {
@@ -83,9 +67,14 @@ fun TravelSearchRoute(
             }
 
             TravelSearchUiEffect.TravelSearchComplete -> {
+                onTravelSearchComplete()
                 viewModel.resetUiEffect()
             }
         }
+    }
+
+    LaunchedEffect(travelId) {
+        viewModel.setTravelId(travelId)
     }
 
     Column(
@@ -104,7 +93,7 @@ fun TravelSearchRoute(
                     modifier = Modifier.size(48.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ArrowForward,
+                        imageVector = Icons.Default.Check,
                         contentDescription = null,
                     )
                 }
@@ -113,7 +102,8 @@ fun TravelSearchRoute(
         CustomSearchView(
             value = keyword,
             onValueChange = { viewModel.searchTourist(it) },
-            onValueClear = { viewModel.clearKeyword() }
+            onValueClear = { viewModel.clearKeyword() },
+            keyboardController = keyboardController
         )
         Spacer(modifier = Modifier.height(5.dp))
         TravelSearchContent(
@@ -134,12 +124,12 @@ fun TravelSearchContent(
 ) {
     when (uiState) {
         TravelSearchUiState.Loading -> CustomLoading()
-        is TravelSearchUiState.TouristList -> {
+        is TravelSearchUiState.Success -> {
             TravelSearchScreen(
                 listState = listState,
                 scrollToFirstItem = scrollToFirstItem,
-                touristList = uiState.touristList,
-                selectedTouristList = uiState.selectedTourist,
+                touristList = uiState.tourists,
+                selectedTouristList = uiState.selectedTourists,
                 onSelectTourist = onSelectTourist
             )
         }
@@ -155,7 +145,7 @@ fun TravelSearchScreen(
     onSelectTourist: (Tourist) -> Unit
 ) {
     SelectedTourist(
-        visible= selectedTouristList.isNotEmpty(),
+        visible = selectedTouristList.isNotEmpty(),
         selectedTouristList = selectedTouristList,
         onClickSelectedTourist = onSelectTourist
     )

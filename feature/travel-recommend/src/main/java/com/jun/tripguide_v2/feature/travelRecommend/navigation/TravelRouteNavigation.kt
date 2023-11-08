@@ -13,7 +13,7 @@ fun NavController.navigateTravelRecommend(travelId: String) {
 
 fun NavGraphBuilder.travelRecommendNavGraph(
     onBackClick: () -> Unit,
-    onTravelRouteComplete: () -> Unit,
+    onTravelRouteComplete: (String) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit
 ) {
     composable(
@@ -35,7 +35,7 @@ fun NavGraphBuilder.travelRecommendNavGraph(
 }
 
 object TravelRecommendRoute {
-    const val route = "travel_recommend"
+    private const val route = "travel_recommend"
 
     fun detailRoute(travelId: String): String = "$route/$travelId"
 }

@@ -84,7 +84,7 @@ fun CustomTopAppBar(
     }
 }
 
-enum class TopAppBarNavigationType { Back, Close }
+enum class TopAppBarNavigationType { Back, Close, Nothing }
 
 @Preview
 @Composable

@@ -13,4 +13,6 @@ dependencies {
 
     implementation(libs.androidx.appcompat)
     implementation(libs.landscapist.coil)
+    implementation(libs.landscapist.animation)
+
 }

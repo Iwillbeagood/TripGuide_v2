@@ -1,4 +1,4 @@
-package com.jun.tripguide_v2.core.domain.usecase
+package com.jun.tripguide_v2.core.domain.usecase.kakao
 
 import com.jun.tripguide_v2.core.data.repository.kakao.KakaoKeywordRepository
 import com.jun.tripguide_v2.core.domain.TempConst

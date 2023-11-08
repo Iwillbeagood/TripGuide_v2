@@ -6,11 +6,11 @@ sealed interface TravelSearchUiState {
 
     object Loading : TravelSearchUiState
 
-    data class TouristList(
-        val pageNo: Int = 1,
-        val touristList: List<Tourist> = emptyList()
+    data class Success(
+        val travelId: String = "",
+        val tourists: List<Tourist> = emptyList()
     ): TravelSearchUiState {
-        val selectedTourist : List<Tourist>
-            get() = touristList.filter { it.isSelected }
+        val selectedTourists : List<Tourist>
+            get() = tourists.filter { it.isSelected }
     }
 }

@@ -1,7 +1,6 @@
 package com.jun.tripguide_v2.feature.travelRecommend
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -59,11 +58,11 @@ import kotlinx.coroutines.flow.collectLatest
 fun TravelRecommendRoute(
     travelId: String,
     onBackClick: () -> Unit,
-    onTravelRecommendComplete: () -> Unit,
+    onTravelRecommendComplete: (String) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     viewModel: TravelRecommendViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.recommendUiState.collectAsStateWithLifecycle()
     val uiEffect by viewModel.uiEffect.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
@@ -85,7 +84,7 @@ fun TravelRecommendRoute(
                 viewModel.resetUiEffect()
             }
             TravelRecommendUiEffect.TravelRecommendComplete -> {
-                onTravelRecommendComplete()
+                onTravelRecommendComplete(travelId)
                 viewModel.resetUiEffect()
             }
         }
@@ -116,13 +115,8 @@ fun TravelRecommendRoute(
         TravelRecommendContent(
             uiState = uiState,
             listState = listState,
-            onFilterClick = { viewModel.changeDialogVisibility() },
+            viewModel = viewModel,
             onSelectTourist = { tourist -> viewModel.changeTouristSelection(tourist) },
-            onDialogBackClick = { viewModel.changeDialogVisibility() },
-            onFilterByItemClick = { viewModel.fetchNewTourist(isFilter = true) } ,
-            sortByItemClick = { value -> viewModel.changeSortBy(value) },
-            typeByItemClick = { value -> viewModel.changeTouristTypeBy(value) },
-            scrollToFirstItem = { viewModel.scrollToFirstItem() }
         )
     }
 
@@ -135,33 +129,23 @@ fun TravelRecommendRoute(
 private fun TravelRecommendContent(
     uiState: TravelRecommendUiState,
     listState: LazyListState,
-    onFilterClick: () -> Unit,
+    viewModel: TravelRecommendViewModel,
     onSelectTourist: (Tourist) -> Unit,
-    onDialogBackClick: () -> Unit,
-    onFilterByItemClick: () -> Unit,
-    sortByItemClick: (FilterValue) -> Unit,
-    typeByItemClick: (FilterValue) -> Unit,
-    scrollToFirstItem: () -> Unit,
 ) {
     when (uiState) {
         TravelRecommendUiState.Loading -> CustomLoading()
         is TravelRecommendUiState.Success -> {
             TravelRecommendScreen(
                 listState = listState,
-                touristList = uiState.touristList,
-                selectedTouristList = uiState.selectedTourist,
+                viewModel = viewModel,
+                touristList = uiState.tourists,
+                selectedTouristList = uiState.selectedTourists,
                 visible = uiState.dialogVisibility,
-                sortByList = uiState.sortByList,
-                selectedSortType = uiState.sortByList.find { it.isSelected }?.title ?: "조회수",
-                selectedTouristType = uiState.touristTypeList.find { it.isSelected }?.title ?: "전체",
-                sortByItemClick = sortByItemClick,
-                typeByList = uiState.touristTypeList,
-                typeByItemClick = typeByItemClick,
-                onFilterClick = onFilterClick,
+                sortByList = uiState.arrangeTypes,
+                typeByList = uiState.contentTypes,
+                selectedSortType = uiState.selectedArrange.title,
+                selectedTouristType = uiState.selectedContent.title,
                 onSelectTourist = onSelectTourist,
-                onDialogBackClick = onDialogBackClick,
-                onFilterByItemClick = onFilterByItemClick,
-                scrollToFirstItem = scrollToFirstItem,
             )
         }
     }
@@ -170,6 +154,7 @@ private fun TravelRecommendContent(
 @Composable
 private fun TravelRecommendScreen(
     listState: LazyListState,
+    viewModel: TravelRecommendViewModel,
     touristList: List<Tourist>,
     selectedTouristList: List<Tourist>,
     visible: Boolean,
@@ -177,13 +162,7 @@ private fun TravelRecommendScreen(
     typeByList: List<FilterValue>,
     selectedSortType: String,
     selectedTouristType: String,
-    sortByItemClick: (FilterValue) -> Unit,
-    typeByItemClick: (FilterValue) -> Unit,
-    onFilterClick: () -> Unit,
     onSelectTourist: (Tourist) -> Unit,
-    onDialogBackClick: () -> Unit,
-    onFilterByItemClick: () -> Unit,
-    scrollToFirstItem: () -> Unit,
 ) {
     SelectedTourist(
         visible = selectedTouristList.isNotEmpty(),
@@ -195,23 +174,23 @@ private fun TravelRecommendScreen(
         listState = listState,
         touristList = touristList,
         onClickTourist = { TODO() },
-        scrollToFirstItem = scrollToFirstItem,
+        scrollToFirstItem = { viewModel.scrollToFirstItem() },
         onSelectTourist = onSelectTourist,
     ) {
         FilterTourist(
-            onFilterClick = onFilterClick,
+            onFilterClick = { viewModel.changeDialogVisibility() },
             selectedSortType = selectedSortType,
             selectedTouristType = selectedTouristType
         )
     }
     FilterTouristDialog(
         visible = visible,
-        onBackClick = onDialogBackClick,
-        onFilterByItemClick = onFilterByItemClick,
+        onBackClick = { viewModel.changeDialogVisibility() },
+        onFilterByItemClick = { viewModel.fetchNewTourist() } ,
         sortByList = sortByList,
-        sortByItemClick = sortByItemClick,
         typeByList = typeByList,
-        typeByItemClick = typeByItemClick,
+        sortByItemClick = { value -> viewModel.changeSortBy(value) },
+        typeByItemClick = { value -> viewModel.changeTouristTypeBy(value) },
     )
 }
 

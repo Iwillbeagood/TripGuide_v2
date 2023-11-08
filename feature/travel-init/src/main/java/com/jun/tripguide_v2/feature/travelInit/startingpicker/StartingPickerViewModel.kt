@@ -2,7 +2,7 @@ package com.jun.tripguide_v2.feature.travelInit.startingpicker
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jun.tripguide_v2.core.domain.usecase.GetKakaoLocalByKeywordUsecase
+import com.jun.tripguide_v2.core.domain.usecase.kakao.GetKakaoLocalByKeywordUsecase
 import com.jun.tripguide_v2.core.model.Address
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job

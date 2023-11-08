@@ -83,7 +83,8 @@ internal fun MainScreen(
                     startDestination = navigator.startDestination
                 ) {
                     myTravelNavGraph(
-
+                        onTravelClick = { travelId -> navigator.navigateTravelPlan(travelId) },
+                        onShowErrorSnackBar = onShowErrorSnackBar
                     )
                     recommendNavGraph(
 
@@ -100,24 +101,33 @@ internal fun MainScreen(
                             )
                         },
                         onBackClickAddress = { address ->
-                            navigator.popBackStackWithData("startingPoint", address.name)
+                            navigator.popBackStackWithData(
+                                "startingPoint",
+                                "${address.name}/${address.x}/${address.y}"
+                            )
                         },
                         onPickTravelInfoClick = { navigator.navigatePickDestination() },
                         onPickStartingPointClick = { navigator.navigatePickStartingPoint() },
                         onTravelInitComplete = { travelId ->
-                            navigator.navigateTravelRecommend(travelId)
+                            navigator.navigateTravelRecommend(
+                                travelId
+                            )
                         },
                         onShowErrorSnackBar = onShowErrorSnackBar
                     )
                     travelRecommendNavGraph(
                         onBackClick = { navigator.popBackStackIfNotHome() },
                         onShowErrorSnackBar = onShowErrorSnackBar,
-                        onTravelRouteComplete = { navigator.navigateTouristSearch() }
+                        onTravelRouteComplete = { travelId ->
+                            navigator.navigateTouristSearch(
+                                travelId
+                            )
+                        }
                     )
                     travelSearchNavGraph(
                         onBackClick = { navigator.popBackStackIfNotHome() },
                         onShowErrorSnackBar = onShowErrorSnackBar,
-                        onTravelSearchComplete = {}
+                        onTravelSearchComplete = { navigator.popBackUntilStart() }
                     )
                 }
             }
