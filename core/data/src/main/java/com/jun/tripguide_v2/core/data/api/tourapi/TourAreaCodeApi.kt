@@ -9,11 +9,6 @@ interface TourAreaCodeApi {
     @GET("areaCode1")
     suspend fun getAreaCode(
         @QueryMap queryParams: Map<String, String>,
-        @Query("areaCode") areaCode: String
-    ): AreaCodeResponse
-
-    @GET("areaCode1")
-    suspend fun getDefaultAreaCode(
-        @QueryMap queryParams: Map<String, String>,
+        @Query("areaCode") areaCode: String? = null
     ): AreaCodeResponse
 }

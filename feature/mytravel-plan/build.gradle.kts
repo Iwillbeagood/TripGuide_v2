@@ -6,3 +6,11 @@ plugins {
 android {
     namespace = "com.jun.tripguide_v2.feature.mytravel.plan"
 }
+
+dependencies {
+    implementation(libs.landscapist.coil)
+    implementation(libs.landscapist.animation)
+    implementation(libs.wheelPicker)
+    implementation(libs.lazyListReorder)
+    implementation(libs.kakaoNavi)
+}

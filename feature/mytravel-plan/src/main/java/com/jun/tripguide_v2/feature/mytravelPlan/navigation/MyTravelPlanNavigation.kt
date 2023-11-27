@@ -13,6 +13,8 @@ fun NavController.navigateTravelPlan(travelId: String) {
 
 fun NavGraphBuilder.myTravelPlanNavGraph(
     onBackClick: () -> Unit,
+    onSearchRoute: (String) -> Unit,
+    onRecommendRoute: (String) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
 ) {
     composable(
@@ -27,7 +29,9 @@ fun NavGraphBuilder.myTravelPlanNavGraph(
         MyTravelPlanRoute(
             travelId = travelId ?: "",
             onBackClick = onBackClick,
-            onShowErrorSnackBar = onShowErrorSnackBar
+            onShowErrorSnackBar = onShowErrorSnackBar,
+            onSearchRoute = onSearchRoute,
+            onRecommendRoute = onRecommendRoute
         )
     }
 }

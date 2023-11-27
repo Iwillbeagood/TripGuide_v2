@@ -24,10 +24,12 @@ fun NavGraphBuilder.travelSearchNavGraph(
             }
         )
     ) { navBackStackEntry ->
-        val travelId = navBackStackEntry.arguments?.getString("travelId")
+        val string = navBackStackEntry.arguments?.getString("travelId") ?: ""
 
         TravelSearchRoute(
-            travelId = travelId ?: "",
+            isInit = string.contains("isInit"),
+            travelId = string.replace("isInit", "").split("|").first(),
+            orderNum = if (string.contains("|")) string.replace("isInit", "").split("|")[1] else "",
             onBackClick = onBackClick,
             onShowErrorSnackBar = onShowErrorSnackBar,
             onTravelSearchComplete = onTravelSearchComplete

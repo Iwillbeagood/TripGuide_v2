@@ -1,3 +1,3 @@
-import com.jun.loginCAApp.configureComposeAndroid
+import com.jun.tripguide.configureComposeAndroid
 
 configureComposeAndroid()

@@ -15,4 +15,5 @@ dependencies {
     implementation(libs.landscapist.coil)
     implementation(libs.landscapist.animation)
 
+    implementation(libs.wheelPicker)
 }

@@ -41,7 +41,9 @@ import kotlinx.coroutines.flow.collectLatest
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TravelSearchRoute(
+    isInit: Boolean,
     travelId: String,
+    orderNum: String,
     onBackClick: () -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     onTravelSearchComplete: () -> Unit,
@@ -67,8 +69,12 @@ fun TravelSearchRoute(
             }
 
             TravelSearchUiEffect.TravelSearchComplete -> {
-                onTravelSearchComplete()
-                viewModel.resetUiEffect()
+                if (isInit) {
+                    onTravelSearchComplete()
+                    viewModel.resetUiEffect()
+                } else {
+                    onBackClick()
+                }
             }
         }
     }
@@ -89,7 +95,7 @@ fun TravelSearchRoute(
             onNavigationClick = onBackClick,
             actionButtons = {
                 IconButton(
-                    onClick = { viewModel.travelSearchComplete() },
+                    onClick = { viewModel.travelSearchComplete(isInit, orderNum.toInt()) },
                     modifier = Modifier.size(48.dp)
                 ) {
                     Icon(

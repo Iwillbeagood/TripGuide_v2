@@ -2,7 +2,8 @@ package com.jun.tripguide_v2.core.data.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoKeywordApi
-import com.jun.tripguide_v2.core.data.api.tourapi.TourAreaBaseListApi
+import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoRouteAPI
+import com.jun.tripguide_v2.core.data.api.tourapi.OpenTouristsApi
 import com.jun.tripguide_v2.core.data.api.tourapi.TourAreaCodeApi
 import com.jun.tripguide_v2.core.data.api.tourapi.TourSearchKeywordApi
 import dagger.Module
@@ -21,6 +22,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object ApiModule {
+
+    private const val TOUR_API_BASE_URI = "http://apis.data.go.kr/B551011/KorService1/"
+    private const val KAKAO_BASE_URI = "https://dapi.kakao.com/"
+    private const val KAKAO_MOBILITY_URI = "https://apis-navi.kakaomobility.com/"
 
     @Provides
     @Singleton
@@ -46,46 +51,51 @@ object ApiModule {
         converterFactory: Converter.Factory,
     ): Retrofit =
         Retrofit.Builder()
-            .baseUrl("http://apis.data.go.kr/B551011/KorService1/")
+            .baseUrl(TOUR_API_BASE_URI)
             .addConverterFactory(converterFactory)
             .client(okHttpClient).build()
 
     @Provides
     @Singleton
-    fun provideTourAreaCodeApi(
-        retrofit: Retrofit
-    ): TourAreaCodeApi {
-        return retrofit.create(TourAreaCodeApi::class.java)
-    }
+    fun provideTourAreaCodeApi(retrofit: Retrofit): TourAreaCodeApi =
+        retrofit.create(TourAreaCodeApi::class.java)
+
 
     @Provides
     @Singleton
-    fun provideTourAreaBaseListApi(
-        retrofit: Retrofit
-    ): TourAreaBaseListApi {
-        return retrofit.create(TourAreaBaseListApi::class.java)
-    }
+    fun provideTourAreaBaseListApi(retrofit: Retrofit): OpenTouristsApi =
+        retrofit.create(OpenTouristsApi::class.java)
+
 
     @Provides
     @Singleton
-    fun provideTourKeywordApi(
-        retrofit: Retrofit
-    ): TourSearchKeywordApi {
-        return retrofit.create(TourSearchKeywordApi::class.java)
-    }
+    fun provideTourKeywordApi(retrofit: Retrofit): TourSearchKeywordApi =
+        retrofit.create(TourSearchKeywordApi::class.java)
+
 
     @Provides
     @Singleton
     fun provideKakaoLocalKeywordApi(
         okHttpClient: OkHttpClient,
         converterFactory: Converter.Factory,
-    ): KakaoKeywordApi {
-        return Retrofit.Builder()
-            .baseUrl("https://dapi.kakao.com/")
+    ): KakaoKeywordApi =
+        Retrofit.Builder()
+            .baseUrl(KAKAO_BASE_URI)
             .addConverterFactory(converterFactory)
             .client(okHttpClient).build()
             .create(KakaoKeywordApi::class.java)
-    }
+
+    @Provides
+    @Singleton
+    fun provideKakaoRouteApi(
+        okHttpClient: OkHttpClient,
+        converterFactory: Converter.Factory,
+    ): KakaoRouteAPI =
+        Retrofit.Builder()
+            .baseUrl(KAKAO_MOBILITY_URI)
+            .addConverterFactory(converterFactory)
+            .client(okHttpClient).build()
+            .create(KakaoRouteAPI::class.java)
 
     @Provides
     @Singleton

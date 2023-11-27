@@ -1,5 +1,8 @@
-package com.example.tripguide.model.kakaoroute
+package com.jun.tripguide_v2.core.data.api.kakaoapi.model.kakaoroute
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Summary(
     val bound: Bound,
     val destination: Destination,
@@ -8,5 +11,4 @@ data class Summary(
     val fare: Fare,
     val origin: Origin,
     val priority: String,
-    val waypoints: List<Any>
 )

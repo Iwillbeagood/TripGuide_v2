@@ -1,7 +1,7 @@
 package com.jun.tripguide_v2.feature.mytravel.util
 
 import android.annotation.SuppressLint
-import com.jun.tripguide_v2.core.model.Duration
+import com.jun.tripguide_v2.core.model.DateDuration
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -21,10 +21,10 @@ internal fun Long.getFormattedYear(): String {
     return yearFormat.format(calender.timeInMillis)
 }
 
-fun Duration.toDateStringType(): String {
+fun DateDuration.toDateStringType(): String {
     return startDate.getFormattedDate() + " ~ " + endDate.getFormattedDate()
 }
 
-fun Duration.toYearStringType(): String {
+fun DateDuration.toYearStringType(): String {
     return startDate.getFormattedYear()
 }

@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
+import java.time.LocalTime
 
 @Entity(
     tableName = "routes",
@@ -18,16 +19,17 @@ import androidx.room.PrimaryKey
     ]
 )
 data class RouteEntity(
-    @PrimaryKey(autoGenerate = true) val routeId: Int = 0,
-    val plusCode: String,
+    @PrimaryKey(autoGenerate = true) val routeId: Long? = 0,
     val orderNum: Int,
     @ColumnInfo(name = "parentId") val parentId: String,
     val title: String,
     val address: String,
     val typeId: String,
     val firstImage: String,
-    val mapX: String,
-    val mapY: String,
-    val startTime: Long,
-    val endTime: Long
+    val mapX: Double,
+    val mapY: Double,
+    val time: LocalTime,
+    val day: Int,
+    val isFirst: Boolean,
+    val isLast: Boolean
 )

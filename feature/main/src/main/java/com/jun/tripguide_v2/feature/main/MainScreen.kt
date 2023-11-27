@@ -40,6 +40,7 @@ import com.jun.tripguide_v2.feature.travelSearch.navigation.travelSearchNavGraph
 import com.jun.tripguide_v2.feature.travelInit.navigation.travelInitNavGraph
 import com.jun.tripguide_v2.feature.main.R.string
 import com.jun.tripguide_v2.feature.mytravel.navigation.myTravelNavGraph
+import com.jun.tripguide_v2.feature.mytravelPlan.navigation.myTravelPlanNavGraph
 import com.jun.tripguide_v2.feature.recommend.navigation.recommendNavGraph
 import com.jun.tripguide_v2.feature.setting.navigation.settingNavGraph
 import com.jun.tripguide_v2.feature.travelRecommend.navigation.travelRecommendNavGraph
@@ -83,7 +84,13 @@ internal fun MainScreen(
                     startDestination = navigator.startDestination
                 ) {
                     myTravelNavGraph(
-                        onTravelClick = { travelId -> navigator.navigateTravelPlan(travelId) },
+                        onTravelClick = navigator::navigateTravelPlan,
+                        onShowErrorSnackBar = onShowErrorSnackBar
+                    )
+                    myTravelPlanNavGraph(
+                        onBackClick = navigator::popBackStackIfNotHome,
+                        onSearchRoute = navigator::navigateTouristSearch,
+                        onRecommendRoute = navigator::navigateTravelRecommend,
                         onShowErrorSnackBar = onShowErrorSnackBar
                     )
                     recommendNavGraph(
@@ -93,7 +100,7 @@ internal fun MainScreen(
 
                     )
                     travelInitNavGraph(
-                        onBackClick = { navigator.popBackStackIfNotHome() },
+                        onBackClick = navigator::popBackStackIfNotHome,
                         onBackClickAreaCodes = { areaCode, sigunguCode ->
                             navigator.popBackStackWithData(
                                 "destination",
@@ -106,28 +113,20 @@ internal fun MainScreen(
                                 "${address.name}/${address.x}/${address.y}"
                             )
                         },
-                        onPickTravelInfoClick = { navigator.navigatePickDestination() },
-                        onPickStartingPointClick = { navigator.navigatePickStartingPoint() },
-                        onTravelInitComplete = { travelId ->
-                            navigator.navigateTravelRecommend(
-                                travelId
-                            )
-                        },
+                        onPickTravelInfoClick = navigator::navigatePickDestination,
+                        onPickStartingPointClick = navigator::navigatePickStartingPoint,
+                        onTravelInitComplete = navigator::navigateTravelRecommend,
                         onShowErrorSnackBar = onShowErrorSnackBar
                     )
                     travelRecommendNavGraph(
-                        onBackClick = { navigator.popBackStackIfNotHome() },
+                        onBackClick = navigator::popBackStackIfNotHome,
                         onShowErrorSnackBar = onShowErrorSnackBar,
-                        onTravelRouteComplete = { travelId ->
-                            navigator.navigateTouristSearch(
-                                travelId
-                            )
-                        }
+                        onTravelRouteComplete = navigator::navigateTouristSearch
                     )
                     travelSearchNavGraph(
-                        onBackClick = { navigator.popBackStackIfNotHome() },
+                        onBackClick = navigator::popBackStackIfNotHome,
                         onShowErrorSnackBar = onShowErrorSnackBar,
-                        onTravelSearchComplete = { navigator.popBackUntilStart() }
+                        onTravelSearchComplete = navigator::popBackUntilStart
                     )
                 }
             }
@@ -137,16 +136,14 @@ internal fun MainScreen(
                 visible = navigator.shouldShowBottomBar(),
                 bottomItems = MainBottomNavItem.values().toList().toPersistentList(),
                 currentItem = navigator.currentItem,
-                onBottomItemClicked = { navigator.navigate(it) }
+                onBottomItemClicked = navigator::navigate
             )
         },
         floatingActionButton = {
             ItemAddFAB(
                 visible = navigator.shouldShowBottomBar(),
                 icon = Icons.Filled.Add,
-                onClicked = {
-                    navigator.navigateTravelInit()
-                }
+                onClicked = navigator::navigateTravelInit
             )
         },
         snackbarHost = { SnackbarHost(snackBarHostState) }

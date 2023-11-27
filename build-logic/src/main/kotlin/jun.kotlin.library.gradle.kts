@@ -1,5 +1,5 @@
 import com.jun.tripguide.configureKotest
-import com.jun.loginCAApp.configureKotlin
+import com.jun.tripguide.configureKotlin
 
 plugins {
     kotlin("jvm")

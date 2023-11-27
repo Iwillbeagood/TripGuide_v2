@@ -2,7 +2,8 @@ package com.jun.tripguide_v2.feature.travelSearch
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jun.tripguide_v2.core.domain.usecase.room.InsertRouteUsecase
+import com.jun.tripguide_v2.core.domain.usecase.room.InsertAdditionalRouteUsecase
+import com.jun.tripguide_v2.core.domain.usecase.room.InsertTouristToRouteUsecase
 import com.jun.tripguide_v2.core.domain.usecase.tourapi.GetKeywordListUsecase
 import com.jun.tripguide_v2.core.model.Tourist
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TravelSearchViewModel @Inject constructor(
     private val getKeywordListUsecase: GetKeywordListUsecase,
-    private val insertRouteUsecase: InsertRouteUsecase,
+    private val insertTouristToRouteUsecase: InsertTouristToRouteUsecase,
+    private val insertAdditionalRouteUsecase: InsertAdditionalRouteUsecase,
 ) : ViewModel() {
 
     private val _keyword = MutableStateFlow("")
@@ -27,11 +29,13 @@ class TravelSearchViewModel @Inject constructor(
     private val _errorFlow = MutableSharedFlow<Throwable>()
     val errorFlow: SharedFlow<Throwable> get() = _errorFlow
 
-    private val _travelSearchUiState = MutableStateFlow<TravelSearchUiState>(TravelSearchUiState.Success())
-    val travelSearchUiState: StateFlow<TravelSearchUiState> = _travelSearchUiState
+    private val _travelSearchUiState =
+        MutableStateFlow<TravelSearchUiState>(TravelSearchUiState.Success())
+    val travelSearchUiState: StateFlow<TravelSearchUiState> get() = _travelSearchUiState
 
-    private val _travelSearchUiEffect = MutableStateFlow<TravelSearchUiEffect>(TravelSearchUiEffect.Idle)
-    val travelSearchUiEffect: StateFlow<TravelSearchUiEffect> = _travelSearchUiEffect
+    private val _travelSearchUiEffect =
+        MutableStateFlow<TravelSearchUiEffect>(TravelSearchUiEffect.Idle)
+    val travelSearchUiEffect: StateFlow<TravelSearchUiEffect> get() = _travelSearchUiEffect
 
     private var contentJob: Job? = null
 
@@ -114,7 +118,7 @@ class TravelSearchViewModel @Inject constructor(
         }
     }
 
-    fun travelSearchComplete() {
+    fun travelSearchComplete(isInit: Boolean, orderNum: Int) {
         if (contentJob != null) {
             contentJob?.cancel()
         }
@@ -129,7 +133,11 @@ class TravelSearchViewModel @Inject constructor(
         }
 
         contentJob = viewModelScope.launch {
-            insertRouteUsecase(uiState.travelId, uiState.selectedTourists)
+            if (isInit) {
+                insertTouristToRouteUsecase(uiState.travelId, uiState.selectedTourists.toList())
+            } else {
+                insertAdditionalRouteUsecase(uiState.travelId, uiState.selectedTourists.toList(), orderNum)
+            }
             _travelSearchUiEffect.value = TravelSearchUiEffect.TravelSearchComplete
         }
     }

@@ -11,4 +11,6 @@ interface TravelRepository {
     suspend fun getTravelById(id: String): Travel
 
     suspend fun getTravels(): List<Travel>
+
+    suspend fun deleteTravel(travel: Travel)
 }

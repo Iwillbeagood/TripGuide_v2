@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("jun.android.feature")
 }
@@ -14,6 +16,7 @@ dependencies {
     implementation(projects.feature.travelInit)
     implementation(projects.feature.travelRecommend)
     implementation(projects.feature.travelSearch)
+    implementation(projects.feature.travelSearch)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -23,4 +26,5 @@ dependencies {
     implementation(libs.kotlinx.immutable)
     implementation(libs.material)
     implementation(libs.constraintlayout)
+    implementation(libs.kakaoNavi)
 }

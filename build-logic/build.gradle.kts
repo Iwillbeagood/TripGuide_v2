@@ -12,15 +12,15 @@ gradlePlugin {
     plugins {
         register("androidHilt") {
             id = "jun.android.hilt"
-            implementationClass = "com.jun.loginCAApp.HiltAndroidPlugin"
+            implementationClass = "com.jun.tripguide.HiltAndroidPlugin"
         }
         register("kotlinHilt") {
             id = "jun.kotlin.hilt"
-            implementationClass = "com.jun.loginCAApp.HiltKotlinPlugin"
+            implementationClass = "com.jun.tripguide.HiltKotlinPlugin"
         }
         register("androidRoom") {
             id = "jun.android.room"
-            implementationClass = "com.jun.loginCAApp.AndroidRoomPlugin"
+            implementationClass = "com.jun.tripguide.AndroidRoomPlugin"
         }
     }
 }

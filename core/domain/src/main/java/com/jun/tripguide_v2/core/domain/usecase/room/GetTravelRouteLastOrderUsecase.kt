@@ -9,6 +9,6 @@ class GetTravelRouteLastOrderUsecase @Inject constructor(
 ){
 
     suspend operator fun invoke(travelId: String): Int {
-        return routeRepository.getTravelRoute(travelId).maxOf { it.orderNum }
+        return routeRepository.getRoutes(travelId).maxOf { it.orderNum }
     }
 }

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jun.tripguide_v2.core.domain.usecase.room.InsertDefaultTravelUsecase
 import com.jun.tripguide_v2.core.model.DestinationCode
-import com.jun.tripguide_v2.core.model.Duration
+import com.jun.tripguide_v2.core.model.DateDuration
 import com.jun.tripguide_v2.core.model.MeansType
 import com.jun.tripguide_v2.core.model.StartingPoint
 import com.jun.tripguide_v2.core.model.Travel
@@ -31,14 +31,14 @@ class TravelInitViewModel @Inject constructor(
 
     private val _uiState =
         MutableStateFlow<TravelInitUiState>(TravelInitUiState.Success())
-    val uiState: StateFlow<TravelInitUiState> = _uiState
+    val uiState: StateFlow<TravelInitUiState> get() = _uiState
 
     private val _uiEffect = MutableStateFlow<TravelInitUiEffect>(TravelInitUiEffect.Idle)
-    val uiEffect: StateFlow<TravelInitUiEffect> = _uiEffect
+    val uiEffect: StateFlow<TravelInitUiEffect> get() = _uiEffect
 
     private var contentJob: Job? = null
 
-    fun durationPicked(duration: Duration) {
+    fun durationPicked(dateDuration: DateDuration) {
         if (contentJob != null) {
             contentJob?.cancel()
         }
@@ -49,9 +49,9 @@ class TravelInitViewModel @Inject constructor(
 
         contentJob = viewModelScope.launch {
             _uiState.value = uiState.copy(
-                duration = duration
+                dateDuration = dateDuration
             )
-            dialogState(false)
+            _uiEffect.value = TravelInitUiEffect.Idle
         }
     }
 
@@ -75,13 +75,13 @@ class TravelInitViewModel @Inject constructor(
         }
     }
 
-    fun dialogState(visibility: Boolean) {
+    fun showTravelDurationDialog() {
         if (contentJob != null) {
             contentJob?.cancel()
         }
 
         contentJob = viewModelScope.launch {
-            _uiEffect.value = TravelInitUiEffect.ShowDialogForTravelDuration(visibility)
+            _uiEffect.value = TravelInitUiEffect.ShowTravelDurationDialog
         }
     }
 
@@ -97,22 +97,6 @@ class TravelInitViewModel @Inject constructor(
         contentJob = viewModelScope.launch {
             _uiState.value = uiState.copy(
                 startTime = startTime
-            )
-        }
-    }
-
-    fun endTimePicked(endTime: LocalTime) {
-        if (contentJob != null) {
-            contentJob?.cancel()
-        }
-
-        val uiState = uiState.value
-
-        if (uiState !is TravelInitUiState.Success) return
-
-        contentJob = viewModelScope.launch {
-            _uiState.value = uiState.copy(
-                endTime = endTime
             )
         }
     }
@@ -137,10 +121,9 @@ class TravelInitViewModel @Inject constructor(
                             travelId = UUID.randomUUID().toString(),
                             destination = destination,
                             startingPoint = startingPoint,
-                            startDate = uiState.duration!!.startDate,
-                            endDate = uiState.duration.endDate,
+                            startDate = uiState.dateDuration!!.startDate,
+                            endDate = uiState.dateDuration.endDate,
                             startTime = uiState.startTime!!,
-                            endTime = uiState.endTime!!,
                             meansType = uiState.meansItems.find { it.isSelected }?.type
                                 ?: MeansType.CAR
                         )

@@ -11,6 +11,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { setUrl("https://devrepo.kakaomobility.com/repository/kakao-mobility-android-knsdk-public/") }
         maven { setUrl("https://jitpack.io") }
     }
 }
@@ -36,3 +37,4 @@ include(
     ":feature:travel-recommend",
     ":feature:travel-search"
 )
+include(":feature:tourist-detail")

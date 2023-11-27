@@ -8,12 +8,12 @@ import java.time.ZoneOffset
 
 class LocalTimeConverter {
     @TypeConverter
-    fun fromLocalTime(value: LocalTime?): Long? {
-        return value?.toSecondOfDay()?.toLong()
+    fun fromLocalTime(value: LocalTime): Long {
+        return value.toSecondOfDay().toLong()
     }
 
     @TypeConverter
-    fun toLocalTime(value: Long?): LocalTime? {
-        return value?.let { LocalTime.ofSecondOfDay(it) }
+    fun toLocalTime(value: Long): LocalTime {
+        return LocalTime.ofSecondOfDay(value)
     }
 }

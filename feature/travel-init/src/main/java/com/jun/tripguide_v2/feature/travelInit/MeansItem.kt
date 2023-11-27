@@ -41,10 +41,9 @@ fun TravelMeans(
     onItemClick: (MeansType) -> Unit
 ) {
     LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(15.dp),
         contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
-
         items(meansItems) { item ->
             MeansItem(
                 drawable = item.drawable,
@@ -71,9 +70,8 @@ internal fun MeansItem(
 ) {
     Surface(
         shape = MaterialTheme.shapes.medium,
-        border = BorderStroke(2.dp, Gray),
         color = color,
-        modifier = modifier.padding(8.dp)
+        modifier = modifier
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

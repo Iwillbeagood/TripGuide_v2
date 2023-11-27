@@ -1,4 +1,4 @@
-package com.jun.loginCAApp/*
+package com.jun.tripguide/*
  * Copyright 2022 The Android Open Source Project
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");

@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -24,17 +23,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.jun.tripguide_v2.core.designsystem.theme.Gray
 import com.jun.tripguide_v2.core.designsystem.theme.LightGray
 import com.jun.tripguide_v2.core.designsystem.theme.Sky
 import com.jun.tripguide_v2.core.designsystem.theme.White
-import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.animation.crossfade.CrossfadePlugin
-import com.skydoves.landscapist.coil.CoilImage
-import com.skydoves.landscapist.components.rememberImageComponent
 
 @Composable
 fun TouristItem(
@@ -57,30 +51,11 @@ fun TouristItem(
             horizontalAlignment = Alignment.Start
         ) {
             Box {
-                CoilImage(
-                    imageModel = { imageUrl },
-                    imageOptions = ImageOptions(
-                        contentScale = ContentScale.Crop,
-                        alignment = Alignment.Center
-                    ),
-                    component = rememberImageComponent {
-                        + CrossfadePlugin(
-                            duration = 550
-                        )
-                    },
+                CustomCoilImage(
+                    imageUrl = imageUrl,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp),
-                    loading = {
-                        Box(modifier = Modifier.matchParentSize()) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.align(Alignment.Center)
-                            )
-                        }
-                    },
-                    failure = {
-                        Text(text = "이미지 로딩에 실패했습니다.")
-                    }
                 )
                 Button(
                     shape = CircleShape,

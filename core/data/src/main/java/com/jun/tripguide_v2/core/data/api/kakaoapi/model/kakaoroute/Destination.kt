@@ -1,7 +1,10 @@
-package com.example.tripguide.model.kakaoroute
+package com.jun.tripguide_v2.core.data.api.kakaoapi.model.kakaoroute
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Destination(
-    var name: String?,
-    var x: Double?,
-    var y: Double?
+    val name: String,
+    val x: Double,
+    val y: Double
 )

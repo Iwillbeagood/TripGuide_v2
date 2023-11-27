@@ -18,10 +18,10 @@ fun Travel.toData(): TravelEntity = TravelEntity(
     startDate = this.startDate,
     endDate = this.endDate,
     startTime = this.startTime,
-    endTime = this.endTime,
     meansType = this.meansType.value,
     startMeansLocation = this.startMeansLocation,
-    endMeansLocation = this.startMeansLocation
+    endMeansLocation = this.startMeansLocation,
+    isOrdered = this.isOrdered
 )
 
 fun TravelEntity.toData(): Travel = Travel(
@@ -32,8 +32,8 @@ fun TravelEntity.toData(): Travel = Travel(
     startDate = this.startDate,
     endDate = this.endDate,
     startTime = this.startTime,
-    endTime = this.endTime,
     meansType = MeansType.values().find { it.value == this.meansType } ?: MeansType.CAR,
     startMeansLocation = this.startMeansLocation,
-    endMeansLocation = this.startMeansLocation
+    endMeansLocation = this.startMeansLocation,
+    isOrdered = this.isOrdered
 )

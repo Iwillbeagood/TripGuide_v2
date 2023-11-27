@@ -21,31 +21,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.jun.tripguide_v2.core.model.Duration
+import com.jun.tripguide_v2.core.model.DateDuration
 import com.jun.tripguide_v2.feature.travelInit.util.getFormattedDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
-@Composable
-fun TravelDurationDatePicker(
-    visibility: Boolean,
-    onBackClick: () -> Unit,
-    onTravelDurationPick: (Duration) -> Unit
-) {
-    if (!visibility) return
-
-    DurationDatePicker(
-        onBackClick = onBackClick,
-        onDurationPick = onTravelDurationPick
-    )
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DurationDatePicker(
     onBackClick: () -> Unit,
-    onDurationPick: (Duration) -> Unit
+    onDurationPick: (DateDuration) -> Unit
 ) {
     val currentDateTime: LocalDateTime = LocalDateTime.now()
     val formatter: DateTimeFormatter = DateTimeFormatter.ISO_DATE
@@ -77,7 +63,7 @@ fun DurationDatePicker(
         confirmButton = {
             TextButton(onClick = {
                 onDurationPick(
-                    Duration(
+                    DateDuration(
                         startDate = dateRangePickerState.selectedStartDateMillis ?: 0,
                         endDate = dateRangePickerState.selectedEndDateMillis ?: 0
                     )

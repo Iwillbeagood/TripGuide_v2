@@ -22,10 +22,10 @@ class StartingPickerViewModel @Inject constructor(
 
     private val _uiState =
         MutableStateFlow<StartingPickerUiState>(StartingPickerUiState.Empty)
-    val uiState: StateFlow<StartingPickerUiState> = _uiState
+    val uiState: StateFlow<StartingPickerUiState> get() = _uiState
 
     private val _uiEffect = MutableStateFlow<StartingPickerUiEffect>(StartingPickerUiEffect.Idle)
-    val uiEffect: StateFlow<StartingPickerUiEffect> = _uiEffect
+    val uiEffect: StateFlow<StartingPickerUiEffect> get() = _uiEffect
 
     private var contentJob: Job? = null
 

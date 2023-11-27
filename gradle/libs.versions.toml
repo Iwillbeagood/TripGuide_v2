@@ -49,6 +49,11 @@ junit = "1.1.5"
 material = "1.9.0"
 constraintlayout = "2.1.4"
 wheelPicker = "1.1.11"
+lazyListReorder = "0.9.6"
+
+kakaoSdk = "2.18.0"
+
+sharedElements = "0.1.0-SNAPSHOT"
 
 [libraries]
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
@@ -65,6 +70,7 @@ androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", versi
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidxComposeMaterial3" }
 androidx-compose-material-icon = { module = "androidx.compose.material:material-icons-extended" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
 androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
@@ -133,6 +139,15 @@ material = { group = "com.google.android.material", name = "material", version.r
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
 wheelPicker = { module = "com.github.commandiron:WheelPickerCompose", version.ref = "wheelPicker"}
+
+lazyListReorder = { module = "org.burnoutcrew.composereorderable:reorderable", version.ref = "lazyListReorder"}
+
+#kakao
+kakaoNavi = { module = "com.kakao.sdk:v2-navi", version.ref = "kakaoSdk"}
+
+#shared-elements
+sharedElements = { module = "com.mxalbert.sharedelements:shared-elements", version.ref = "sharedElements"}
+
 
 [bundles]
 

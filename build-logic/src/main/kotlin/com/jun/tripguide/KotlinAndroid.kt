@@ -1,6 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-package com.jun.loginCAApp
+package com.jun.tripguide
 
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project

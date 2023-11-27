@@ -1,37 +1,244 @@
 package com.jun.tripguide_v2.feature.mytravelPlan
 
 import androidx.lifecycle.ViewModel
-import com.jun.tripguide_v2.core.domain.usecase.room.GetTravelRouteUsecase
-import com.jun.tripguide_v2.core.model.Travel
+import androidx.lifecycle.viewModelScope
+import com.jun.tripguide_v2.core.domain.usecase.room.GetTravelByIdUsecase
+import com.jun.tripguide_v2.core.domain.usecase.room.InitAndInsertRouteUsecase
+import com.jun.tripguide_v2.core.domain.usecase.route.GetOrderedTravelRouteUsecase
+import com.jun.tripguide_v2.core.domain.usecase.route.SetTimeUsecase
+import com.jun.tripguide_v2.core.model.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import org.burnoutcrew.reorderable.ItemPosition
+import java.time.Duration
+import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
 class MyTravelPlanViewModel @Inject constructor(
-    private val getTravelRouteUsecase: GetTravelRouteUsecase
+    private val getOrderedTravelRouteUsecase: GetOrderedTravelRouteUsecase,
+    private val getTravelByIdUsecase: GetTravelByIdUsecase,
+    private val initAndInsertRouteUsecase: InitAndInsertRouteUsecase,
+    private val setTimeUsecase: SetTimeUsecase
 ) : ViewModel() {
 
+    private val _errorFlow = MutableSharedFlow<Throwable>()
+    val errorFlow: SharedFlow<Throwable> get() = _errorFlow
+
     private val _uiState = MutableStateFlow<MyTravelPlanUiState>(MyTravelPlanUiState.Loading)
-    val uiState: MutableStateFlow<MyTravelPlanUiState> = _uiState
+    val uiState: StateFlow<MyTravelPlanUiState> get() = _uiState
+
+    private val _uiEffect = MutableStateFlow<MyTravelPlanUiEffect>(MyTravelPlanUiEffect.Idle)
+    val uiEffect: StateFlow<MyTravelPlanUiEffect> get() = _uiEffect
+
+    private var contentJob: Job? = null
+
+    fun fetchOrderedTravelRoute(travelId: String) {
+        viewModelScope.launch {
+            val routesFlow = flow { emit(getOrderedTravelRouteUsecase(travelId)) }
+            combine(routesFlow, flow { emit(getTravelByIdUsecase(travelId)) }) { routes, travel ->
+                MyTravelPlanUiState.Success(
+                    travel = travel,
+                    originRoutes = routes.filter { it.time != LocalTime.of(0, 0, 0) },
+                    routes = routes,
+                    duration = getDurationOfRoutes(routes)
+                )
+            }.catch { throwable ->
+                _errorFlow.emit(throwable)
+            }.collect {
+                _uiState.value = it
+            }
+        }
+    }
+
+    private fun getDurationOfRoutes(routes: List<Route>): Duration {
+        val origin = routes.find { it.isSelected } ?: routes[0]
+        val destination = routes.find { it.isBeforeRouteSelected } ?: routes[1]
+        val destinationTime = if (origin == routes.first() || destination == routes.last()) {
+            destination.time
+        } else {
+            destination.time.minusHours(2)
+        }
+
+        return Duration.between(origin.time, destinationTime)
+    }
+
+    fun selectRouteItem(selectedOrderNum: Int) {
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
+
+        val uiState = uiState.value
+
+        if (uiState !is MyTravelPlanUiState.Success) return
+        if (uiState.routes.lastIndex == selectedOrderNum) return
+
+        contentJob = viewModelScope.launch {
+            val newRoutes = uiState.routes.map {
+                it.copy(
+                    isSelected = it.orderNum == selectedOrderNum,
+                    isBeforeRouteSelected = it.orderNum == selectedOrderNum + 1
+                )
+            }
+            _uiState.value = uiState.copy(
+                routes = newRoutes, duration = getDurationOfRoutes(newRoutes)
+            )
+        }
+    }
+
+    fun travelDaysItemPicked(day: Int) {
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
+
+        val uiState = uiState.value
+
+        if (uiState !is MyTravelPlanUiState.Success) return
+
+        contentJob = viewModelScope.launch {
+            _uiState.value = uiState.copy(
+                travelDays = uiState.travelDays.map {
+                    it.copy(
+                        isSelected = it.day == day
+                    )
+                }, nowDay = day, isEditMode = false
+            )
+        }
+
+        selectRouteItem(uiState.routes.find { it.day == day }?.orderNum ?: 0)
+    }
+
+    fun onMoveRouteItem(from: ItemPosition, to: ItemPosition) {
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
+
+        val uiState = uiState.value
+
+        if (uiState !is MyTravelPlanUiState.Success) return
+
+        contentJob = viewModelScope.launch {
+            _uiState.value = uiState.copy(routes = uiState.routes.toMutableList().apply {
+                add(to.index, removeAt(from.index))
+            })
+        }
+    }
+
+    fun isDragEnabled(draggedOver: ItemPosition, dragging: ItemPosition): Boolean {
+        val uiState = uiState.value
+
+        if (uiState !is MyTravelPlanUiState.Success) return false
+
+        return uiState.routes.getOrNull(draggedOver.index)?.orderNum in (1 until uiState.routes.lastIndex)
+    }
+
+    fun isRoutesDragged(): Boolean {
+        val uiState = uiState.value
+
+        if (uiState !is MyTravelPlanUiState.Success) return false
+
+        uiState.routes.forEachIndexed { index, route ->
+            if (index != route.orderNum) return true
+        }
+
+        return false
+    }
+
+    fun changeEditMode() {
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
+
+        val uiState = uiState.value
+
+        if (uiState !is MyTravelPlanUiState.Success) return
+
+        contentJob = viewModelScope.launch {
+            _uiState.value =
+                uiState.copy(isEditMode = !uiState.isEditMode, routes = uiState.routes.map {
+                    it.copy(
+                        isSelected = false, isBeforeRouteSelected = false
+                    )
+                })
+        }
+    }
+
+    fun showEditConfirmationDialog() {
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
+
+        contentJob = viewModelScope.launch {
+            _uiEffect.value = MyTravelPlanUiEffect.ShowEditConfirmationDialog
+        }
+    }
+
+    fun editDialogConfirmation() {
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
+
+        val uiState = uiState.value
+
+        if (uiState !is MyTravelPlanUiState.Success) return
+
+        contentJob = viewModelScope.launch {
+            val updateRoutes = setTimeUsecase(startTime = uiState.travel.startTime,
+                routes = uiState.routes.mapIndexed { index, route ->
+                    route.copy(orderNum = index)
+                })
+
+            _uiState.value = uiState.copy(
+                isEditMode = false, routes = updateRoutes
+            )
+            initAndInsertRouteUsecase(uiState.travel.travelId, updateRoutes)
+            _uiEffect.value = MyTravelPlanUiEffect.Idle
+        }
+    }
+
+    fun editDialogDismiss() {
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
+
+        val uiState = uiState.value
+
+        if (uiState !is MyTravelPlanUiState.Success) return
+
+        contentJob = viewModelScope.launch {
+            val originRoutes = uiState.originRoutes.sortedBy { it.orderNum }
+            _uiState.value = uiState.copy(
+                isEditMode = false, routes = originRoutes
+            )
+            initAndInsertRouteUsecase(uiState.travel.travelId, originRoutes)
+            _uiEffect.value = MyTravelPlanUiEffect.Idle
+        }
+    }
+
+    fun deleteRoute(route: Route) {
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
+
+        val uiState = uiState.value
+
+        if (uiState !is MyTravelPlanUiState.Success) return
+
+        contentJob = viewModelScope.launch {
+            _uiState.value = uiState.copy(routes = uiState.routes.toMutableList().apply {
+                removeIf { it.orderNum == route.orderNum }
+            })
+            _uiEffect.value = MyTravelPlanUiEffect.Idle
+        }
+    }
 }
 
-/**
- * 1. 일단 이 곳에선 가장 먼저 travelId와 동일한 route를 전부 다 가져온다.
- * 2. 그 다음 첫번쨰와 마지막에  travel의 시작 주소를 넣는다.
- * 3. 그 다음 모든 주소에 해당하는 plus code를 구글로부더 가져온다.
- * 4. 그 다음 구글에 경유지 길찾기를 진행한다.
- * 5. 진행한 결과를 가져온다. <- usecase에서 반환해야 하는 부분
- *
- *
-*/
 
-
-sealed interface MyTravelPlanUiState {
-
-    object Loading : MyTravelPlanUiState
-
-    data class Travels(
-        val travels: List<Travel> = emptyList()
-    ) : MyTravelPlanUiState
-}

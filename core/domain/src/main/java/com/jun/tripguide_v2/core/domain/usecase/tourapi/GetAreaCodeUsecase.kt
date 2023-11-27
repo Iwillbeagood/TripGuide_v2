@@ -9,7 +9,9 @@ class GetAreaCodeUsecase @Inject constructor(
     private val areaCodeRepository: AreaCodeRepository
 ) {
 
-    suspend operator fun invoke(areaCode: String): List<AreaCode> {
+    suspend operator fun invoke(
+        areaCode: String? = null
+    ): List<AreaCode> {
         return areaCodeRepository.getAreaCode(TempConst.queryParams, areaCode)
     }
 }

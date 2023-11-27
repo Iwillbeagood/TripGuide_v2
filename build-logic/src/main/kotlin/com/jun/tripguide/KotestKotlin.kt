@@ -1,6 +1,5 @@
 package com.jun.tripguide
 
-import com.jun.loginCAApp.libs
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.Test
 import org.gradle.kotlin.dsl.dependencies

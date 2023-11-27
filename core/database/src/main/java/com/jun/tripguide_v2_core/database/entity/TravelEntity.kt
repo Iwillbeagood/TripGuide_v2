@@ -17,13 +17,13 @@ data class TravelEntity(
     val areaCode: String,
     val sigunguCode: String,
     val startingPoint: String,
-    val startingX: String,
-    val startingY: String,
+    val startingX: Double,
+    val startingY: Double,
     val startDate: Long,
     val endDate: Long,
     val startTime: LocalTime,
-    val endTime: LocalTime,
     val meansType: String,
     val startMeansLocation: String,
-    val endMeansLocation: String
+    val endMeansLocation: String,
+    val isOrdered: Boolean
 )

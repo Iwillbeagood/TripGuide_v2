@@ -1,5 +1,6 @@
 package com.jun.tripguide_v2.feature.travelRecommend
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,6 +21,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material.icons.filled.TravelExplore
@@ -56,7 +58,9 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun TravelRecommendRoute(
+    isInit: Boolean,
     travelId: String,
+    orderNum: String,
     onBackClick: () -> Unit,
     onTravelRecommendComplete: (String) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
@@ -84,8 +88,12 @@ fun TravelRecommendRoute(
                 viewModel.resetUiEffect()
             }
             TravelRecommendUiEffect.TravelRecommendComplete -> {
-                onTravelRecommendComplete(travelId)
-                viewModel.resetUiEffect()
+                if (isInit) {
+                    onTravelRecommendComplete(travelId + "isInit")
+                    viewModel.resetUiEffect()
+                } else {
+                    onBackClick()
+                }
             }
         }
     }
@@ -102,11 +110,11 @@ fun TravelRecommendRoute(
             onNavigationClick = onBackClick,
             actionButtons = {
                 IconButton(
-                    onClick = { viewModel.travelRecommendComplete() },
+                    onClick = { viewModel.travelRecommendComplete(isInit, orderNum.toInt()) },
                     modifier = Modifier.size(48.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ArrowForward,
+                        imageVector = if (isInit) Icons.Default.ArrowForward else Icons.Default.Check,
                         contentDescription = null,
                     )
                 }
@@ -139,7 +147,7 @@ private fun TravelRecommendContent(
                 listState = listState,
                 viewModel = viewModel,
                 touristList = uiState.tourists,
-                selectedTouristList = uiState.selectedTourists,
+                selectedTouristList = uiState.selectedTourists.toList(),
                 visible = uiState.dialogVisibility,
                 sortByList = uiState.arrangeTypes,
                 typeByList = uiState.contentTypes,
@@ -169,7 +177,6 @@ private fun TravelRecommendScreen(
         selectedTouristList = selectedTouristList,
         onClickSelectedTourist = onSelectTourist
     )
-
     TouristLazyColumn(
         listState = listState,
         touristList = touristList,
@@ -304,4 +311,3 @@ private fun TouristLazyColumn(
         )
     }
 }
-

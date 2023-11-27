@@ -24,4 +24,8 @@ class DefaultTravelRepository @Inject constructor(
     override suspend fun getTravels(): List<Travel> {
         return travelDao.getTravels().map { it.toData() }
     }
+
+    override suspend fun deleteTravel(travel: Travel) {
+        travelDao.deleteTravel(travel.toData())
+    }
 }

@@ -4,7 +4,7 @@ sealed interface TravelInitUiEffect {
 
     object Idle : TravelInitUiEffect
 
-    data class ShowDialogForTravelDuration(val visibility: Boolean): TravelInitUiEffect
+    object ShowTravelDurationDialog : TravelInitUiEffect
 
-    data class TravelInitComplete(val travelId: String): TravelInitUiEffect
+    data class TravelInitComplete(val travelId: String) : TravelInitUiEffect
 }

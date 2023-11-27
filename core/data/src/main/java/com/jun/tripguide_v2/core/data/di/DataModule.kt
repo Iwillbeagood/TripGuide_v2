@@ -1,15 +1,17 @@
 package com.jun.tripguide_v2.core.data.di
 
-import com.jun.tripguide_v2.core.data.repository.tourapi.AreaCodeRepository
-import com.jun.tripguide_v2.core.data.repository.tourapi.DefaultAreaCodeRepository
 import com.jun.tripguide_v2.core.data.repository.kakao.DefaultKakaoKeywordRepository
-import com.jun.tripguide_v2.core.data.repository.room.DefaultTravelRepository
+import com.jun.tripguide_v2.core.data.repository.kakao.DefaultKakaoRouteRepository
 import com.jun.tripguide_v2.core.data.repository.kakao.KakaoKeywordRepository
-import com.jun.tripguide_v2.core.data.repository.room.TravelRepository
+import com.jun.tripguide_v2.core.data.repository.kakao.KakaoRouteRepository
 import com.jun.tripguide_v2.core.data.repository.room.DefaultRouteRepository
+import com.jun.tripguide_v2.core.data.repository.room.DefaultTravelRepository
 import com.jun.tripguide_v2.core.data.repository.room.RouteRepository
-import com.jun.tripguide_v2.core.data.repository.tourapi.AreaBaseListRepository
-import com.jun.tripguide_v2.core.data.repository.tourapi.DefaultAreaBaseListRepository
+import com.jun.tripguide_v2.core.data.repository.room.TravelRepository
+import com.jun.tripguide_v2.core.data.repository.tourapi.TouristsRepository
+import com.jun.tripguide_v2.core.data.repository.tourapi.AreaCodeRepository
+import com.jun.tripguide_v2.core.data.repository.tourapi.DefaultTouristsRepository
+import com.jun.tripguide_v2.core.data.repository.tourapi.DefaultAreaCodeRepository
 import com.jun.tripguide_v2.core.data.repository.tourapi.DefaultKeywordRepository
 import com.jun.tripguide_v2.core.data.repository.tourapi.KeywordRepository
 import dagger.Binds
@@ -28,8 +30,8 @@ internal abstract class DataModule {
 
     @Binds
     abstract fun bindsAreaBaseListRepository(
-        repository: DefaultAreaBaseListRepository
-    ): AreaBaseListRepository
+        repository: DefaultTouristsRepository
+    ): TouristsRepository
 
     @Binds
     abstract fun bindsKeywordRepository(
@@ -50,4 +52,9 @@ internal abstract class DataModule {
     abstract fun bindsKakaoLocalKeywordRepository(
         kakaoLocalKeywordRepository: DefaultKakaoKeywordRepository
     ): KakaoKeywordRepository
+
+    @Binds
+    abstract fun bindsKakaoRouteRepository(
+        kakaoRouteRepository: DefaultKakaoRouteRepository
+    ): KakaoRouteRepository
 }

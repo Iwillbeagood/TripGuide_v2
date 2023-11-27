@@ -1,4 +1,4 @@
-package com.jun.loginCAApp
+package com.jun.tripguide
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project

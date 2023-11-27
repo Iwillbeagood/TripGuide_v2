@@ -3,7 +3,6 @@ package com.jun.tripguide_v2.feature.travelInit.areapicker
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jun.tripguide_v2.core.domain.usecase.tourapi.GetAreaCodeUsecase
-import com.jun.tripguide_v2.core.domain.usecase.tourapi.GetDefaultAreaCodeUsecase
 import com.jun.tripguide_v2.core.model.AreaCode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -15,20 +14,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AreaPickerViewModel @Inject constructor(
-    private val getDefaultAreaCodeUsecase: GetDefaultAreaCodeUsecase,
     private val getAreaCodeUsecase: GetAreaCodeUsecase
 ) : ViewModel() {
 
     private val _uiState =
         MutableStateFlow<AreaPickerUiState>(AreaPickerUiState.Loading)
-    val uiState: StateFlow<AreaPickerUiState> = _uiState
+    val uiState: StateFlow<AreaPickerUiState> get() = _uiState
 
     private val _uiEffect = MutableStateFlow<AreaPickerUiEffect>(AreaPickerUiEffect.Idle)
-    val uiEffect: StateFlow<AreaPickerUiEffect> = _uiEffect
+    val uiEffect: StateFlow<AreaPickerUiEffect> get() = _uiEffect
 
     init {
         viewModelScope.launch {
-            val defaultAreaCodeFlow = flow { emit(getDefaultAreaCodeUsecase()) }
+            val defaultAreaCodeFlow = flow { emit(getAreaCodeUsecase()) }
 
             defaultAreaCodeFlow.collect {
                 _uiState.value =

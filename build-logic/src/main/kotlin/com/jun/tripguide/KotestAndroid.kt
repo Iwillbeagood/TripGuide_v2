@@ -1,6 +1,5 @@
-package com.jun.loginCAApp
+package com.jun.tripguide
 
-import com.jun.tripguide.configureKotest
 import org.gradle.api.Project
 
 internal fun Project.configureKotestAndroid() {

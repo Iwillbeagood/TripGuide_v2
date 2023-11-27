@@ -9,15 +9,23 @@ class DefaultRouteRepository @Inject constructor(
     private val routeDao: RouteDao
 ) : RouteRepository {
 
-    override suspend fun insertRouteAll(routeList: List<Route>) {
-        routeDao.insertRouteAll(*routeList.map { it.toData() }.toTypedArray())
+    override suspend fun insertRouteAll(routes: List<Route>) {
+        routeDao.insertRouteAll(*routes.map { it.toData() }.toTypedArray())
     }
 
-    override suspend fun upDateRoute(routeList: List<Route>) {
-        routeDao.upDateRoute(*routeList.map { it.toData() }.toTypedArray())
+    override suspend fun updateRoute(routes: List<Route>) {
+        routeDao.upDateRoute(*routes.map { it.toData() }.toTypedArray())
     }
 
-    override suspend fun getTravelRoute(id: String): List<Route> {
+    override suspend fun getRoutes(id: String): List<Route> {
         return routeDao.getTravelRoute(id).map { it.toData() }
+    }
+
+    override suspend fun deleteRoute(routes: List<Route>) {
+        routeDao.deleteRoute(*routes.map { it.toData() }.toTypedArray())
+    }
+
+    override suspend fun deleteAllRoute(id: String) {
+        routeDao.deleteAllRoute(id)
     }
 }

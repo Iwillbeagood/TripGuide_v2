@@ -1,5 +1,5 @@
-import com.jun.loginCAApp.configureHiltAndroid
-import com.jun.loginCAApp.libs
+import com.jun.tripguide.configureHiltAndroid
+import com.jun.tripguide.libs
 
 plugins {
     id("jun.android.library")
@@ -25,7 +25,6 @@ dependencies {
     implementation(libs.findLibrary("androidx.compose.navigation").get())
     implementation(libs.findLibrary("androidx-compose-material-icon").get())
     androidTestImplementation(libs.findLibrary("androidx.compose.navigation.test").get())
-
     implementation(libs.findLibrary("androidx.lifecycle.viewModelCompose").get())
     implementation(libs.findLibrary("androidx.lifecycle.runtimeCompose").get())
 }

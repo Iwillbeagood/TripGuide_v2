@@ -42,6 +42,8 @@ fun AutoSlidingCarousel(
     itemsCount: Int,
     itemContent: @Composable (index: Int) -> Unit,
 ) {
+    if (itemsCount <= 0) return
+
     val isDragged by pagerState.interactionSource.collectIsDraggedAsState()
 
     LaunchedEffect(pagerState.currentPage) {

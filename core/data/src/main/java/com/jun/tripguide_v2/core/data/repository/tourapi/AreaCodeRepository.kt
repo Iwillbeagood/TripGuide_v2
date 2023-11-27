@@ -6,10 +6,6 @@ interface AreaCodeRepository {
 
     suspend fun getAreaCode(
         queryParams: Map<String, String>,
-        areaCode: String
-    ): List<AreaCode>
-
-    suspend fun getDefaultAreaCode(
-        queryParams: Map<String, String>
+        areaCode: String?
     ): List<AreaCode>
 }

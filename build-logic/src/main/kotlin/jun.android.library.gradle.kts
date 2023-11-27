@@ -1,7 +1,7 @@
-import com.jun.loginCAApp.configureCoroutineAndroid
-import com.jun.loginCAApp.configureHiltAndroid
+import com.jun.tripguide.configureCoroutineAndroid
+import com.jun.tripguide.configureHiltAndroid
 import com.jun.tripguide.configureKotest
-import com.jun.loginCAApp.configureKotlinAndroid
+import com.jun.tripguide.configureKotlinAndroid
 
 plugins {
     id("com.android.library")
