@@ -2,6 +2,7 @@ import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 
 plugins {
     id("jun.android.application")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
