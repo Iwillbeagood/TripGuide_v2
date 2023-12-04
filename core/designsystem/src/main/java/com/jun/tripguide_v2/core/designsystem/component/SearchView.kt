@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -16,25 +14,20 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jun.tripguide_v2.core.designsystem.theme.Gray
 import com.jun.tripguide_v2.core.designsystem.theme.SkyGray
 import com.jun.tripguide_v2.core.designsystem.theme.White
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CustomSearchView(
     value: String,
     onValueChange: (String) -> Unit,
-    onValueClear: () -> Unit,
-    keyboardController: SoftwareKeyboardController? = null
+    onValueClear: () -> Unit
 ) {
     OutlinedTextField(
         value = value,
@@ -47,9 +40,6 @@ fun CustomSearchView(
             unfocusedIndicatorColor = Gray,
             disabledIndicatorColor = Gray,
         ),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(
-            onDone = { keyboardController?.hide() }),
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)

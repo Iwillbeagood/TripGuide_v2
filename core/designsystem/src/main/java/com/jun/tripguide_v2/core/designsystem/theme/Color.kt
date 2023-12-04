@@ -13,11 +13,10 @@ val Pink40 = Color(0xFF7D5260)
 
 val Sky = Color(0xFF57AAD1)
 val SkyGray = Color(0xFFCCE6F3)
-val LightSky = Color(0xFFEFFAFF)
 
 val White = Color(0xFFFFFFFF)
 val PaleGray = Color(0xFFF9F9F9)
-val PaperGray = Color(0xFFF8F8F8)
+val PaperGray = Color(0xFFF2F5F5)
 val LightGray = Color(0xFFDCDCDC)
 val Gray = Color(0xFFC2C2C2)
 val DuskGray = Color(0xFF868686)
