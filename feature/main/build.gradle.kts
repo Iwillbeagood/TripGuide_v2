@@ -16,7 +16,7 @@ dependencies {
     implementation(projects.feature.travelInit)
     implementation(projects.feature.travelRecommend)
     implementation(projects.feature.travelSearch)
-    implementation(projects.feature.travelSearch)
+    implementation(projects.feature.touristDetail)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

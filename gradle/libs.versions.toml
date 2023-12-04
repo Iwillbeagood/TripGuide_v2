@@ -50,10 +50,11 @@ material = "1.9.0"
 constraintlayout = "2.1.4"
 wheelPicker = "1.1.11"
 lazyListReorder = "0.9.6"
+autoImageSlider = "0.22.0-rc"
 
 kakaoSdk = "2.18.0"
 
-sharedElements = "0.1.0-SNAPSHOT"
+googleMapsCompose = "4.3.0"
 
 [libraries]
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
@@ -142,12 +143,13 @@ wheelPicker = { module = "com.github.commandiron:WheelPickerCompose", version.re
 
 lazyListReorder = { module = "org.burnoutcrew.composereorderable:reorderable", version.ref = "lazyListReorder"}
 
+auto-image-slider = { module = "com.google.accompanist:accompanist-pager", version.ref = "autoImageSlider"}
+
 #kakao
 kakaoNavi = { module = "com.kakao.sdk:v2-navi", version.ref = "kakaoSdk"}
 
-#shared-elements
-sharedElements = { module = "com.mxalbert.sharedelements:shared-elements", version.ref = "sharedElements"}
-
+#google maps compose
+google-compose-maps = { module = "com.google.maps.android:maps-compose", version.ref = "googleMapsCompose"}
 
 [bundles]
 

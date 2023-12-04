@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.jun.tripguide_v2.core.designsystem.component.AutoSlidingCarousel
 import com.jun.tripguide_v2.core.designsystem.component.CustomAlertDialog
 import com.jun.tripguide_v2.core.designsystem.component.CustomCoilImage
@@ -176,7 +177,7 @@ fun LazyListScope.myTravelLazyColumn(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MyTravelItem(
     title: String, images: List<String>, startDate: Long, endDate: Long, modifier: Modifier

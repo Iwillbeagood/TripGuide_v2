@@ -44,6 +44,7 @@ import com.jun.tripguide_v2.feature.mytravelPlan.navigation.myTravelPlanNavGraph
 import com.jun.tripguide_v2.feature.recommend.navigation.recommendNavGraph
 import com.jun.tripguide_v2.feature.setting.navigation.settingNavGraph
 import com.jun.tripguide_v2.feature.travelRecommend.navigation.travelRecommendNavGraph
+import com.jun.tripguide_v2.tourist_detail.navigation.touristDetailNavGraph
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Job
@@ -89,7 +90,7 @@ internal fun MainScreen(
                     )
                     myTravelPlanNavGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
-                        onSearchRoute = navigator::navigateTouristSearch,
+                        onSearchRoute = navigator::navigateTravelSearch,
                         onRecommendRoute = navigator::navigateTravelRecommend,
                         onShowErrorSnackBar = onShowErrorSnackBar
                     )
@@ -121,12 +122,17 @@ internal fun MainScreen(
                     travelRecommendNavGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
                         onShowErrorSnackBar = onShowErrorSnackBar,
-                        onTravelRouteComplete = navigator::navigateTouristSearch
+                        onTravelRouteComplete = navigator::navigateTravelSearch,
+                        onTouristDetail = navigator::navigateTouristDetail,
                     )
                     travelSearchNavGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
                         onShowErrorSnackBar = onShowErrorSnackBar,
-                        onTravelSearchComplete = navigator::popBackUntilStart
+                        onTravelSearchComplete = navigator::popBackUntilStart,
+                        onTouristDetail = navigator::navigateTouristDetail,
+                    )
+                    touristDetailNavGraph(
+                        onBackClick = navigator::popBackStackIfNotHome,
                     )
                 }
             }

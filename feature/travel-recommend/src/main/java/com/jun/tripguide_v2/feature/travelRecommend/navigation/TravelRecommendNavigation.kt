@@ -1,6 +1,5 @@
 package com.jun.tripguide_v2.feature.travelRecommend.navigation
 
-import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -15,6 +14,7 @@ fun NavController.navigateTravelRecommend(travelId: String) {
 fun NavGraphBuilder.travelRecommendNavGraph(
     onBackClick: () -> Unit,
     onTravelRouteComplete: (String) -> Unit,
+    onTouristDetail: (String) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit
 ) {
     composable(
@@ -32,6 +32,7 @@ fun NavGraphBuilder.travelRecommendNavGraph(
             orderNum = if (string.contains("|")) string.replace("isInit", "").split("|")[1] else "",
             onBackClick = onBackClick,
             onTravelRecommendComplete = onTravelRouteComplete,
+            onTouristDetail = onTouristDetail,
             onShowErrorSnackBar = onShowErrorSnackBar
         )
     }

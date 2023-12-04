@@ -42,15 +42,22 @@ class MyTravelPlanViewModel @Inject constructor(
     private var contentJob: Job? = null
 
     fun fetchOrderedTravelRoute(travelId: String) {
-        viewModelScope.launch {
+        contentJob = viewModelScope.launch {
             val routesFlow = flow { emit(getOrderedTravelRouteUsecase(travelId)) }
-            combine(routesFlow, flow { emit(getTravelByIdUsecase(travelId)) }) { routes, travel ->
-                MyTravelPlanUiState.Success(
-                    travel = travel,
-                    originRoutes = routes.filter { it.time != LocalTime.of(0, 0, 0) },
-                    routes = routes,
-                    duration = getDurationOfRoutes(routes)
-                )
+            combine(
+                uiState,
+                routesFlow,
+                flow { emit(getTravelByIdUsecase(travelId)) }
+            ) { uiState, routes, travel ->
+                when(uiState) {
+                    MyTravelPlanUiState.Loading -> MyTravelPlanUiState.Success(
+                        travel = travel,
+                        originRoutes = routes.filter { it.time != LocalTime.of(0, 0, 0) },
+                        routes = routes,
+                        duration = getDurationOfRoutes(routes)
+                    )
+                    is MyTravelPlanUiState.Success -> uiState.copy(routes = routes)
+                }
             }.catch { throwable ->
                 _errorFlow.emit(throwable)
             }.collect {
@@ -140,13 +147,15 @@ class MyTravelPlanViewModel @Inject constructor(
         return uiState.routes.getOrNull(draggedOver.index)?.orderNum in (1 until uiState.routes.lastIndex)
     }
 
-    fun isRoutesDragged(): Boolean {
+    private fun isRoutesChanged(): Boolean {
         val uiState = uiState.value
 
         if (uiState !is MyTravelPlanUiState.Success) return false
 
-        uiState.routes.forEachIndexed { index, route ->
-            if (index != route.orderNum) return true
+        if (uiState.routes.size != uiState.originRoutes.size) return true
+
+        for ((index, routes) in uiState.routes.withIndex()) {
+            if (uiState.originRoutes[index].orderNum != routes.orderNum) return true
         }
 
         return false
@@ -172,6 +181,8 @@ class MyTravelPlanViewModel @Inject constructor(
     }
 
     fun showEditConfirmationDialog() {
+        if (!isRoutesChanged()) return
+
         if (contentJob != null) {
             contentJob?.cancel()
         }

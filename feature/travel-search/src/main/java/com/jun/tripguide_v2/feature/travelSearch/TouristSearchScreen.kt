@@ -47,6 +47,7 @@ fun TravelSearchRoute(
     onBackClick: () -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     onTravelSearchComplete: () -> Unit,
+    onTouristDetail: (String) -> Unit,
     viewModel: TravelSearchViewModel = hiltViewModel()
 ) {
 
@@ -117,6 +118,7 @@ fun TravelSearchRoute(
             listState = listState,
             scrollToFirstItem = { viewModel.scrollToFirstItem() },
             onSelectTourist = { tourist -> viewModel.changeTouristSelection(tourist) },
+            onTouristDetail = { onTouristDetail(it.id) }
         )
     }
 }
@@ -126,7 +128,8 @@ fun TravelSearchContent(
     uiState: TravelSearchUiState,
     listState: LazyListState,
     scrollToFirstItem: () -> Unit,
-    onSelectTourist: (Tourist) -> Unit
+    onSelectTourist: (Tourist) -> Unit,
+    onTouristDetail: (Tourist) -> Unit
 ) {
     when (uiState) {
         TravelSearchUiState.Loading -> CustomLoading()
@@ -136,7 +139,8 @@ fun TravelSearchContent(
                 scrollToFirstItem = scrollToFirstItem,
                 touristList = uiState.tourists,
                 selectedTouristList = uiState.selectedTourists,
-                onSelectTourist = onSelectTourist
+                onSelectTourist = onSelectTourist,
+                onTouristDetail = onTouristDetail
             )
         }
     }
@@ -148,7 +152,8 @@ fun TravelSearchScreen(
     scrollToFirstItem: () -> Unit,
     touristList: List<Tourist>,
     selectedTouristList: List<Tourist>,
-    onSelectTourist: (Tourist) -> Unit
+    onSelectTourist: (Tourist) -> Unit,
+    onTouristDetail: (Tourist) -> Unit,
 ) {
     SelectedTourist(
         visible = selectedTouristList.isNotEmpty(),
@@ -158,7 +163,7 @@ fun TravelSearchScreen(
     TouristLazyColumn(
         listState = listState,
         touristList = touristList,
-        onClickTourist = { TODO() },
+        onClickTourist = onTouristDetail,
         scrollToFirstItem = scrollToFirstItem,
         onSelectTourist = onSelectTourist,
     )

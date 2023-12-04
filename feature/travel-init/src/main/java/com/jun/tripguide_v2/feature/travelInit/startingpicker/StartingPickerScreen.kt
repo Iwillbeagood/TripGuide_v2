@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,6 +44,7 @@ fun StartingPickerScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val effect by viewModel.uiEffect.collectAsStateWithLifecycle()
     val keyword by viewModel.keyword.collectAsStateWithLifecycle()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(effect) {
         val startingPoint = (effect as? StartingPickerUiEffect.StartingPicked)?.address
@@ -64,7 +66,8 @@ fun StartingPickerScreen(
         CustomSearchView(
             value = keyword,
             onValueChange = { viewModel.searchAddress(it) },
-            onValueClear = { viewModel.clearKeyword() }
+            onValueClear = { viewModel.clearKeyword() },
+            keyboardController = keyboardController
         )
         AddressItemsColumn(
             addresses = (uiState as? StartingPickerUiState.Addresses)?.addresses ?: emptyList(),

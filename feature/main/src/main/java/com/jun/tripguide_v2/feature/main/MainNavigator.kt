@@ -18,6 +18,7 @@ import com.jun.tripguide_v2.feature.mytravelPlan.navigation.navigateTravelPlan
 import com.jun.tripguide_v2.feature.recommend.navigation.navigateRecommend
 import com.jun.tripguide_v2.feature.setting.navigation.navigateSetting
 import com.jun.tripguide_v2.feature.travelRecommend.navigation.navigateTravelRecommend
+import com.jun.tripguide_v2.tourist_detail.navigation.navigateTouristDetail
 
 internal class MainNavigator(
     val navController: NavHostController
@@ -66,8 +67,12 @@ internal class MainNavigator(
         navController.navigateTravelRecommend(travelId)
     }
 
-    fun navigateTouristSearch(travelId: String) {
+    fun navigateTravelSearch(travelId: String) {
         navController.navigateTravelSearchRoute(travelId)
+    }
+
+    fun navigateTouristDetail(touristId: String) {
+        navController.navigateTouristDetail(touristId)
     }
 
     fun navigateTravelPlan(travelId: String) {

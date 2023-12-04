@@ -5,6 +5,8 @@ import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoKeywordApi
 import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoRouteAPI
 import com.jun.tripguide_v2.core.data.api.tourapi.OpenTouristsApi
 import com.jun.tripguide_v2.core.data.api.tourapi.TourAreaCodeApi
+import com.jun.tripguide_v2.core.data.api.tourapi.TourCommonInfoApi
+import com.jun.tripguide_v2.core.data.api.tourapi.TourDetailIntroApi
 import com.jun.tripguide_v2.core.data.api.tourapi.TourSearchKeywordApi
 import dagger.Module
 import dagger.Provides
@@ -72,6 +74,15 @@ object ApiModule {
     fun provideTourKeywordApi(retrofit: Retrofit): TourSearchKeywordApi =
         retrofit.create(TourSearchKeywordApi::class.java)
 
+    @Provides
+    @Singleton
+    fun provideTourCommonInfoApi(retrofit: Retrofit): TourCommonInfoApi =
+        retrofit.create(TourCommonInfoApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideTourDetailIntroApi(retrofit: Retrofit): TourDetailIntroApi =
+        retrofit.create(TourDetailIntroApi::class.java)
 
     @Provides
     @Singleton

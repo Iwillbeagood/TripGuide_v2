@@ -16,4 +16,5 @@ dependencies {
     implementation(libs.landscapist.animation)
 
     implementation(libs.wheelPicker)
+    implementation(libs.auto.image.slider)
 }

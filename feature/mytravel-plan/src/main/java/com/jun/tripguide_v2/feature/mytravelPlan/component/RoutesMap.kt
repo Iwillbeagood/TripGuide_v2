@@ -58,7 +58,5 @@ fun RoutesMap(
                 color = Gray
             )
         }
-
-
     }
 }

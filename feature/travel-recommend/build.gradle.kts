@@ -6,7 +6,3 @@ plugins {
 android {
     namespace = "com.jun.tripguide_v2.feature.travel_recommend"
 }
-
-dependencies {
-    implementation(libs.sharedElements)
-}

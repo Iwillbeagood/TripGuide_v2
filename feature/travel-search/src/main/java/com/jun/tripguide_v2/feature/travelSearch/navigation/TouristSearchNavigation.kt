@@ -14,6 +14,7 @@ fun NavController.navigateTravelSearchRoute(travelId: String) {
 fun NavGraphBuilder.travelSearchNavGraph(
     onBackClick: () -> Unit,
     onTravelSearchComplete: () -> Unit,
+    onTouristDetail: (String) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
 ) {
     composable(
@@ -32,7 +33,8 @@ fun NavGraphBuilder.travelSearchNavGraph(
             orderNum = if (string.contains("|")) string.replace("isInit", "").split("|")[1] else "",
             onBackClick = onBackClick,
             onShowErrorSnackBar = onShowErrorSnackBar,
-            onTravelSearchComplete = onTravelSearchComplete
+            onTravelSearchComplete = onTravelSearchComplete,
+            onTouristDetail = onTouristDetail
         )
     }
 }

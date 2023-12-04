@@ -13,4 +13,6 @@ dependencies {
     implementation(libs.wheelPicker)
     implementation(libs.lazyListReorder)
     implementation(libs.kakaoNavi)
+
+    implementation(libs.google.compose.maps)
 }

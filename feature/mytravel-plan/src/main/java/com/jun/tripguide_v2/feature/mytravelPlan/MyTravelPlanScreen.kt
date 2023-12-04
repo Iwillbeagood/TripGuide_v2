@@ -106,9 +106,7 @@ fun MyTravelPlanRoute(
         stateMarkerColumn = stateRouteMarkerColumn,
         viewModel = viewModel,
         onBackClick = {
-            if (viewModel.isRoutesDragged()) {
-                viewModel.showEditConfirmationDialog()
-            }
+            viewModel.showEditConfirmationDialog()
             onBackClick()
         },
         onSearchRoute = onSearchRoute,
@@ -168,19 +166,16 @@ fun MyTravelPlanContent(
                 onTravelDayItemClick = { viewModel.travelDaysItemPicked(it.day) },
                 onRouteItemClick = { viewModel.selectRouteItem(it.orderNum) },
                 onEditMode = {
-                    if (uiState.isEditMode && viewModel.isRoutesDragged()) {
+                    if (uiState.isEditMode) {
                         viewModel.showEditConfirmationDialog()
-                    } else {
-                        viewModel.changeEditMode()
                     }
+                    viewModel.changeEditMode()
                 },
                 onSearchRoute = {
                     onSearchRoute("${uiState.travel.travelId}|${it.orderNum}")
-                    viewModel.showEditConfirmationDialog()
                 },
                 onRecommendRoute = {
                     onRecommendRoute("${uiState.travel.travelId}|${it.orderNum}")
-                    viewModel.showEditConfirmationDialog()
                 },
                 onDeleteRoute = viewModel::deleteRoute,
                 onNavigateToRoute = onNavigateToRoute
