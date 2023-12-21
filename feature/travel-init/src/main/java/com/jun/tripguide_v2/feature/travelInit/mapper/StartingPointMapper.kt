@@ -4,6 +4,6 @@ import com.jun.tripguide_v2.core.model.StartingPoint
 
 fun String?.toStartingPoint(): StartingPoint? {
     if (isNullOrBlank()) return null
-    val (name, x, y) = split("/")
-    return StartingPoint(name, x.toDouble(), y.toDouble())
+    val (name, address, x, y) = split("/")
+    return StartingPoint(name, x.toDouble(), y.toDouble(), address)
 }

@@ -6,6 +6,9 @@ buildscript {
         mavenCentral()
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
     }
+    dependencies {
+        classpath(libs.secrets.gradle.plugin)
+    }
 }
 
 plugins {

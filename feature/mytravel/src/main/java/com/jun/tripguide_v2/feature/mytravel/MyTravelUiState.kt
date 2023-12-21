@@ -4,6 +4,8 @@ import com.jun.tripguide_v2.core.model.Travel
 
 sealed interface MyTravelUiState {
 
+    object Loading : MyTravelUiState
+
     object Empty : MyTravelUiState
 
     data class Travels(

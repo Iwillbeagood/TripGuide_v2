@@ -10,7 +10,7 @@ android {
     defaultConfig {
         buildConfigField("String", "KAKAO_API_KEY", getApiKey("kakao.api.key"))
         buildConfigField("String", "KAKAO_NATIVE_KEY", getApiKey("kakao.native.key"))
-        buildConfigField("String", "TOUR_API_KEY", getApiKey("tour.api.key"))
+        buildConfigField("String", "OPEN_API_KEY", getApiKey("open.api.key"))
     }
 
     buildFeatures {
@@ -21,6 +21,7 @@ android {
 dependencies {
     implementation(projects.core.data)
     implementation(projects.core.model)
+    implementation(libs.google.compose.maps)
 }
 
 fun getApiKey(propertyKey: String): String {

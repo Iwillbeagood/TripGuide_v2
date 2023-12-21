@@ -1,5 +1,6 @@
 package com.jun.tripguide_v2.feature.mytravelPlan
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jun.tripguide_v2.core.domain.usecase.room.GetTravelByIdUsecase
@@ -95,6 +96,7 @@ class MyTravelPlanViewModel @Inject constructor(
                     isBeforeRouteSelected = it.orderNum == selectedOrderNum + 1
                 )
             }
+
             _uiState.value = uiState.copy(
                 routes = newRoutes, duration = getDurationOfRoutes(newRoutes)
             )
@@ -118,6 +120,7 @@ class MyTravelPlanViewModel @Inject constructor(
                     )
                 }, nowDay = day, isEditMode = false
             )
+            _uiEffect.value = MyTravelPlanUiEffect.Idle
         }
 
         selectRouteItem(uiState.routes.find { it.day == day }?.orderNum ?: 0)
@@ -248,6 +251,14 @@ class MyTravelPlanViewModel @Inject constructor(
                 removeIf { it.orderNum == route.orderNum }
             })
             _uiEffect.value = MyTravelPlanUiEffect.Idle
+        }
+    }
+
+    fun changeRoutesMapState() {
+        _uiEffect.value = when(uiEffect.value) {
+            MyTravelPlanUiEffect.Idle -> MyTravelPlanUiEffect.ShowRoutesMap
+            MyTravelPlanUiEffect.ShowEditConfirmationDialog -> MyTravelPlanUiEffect.ShowRoutesMap
+            MyTravelPlanUiEffect.ShowRoutesMap -> MyTravelPlanUiEffect.Idle
         }
     }
 }

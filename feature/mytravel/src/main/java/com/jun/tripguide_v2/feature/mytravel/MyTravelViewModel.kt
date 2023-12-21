@@ -29,7 +29,7 @@ class MyTravelViewModel @Inject constructor(
     private val _errorFlow = MutableSharedFlow<Throwable>()
     val errorFlow: SharedFlow<Throwable> get() = _errorFlow
 
-    private val _uiState = MutableStateFlow<MyTravelUiState>(MyTravelUiState.Empty)
+    private val _uiState = MutableStateFlow<MyTravelUiState>(MyTravelUiState.Loading)
     val uiState: StateFlow<MyTravelUiState> get() = _uiState
 
     private val _uiEffect = MutableStateFlow<MyTravelUiEffect>(MyTravelUiEffect.Idle)

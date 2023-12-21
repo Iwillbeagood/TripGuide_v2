@@ -96,7 +96,7 @@ fun TravelSearchRoute(
             onNavigationClick = onBackClick,
             actionButtons = {
                 IconButton(
-                    onClick = { viewModel.travelSearchComplete(isInit, orderNum.toInt()) },
+                    onClick = { viewModel.travelSearchComplete(isInit, orderNum.toIntOrNull() ?: 0) },
                     modifier = Modifier.size(48.dp)
                 ) {
                     Icon(

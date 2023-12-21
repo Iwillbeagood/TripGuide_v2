@@ -3,11 +3,17 @@ package com.jun.tripguide_v2.core.data.di
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoKeywordApi
 import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoRouteAPI
+import com.jun.tripguide_v2.core.data.api.airplaneapi.AirplaneSchedulesApi
 import com.jun.tripguide_v2.core.data.api.tourapi.OpenTouristsApi
 import com.jun.tripguide_v2.core.data.api.tourapi.TourAreaCodeApi
 import com.jun.tripguide_v2.core.data.api.tourapi.TourCommonInfoApi
 import com.jun.tripguide_v2.core.data.api.tourapi.TourDetailIntroApi
+import com.jun.tripguide_v2.core.data.api.tourapi.TourFestivalApi
+import com.jun.tripguide_v2.core.data.api.tourapi.TourLocationTouristApi
 import com.jun.tripguide_v2.core.data.api.tourapi.TourSearchKeywordApi
+import com.jun.tripguide_v2.core.data.api.tourapi.TourStayApi
+import com.jun.tripguide_v2.core.data.api.trainapi.TrainInfoApi
+import com.jun.tripguide_v2.core.data.api.trainapi.TrainStationApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,6 +34,8 @@ object ApiModule {
     private const val TOUR_API_BASE_URI = "http://apis.data.go.kr/B551011/KorService1/"
     private const val KAKAO_BASE_URI = "https://dapi.kakao.com/"
     private const val KAKAO_MOBILITY_URI = "https://apis-navi.kakaomobility.com/"
+    private const val AIRPLANE_BASE_URI = "http://openapi.airport.co.kr/service/rest/FlightScheduleList/"
+    private const val TRAIN_BASE_URI = "http://apis.data.go.kr/1613000/TrainInfoService/"
 
     @Provides
     @Singleton
@@ -44,7 +52,6 @@ object ApiModule {
     @Singleton
     fun provideConverterFactory(json: Json): Converter.Factory =
         json.asConverterFactory("application/json".toMediaType())
-
 
     @Provides
     @Singleton
@@ -68,7 +75,6 @@ object ApiModule {
     fun provideTourAreaBaseListApi(retrofit: Retrofit): OpenTouristsApi =
         retrofit.create(OpenTouristsApi::class.java)
 
-
     @Provides
     @Singleton
     fun provideTourKeywordApi(retrofit: Retrofit): TourSearchKeywordApi =
@@ -83,6 +89,21 @@ object ApiModule {
     @Singleton
     fun provideTourDetailIntroApi(retrofit: Retrofit): TourDetailIntroApi =
         retrofit.create(TourDetailIntroApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideTourLocationTouristApi(retrofit: Retrofit): TourLocationTouristApi =
+        retrofit.create(TourLocationTouristApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideTourFestivalApi(retrofit: Retrofit): TourFestivalApi =
+        retrofit.create(TourFestivalApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideTourStayApi(retrofit: Retrofit): TourStayApi =
+        retrofit.create(TourStayApi::class.java)
 
     @Provides
     @Singleton
@@ -110,7 +131,44 @@ object ApiModule {
 
     @Provides
     @Singleton
+    fun provideAirplaneScheduleApi(
+        okHttpClient: OkHttpClient,
+        converterFactory: Converter.Factory
+    ): AirplaneSchedulesApi =
+        Retrofit.Builder()
+            .baseUrl(AIRPLANE_BASE_URI)
+            .addConverterFactory(converterFactory)
+            .client(okHttpClient).build()
+            .create(AirplaneSchedulesApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideTrainStationApi(
+        okHttpClient: OkHttpClient,
+        converterFactory: Converter.Factory
+    ): TrainStationApi =
+        Retrofit.Builder()
+            .baseUrl(TRAIN_BASE_URI)
+            .addConverterFactory(converterFactory)
+            .client(okHttpClient).build()
+            .create(TrainStationApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideTrainInfoApi(
+        okHttpClient: OkHttpClient,
+        converterFactory: Converter.Factory
+    ): TrainInfoApi =
+        Retrofit.Builder()
+            .baseUrl(TRAIN_BASE_URI)
+            .addConverterFactory(converterFactory)
+            .client(okHttpClient).build()
+            .create(TrainInfoApi::class.java)
+
+    @Provides
+    @Singleton
     fun provideJson(): Json = Json {
         ignoreUnknownKeys = true
     }
 }
+

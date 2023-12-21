@@ -5,6 +5,7 @@
 
 package com.jun.tripguide_v2.core.domain.usecase.route
 
+import android.util.Log
 import com.jun.tripguide_v2.core.domain.usecase.room.GetRoutesUsecase
 import com.jun.tripguide_v2.core.domain.usecase.room.GetTravelByIdUsecase
 import com.jun.tripguide_v2.core.domain.usecase.room.InsertRouteUsecase
@@ -12,7 +13,6 @@ import com.jun.tripguide_v2.core.domain.usecase.room.UpdateRouteUsecase
 import com.jun.tripguide_v2.core.domain.usecase.room.UpdateTravelUsecase
 import com.jun.tripguide_v2.core.model.Route
 import com.jun.tripguide_v2.core.model.Travel
-import java.util.UUID
 import javax.inject.Inject
 
 class GetOrderedTravelRouteUsecase @Inject constructor(
@@ -35,18 +35,16 @@ class GetOrderedTravelRouteUsecase @Inject constructor(
         }
 
         val orderedRoutes = getOrderedRouteByTSLUsecase(travel.toOriginRoute(), routes)
-
+        val setTimeRoutes = setTimeUsecase(travelStartTime, orderedRoutes).initRoutes()
         updateTravelUsecase(travel.copy(isOrdered = true))
-        val firstRoute = travel.toOriginRoute().copy(time = travelStartTime, isFirst = true)
-        val lastRoute = travel.toOriginRoute().copy(orderNum = orderedRoutes.size - 1, isLast = true)
-        insertRouteUsecase(listOf(firstRoute, lastRoute))
-        return setTimeUsecase(travelStartTime, orderedRoutes.initRoutes()).also {
-            updateRouteUsecase(it)
-        }
+        updateRouteUsecase(setTimeRoutes)
+        insertRouteUsecase(listOf(setTimeRoutes.first(), setTimeRoutes.last()))
+        return setTimeRoutes
     }
 
     private fun Travel.toOriginRoute() =
         Route(
+            id = null,
             travelId = travelId,
             title = startingPoint.name,
             mapX = startingPoint.x,

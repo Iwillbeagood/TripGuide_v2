@@ -16,13 +16,16 @@ hiltNavigationCompose = "1.0.0"
 okhttp = "4.11.0"
 retrofit = "2.9.0"
 retrofitKotlinxSerializationJson = "1.0.0"
-kotlinxSerializationJson = "1.5.1"
+kotlinxSerializationJson = "1.6.0"
+# https://github.com/pdvrieze/xmlutil
+kotlinxSerializationXml = "0.86.2"
 kotlinxParcelize = "1.6.0"
 kotlinxDatetime = "0.2.1"
 kotlinxImmutable = "0.3.5"
 
-landscapist = "2.2.5"
+landscapist = "2.2.12"
 composeShimmer = "1.0.5"
+coil = "2.2.2"
 
 junit4 = "4.13.2"
 junitVintageEngine = "5.10.0"
@@ -34,6 +37,7 @@ kotest = "5.6.2"
 # https://github.com/detekt/detekt
 detekt = "1.23.0"
 mockk = "1.13.5"
+secretsGradlePlugin = "2.0.1"
 turbine = "1.0.0"
 
 coroutine = "1.7.2"
@@ -97,13 +101,18 @@ okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor",
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-kotlin-serialization = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofitKotlinxSerializationJson" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+kotlinx-serialization-xml = { module = "io.github.pdvrieze.xmlutil:serialization-android", version.ref = "kotlinxSerializationXml" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxImmutable" }
+
 
 landscapist-bom = { group = "com.github.skydoves", name = "landscapist-bom", version.ref = "landscapist" }
 landscapist-coil = { group = "com.github.skydoves", name = "landscapist-coil", version.ref = "landscapist" }
 landscapist-placeholder = { group = "com.github.skydoves", name = "landscapist-placeholder" }
 landscapist-animation = { group = "com.github.skydoves", name = "landscapist-animation", version.ref = "landscapist" }
+
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+coil-gif = { group = "io.coil-kt", name = "coil-gif", version.ref = "coil" }
 
 compose-shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "composeShimmer" }
 
@@ -116,6 +125,7 @@ kotest-runner = { group = "io.kotest", name = "kotest-runner-junit5", version.re
 kotest-assertions = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+secrets-gradle-plugin = { module = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
 coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutine" }
@@ -150,6 +160,13 @@ kakaoNavi = { module = "com.kakao.sdk:v2-navi", version.ref = "kakaoSdk"}
 
 #google maps compose
 google-compose-maps = { module = "com.google.maps.android:maps-compose", version.ref = "googleMapsCompose"}
+google-compose-maps-utils = { module = "com.google.maps.android:maps-compose-utils", version.ref = "googleMapsCompose"}
+google-compose-maps-widgets = { module = "com.google.maps.android:maps-compose-widgets", version.ref = "googleMapsCompose"}
+
+#location
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version = "21.0.1" }
+accompanist-location = { group = "com.google.accompanist", name = "accompanist-permissions", version = "0.31.3-beta" }
+
 
 [bundles]
 

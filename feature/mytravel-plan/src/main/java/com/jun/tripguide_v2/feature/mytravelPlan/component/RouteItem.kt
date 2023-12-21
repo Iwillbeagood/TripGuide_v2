@@ -1,13 +1,8 @@
 package com.jun.tripguide_v2.feature.mytravelPlan.component
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -16,7 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,11 +18,9 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Casino
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DirectionsRun
-import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Festival
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Hotel
@@ -36,9 +28,7 @@ import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.SportsGymnastics
-import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material.icons.filled.Tour
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -51,16 +41,12 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jun.tripguide_v2.core.designsystem.component.CustomCoilImage
-import com.jun.tripguide_v2.core.designsystem.component.CustomTimePicker
 import com.jun.tripguide_v2.core.designsystem.theme.DuskGray
 import com.jun.tripguide_v2.core.designsystem.theme.LightGray
-import com.jun.tripguide_v2.core.designsystem.theme.PaperGray
 import com.jun.tripguide_v2.core.designsystem.theme.White
 import com.jun.tripguide_v2.core.model.ContentType
 import com.jun.tripguide_v2.feature.mytravel.plan.R

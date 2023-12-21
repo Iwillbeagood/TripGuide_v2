@@ -1,6 +1,6 @@
 package com.jun.tripguide_v2.feature.travelInit.areapicker
 
-import com.jun.tripguide_v2.core.model.AreaCode
+import com.jun.tripguide_v2.core.model.tourApi.AreaCode
 
 sealed interface AreaPickerUiEffect {
 

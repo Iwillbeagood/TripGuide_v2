@@ -1,5 +1,6 @@
 package com.jun.tripguide_v2.feature.mytravelPlan.component
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -91,7 +93,7 @@ fun RouteMarkerItem(
             }
             val hour = duration.toHoursPart()
             val minute = duration.toMinutesPart()
-            if (isSelected) {
+            AnimatedVisibility(isSelected) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier

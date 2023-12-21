@@ -1,21 +1,22 @@
 package com.jun.tripguide_v2.feature.mytravel
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.paddingFromBaseline
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -29,8 +30,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -38,9 +40,10 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.jun.tripguide_v2.core.designsystem.component.AutoSlidingCarousel
 import com.jun.tripguide_v2.core.designsystem.component.CustomAlertDialog
 import com.jun.tripguide_v2.core.designsystem.component.CustomCoilImage
-import com.jun.tripguide_v2.core.designsystem.component.CustomTopAppBar
-import com.jun.tripguide_v2.core.designsystem.component.TopAppBarNavigationType
+import com.jun.tripguide_v2.core.designsystem.component.CustomGifImage
+import com.jun.tripguide_v2.core.designsystem.component.CustomLoading
 import com.jun.tripguide_v2.core.designsystem.theme.Black
+import com.jun.tripguide_v2.core.designsystem.theme.DuskGray
 import com.jun.tripguide_v2.core.designsystem.theme.LightGray
 import com.jun.tripguide_v2.core.designsystem.theme.PaperGray
 import com.jun.tripguide_v2.core.designsystem.theme.White
@@ -73,9 +76,6 @@ fun MyTravelRoute(
             .background(PaperGray)
             .systemBarsPadding()
     ) {
-        CustomTopAppBar(
-            title = "나의 여행", navigationType = TopAppBarNavigationType.Nothing
-        )
         MyTravelContent(
             uiState = uiState,
             onClickTravel = { onTravelClick(it.travelId) },
@@ -98,6 +98,7 @@ fun MyTravelContent(
     uiState: MyTravelUiState, onClickTravel: (Travel) -> Unit, onLongClickTravel: (Travel) -> Unit
 ) {
     when (uiState) {
+        MyTravelUiState.Loading -> CustomLoading()
         MyTravelUiState.Empty -> MyTravelEmptyScreen()
         is MyTravelUiState.Travels -> MyTravelScreen(
             previousTravels = uiState.previousTravels,
@@ -120,18 +121,21 @@ fun MyTravelScreen(
     LazyColumn {
         myTravelLazyColumn(
             title = "지난 여행",
+            id = R.drawable.gif_past,
             travels = previousTravels,
             onClickTravel = onClickTravel,
             onLongClickTravel = onLongClickTravel
         )
         myTravelLazyColumn(
             title = "진행중인 여행",
+            id = R.drawable.gif_now,
             travels = currentTravels,
             onClickTravel = onClickTravel,
             onLongClickTravel = onLongClickTravel
         )
         myTravelLazyColumn(
             title = "계획된 여행",
+            id = R.drawable.gif_upcoming,
             travels = plannedTravels,
             onClickTravel = onClickTravel,
             onLongClickTravel = onLongClickTravel
@@ -141,6 +145,7 @@ fun MyTravelScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 fun LazyListScope.myTravelLazyColumn(
+    @DrawableRes id: Int,
     title: String,
     travels: List<Travel>,
     onClickTravel: (Travel) -> Unit,
@@ -149,16 +154,24 @@ fun LazyListScope.myTravelLazyColumn(
     if (travels.isEmpty()) return
 
     item {
-        AnimatedVisibility(
-            visible = true, enter = fadeIn()
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .height(70.dp)
+                .padding(top = 30.dp)
+                .padding(horizontal = 15.dp)
         ) {
+            CustomGifImage(
+                gifImage = id,
+                modifier = Modifier.size(40.dp)
+            )
+            Spacer(modifier = Modifier.width(10.dp))
             Text(
                 text = title,
+                textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .paddingFromBaseline(top = 10.dp, bottom = 10.dp)
-                    .padding(horizontal = 15.dp)
+                modifier = Modifier.padding(bottom = 5.dp)
             )
         }
     }
@@ -172,7 +185,9 @@ fun LazyListScope.myTravelLazyColumn(
                 .fillMaxSize()
                 .padding(start = 14.dp, end = 14.dp, top = 7.dp, bottom = 7.dp)
                 .animateItemPlacement()
-                .combinedClickable(onClick = { onClickTravel(it) }, onLongClick = { onLongClickTravel(it) })
+                .combinedClickable(
+                    onClick = { onClickTravel(it) },
+                    onLongClick = { onLongClickTravel(it) })
         )
     }
 }
@@ -241,11 +256,31 @@ fun MyTravelItem(
 
 @Composable
 fun MyTravelEmptyScreen() {
-    Text(
-        text = "여행 일정이 없습니다.",
-        style = MaterialTheme.typography.labelLarge,
-        fontWeight = FontWeight.Bold,
-        color = Color.Black,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
-    )
+    ) {
+        Spacer(modifier = Modifier.height(40.dp))
+        CustomGifImage(
+            gifImage = R.drawable.gif_empty_page,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 50.dp, end = 50.dp)
+                .aspectRatio(1f)
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text = "여행 일정이 없습니다",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            color = Black
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text = "일정 추가 버튼을 눌러\n새로운 일정을 추가해 주세요",
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center,
+            color = DuskGray
+        )
+    }
 }

@@ -22,5 +22,8 @@ sealed interface MyTravelPlanUiState {
 
         val dayRoutes: List<Route>
             get() = routes.filter { it.day == nowDay }
+
+        val selectedRoute: Route
+            get() = routes.find { it.isSelected } ?: routes.first()
     }
 }

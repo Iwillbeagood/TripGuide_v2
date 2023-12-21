@@ -14,6 +14,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.landscapist.coil)
     implementation(libs.landscapist.animation)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
 
     implementation(libs.wheelPicker)
     implementation(libs.auto.image.slider)

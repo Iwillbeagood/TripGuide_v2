@@ -6,7 +6,7 @@ object TempConst {
         "numOfRows" to "20",
         "MobileOS" to "AND",
         "MobileApp" to "TripGuide_v2",
-        "serviceKey" to BuildConfig.TOUR_API_KEY,
+        "serviceKey" to BuildConfig.OPEN_API_KEY,
         "_type" to "json"
     )
 }

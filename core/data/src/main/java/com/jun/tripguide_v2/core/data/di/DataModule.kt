@@ -4,6 +4,8 @@ import com.jun.tripguide_v2.core.data.repository.kakao.KakaoKeywordRepositoryImp
 import com.jun.tripguide_v2.core.data.repository.kakao.KakaoRouteRepositoryImpl
 import com.jun.tripguide_v2.core.data.repository.kakao.KakaoKeywordRepository
 import com.jun.tripguide_v2.core.data.repository.kakao.KakaoRouteRepository
+import com.jun.tripguide_v2.core.data.repository.airplaneapi.AirplaneScheduleRepository
+import com.jun.tripguide_v2.core.data.repository.airplaneapi.AirplaneScheduleRepositoryImpl
 import com.jun.tripguide_v2.core.data.repository.room.RouteRepositoryImpl
 import com.jun.tripguide_v2.core.data.repository.room.TravelRepositoryImpl
 import com.jun.tripguide_v2.core.data.repository.room.RouteRepository
@@ -17,7 +19,17 @@ import com.jun.tripguide_v2.core.data.repository.tourapi.AreaCodeRepositoryImpl
 import com.jun.tripguide_v2.core.data.repository.tourapi.KeywordRepositoryImpl
 import com.jun.tripguide_v2.core.data.repository.tourapi.DetailIntroRepository
 import com.jun.tripguide_v2.core.data.repository.tourapi.DetailIntroRepositoryImpl
+import com.jun.tripguide_v2.core.data.repository.tourapi.FestivalRepository
+import com.jun.tripguide_v2.core.data.repository.tourapi.FestivalRepositoryImpl
 import com.jun.tripguide_v2.core.data.repository.tourapi.KeywordRepository
+import com.jun.tripguide_v2.core.data.repository.tourapi.LocationTouristRepository
+import com.jun.tripguide_v2.core.data.repository.tourapi.LocationTouristRepositoryImpl
+import com.jun.tripguide_v2.core.data.repository.tourapi.StayRepository
+import com.jun.tripguide_v2.core.data.repository.tourapi.StayRepositoryImpl
+import com.jun.tripguide_v2.core.data.repository.trainapi.TrainInfoRepository
+import com.jun.tripguide_v2.core.data.repository.trainapi.TrainInfoRepositoryImpl
+import com.jun.tripguide_v2.core.data.repository.trainapi.TrainStationRepository
+import com.jun.tripguide_v2.core.data.repository.trainapi.TrainStationRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -53,6 +65,11 @@ internal abstract class DataModule {
     ): DetailIntroRepository
 
     @Binds
+    abstract fun bindsLocationTouristRepository(
+        repository: LocationTouristRepositoryImpl
+    ): LocationTouristRepository
+
+    @Binds
     abstract fun bindsTravelRepository(
         travelRepository: TravelRepositoryImpl
     ): TravelRepository
@@ -63,6 +80,16 @@ internal abstract class DataModule {
     ): RouteRepository
 
     @Binds
+    abstract fun bindsFestivalRepository(
+        festivalRepository: FestivalRepositoryImpl
+    ): FestivalRepository
+
+    @Binds
+    abstract fun bindsStayRepository(
+        stayRepository: StayRepositoryImpl
+    ): StayRepository
+
+    @Binds
     abstract fun bindsKakaoLocalKeywordRepository(
         kakaoLocalKeywordRepository: KakaoKeywordRepositoryImpl
     ): KakaoKeywordRepository
@@ -71,4 +98,19 @@ internal abstract class DataModule {
     abstract fun bindsKakaoRouteRepository(
         kakaoRouteRepository: KakaoRouteRepositoryImpl
     ): KakaoRouteRepository
+
+    @Binds
+    abstract fun bindsAirplaneScheduleRepository(
+        airplaneScheduleRepository: AirplaneScheduleRepositoryImpl
+    ): AirplaneScheduleRepository
+
+    @Binds
+    abstract fun bindsTrainStationRepository(
+        trainStationRepository: TrainStationRepositoryImpl
+    ): TrainStationRepository
+
+    @Binds
+    abstract fun bindsTrainInfoRepository(
+        trainInfoRepository: TrainInfoRepositoryImpl
+    ): TrainInfoRepository
 }

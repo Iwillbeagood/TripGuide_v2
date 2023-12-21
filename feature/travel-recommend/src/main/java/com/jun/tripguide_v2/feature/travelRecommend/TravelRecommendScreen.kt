@@ -110,7 +110,7 @@ fun TravelRecommendRoute(
             onNavigationClick = onBackClick,
             actionButtons = {
                 IconButton(
-                    onClick = { viewModel.travelRecommendComplete(isInit, orderNum.toInt()) },
+                    onClick = { viewModel.travelRecommendComplete(isInit, orderNum.toIntOrNull() ?: 0) },
                     modifier = Modifier.size(48.dp)
                 ) {
                     Icon(

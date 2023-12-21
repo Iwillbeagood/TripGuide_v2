@@ -3,7 +3,7 @@ package com.jun.tripguide_v2.feature.travelInit.areapicker
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jun.tripguide_v2.core.domain.usecase.tourapi.GetAreaCodeUsecase
-import com.jun.tripguide_v2.core.model.AreaCode
+import com.jun.tripguide_v2.core.model.tourApi.AreaCode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

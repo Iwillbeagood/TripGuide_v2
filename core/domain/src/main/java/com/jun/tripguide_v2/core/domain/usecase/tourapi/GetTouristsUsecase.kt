@@ -5,15 +5,10 @@ import com.jun.tripguide_v2.core.domain.TempConst.queryParams
 import com.jun.tripguide_v2.core.domain.usecase.room.GetRoutesUsecase
 import com.jun.tripguide_v2.core.domain.usecase.room.GetTravelByIdUsecase
 import com.jun.tripguide_v2.core.model.Tourist
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class GetTouristsUsecase @Inject constructor(
     private val touristsRepository: TouristsRepository,
     private val getTravelByIdUsecase: GetTravelByIdUsecase,

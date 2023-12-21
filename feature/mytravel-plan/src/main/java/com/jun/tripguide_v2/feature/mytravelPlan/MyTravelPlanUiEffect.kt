@@ -5,4 +5,6 @@ sealed interface MyTravelPlanUiEffect {
     object Idle : MyTravelPlanUiEffect
 
     object ShowEditConfirmationDialog : MyTravelPlanUiEffect
+
+    object ShowRoutesMap : MyTravelPlanUiEffect
 }

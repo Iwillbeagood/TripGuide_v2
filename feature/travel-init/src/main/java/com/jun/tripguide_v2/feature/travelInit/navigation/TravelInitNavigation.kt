@@ -4,7 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.jun.tripguide_v2.core.model.Address
-import com.jun.tripguide_v2.core.model.AreaCode
+import com.jun.tripguide_v2.core.model.tourApi.AreaCode
 import com.jun.tripguide_v2.feature.travelInit.TravelInitRoute
 import com.jun.tripguide_v2.feature.travelInit.areapicker.AreaPickerRoute
 import com.jun.tripguide_v2.feature.travelInit.mapper.toDestinationCode

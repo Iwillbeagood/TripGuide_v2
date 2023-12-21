@@ -18,4 +18,7 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.datetime)
+
+    implementation(libs.google.compose.maps)
+    implementation(libs.play.services.location)
 }

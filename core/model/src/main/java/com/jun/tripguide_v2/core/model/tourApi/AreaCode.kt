@@ -1,4 +1,4 @@
-package com.jun.tripguide_v2.core.model
+package com.jun.tripguide_v2.core.model.tourApi
 
 data class AreaCode(
     val code: String,

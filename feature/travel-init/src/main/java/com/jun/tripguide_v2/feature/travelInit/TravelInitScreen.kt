@@ -1,12 +1,12 @@
 package com.jun.tripguide_v2.feature.travelInit
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +22,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,24 +45,28 @@ import com.jun.tripguide_v2.core.designsystem.theme.PaperGray
 import com.jun.tripguide_v2.core.designsystem.theme.Sky
 import com.jun.tripguide_v2.core.designsystem.theme.White
 import com.jun.tripguide_v2.core.model.DestinationCode
-import com.jun.tripguide_v2.core.model.MeansType
+import com.jun.tripguide_v2.core.model.MeansType.CAR
+import com.jun.tripguide_v2.core.model.MeansType.PLANE
+import com.jun.tripguide_v2.core.model.MeansType.TRAIN
 import com.jun.tripguide_v2.core.model.StartingPoint
+import com.jun.tripguide_v2.core.model.TrainStation
 import com.jun.tripguide_v2.feature.travelInit.component.DurationDatePicker
+import com.jun.tripguide_v2.feature.travelInit.component.TravelMeans
 import com.jun.tripguide_v2.feature.travelInit.util.toStringType
 import kotlinx.coroutines.flow.collectLatest
+import java.time.LocalTime
 
 @Composable
 fun TravelInitRoute(
     onBackClick: () -> Unit,
     onAreaPickerClick: () -> Unit,
     onStartingPickerClick: () -> Unit,
-    onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     destination: DestinationCode?,
     startingPoint: StartingPoint?,
+    onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     onTravelInitComplete: (String) -> Unit,
     viewModel: TravelInitViewModel = hiltViewModel()
 ) {
-    val scrollState = rememberScrollState()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val uiEffect by viewModel.uiEffect.collectAsStateWithLifecycle()
 
@@ -75,87 +81,282 @@ fun TravelInitRoute(
         }
     }
 
+    LaunchedEffect(destination) {
+        if (destination != null) {
+            viewModel.fetchArriveTrainStations(destination)
+        }
+    }
+
+    LaunchedEffect(startingPoint) {
+        if (startingPoint != null) {
+            viewModel.fetchDepartTrainStations(startingPoint)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(PaperGray)
             .systemBarsPadding()
     ) {
-        CustomTopAppBar(
-            title = "여행 기본 정보",
-            navigationType = TopAppBarNavigationType.Back,
-            onNavigationClick = onBackClick
+        TravelInitScreen(
+            uiState = uiState as TravelInitUiState.Success,
+            onBackClick = onBackClick,
+            onAreaPickerClick = onAreaPickerClick,
+            onStartingPickerClick = onStartingPickerClick,
+            destination = destination,
+            startingPoint = startingPoint,
+            viewModel = viewModel
         )
-        Column(
-            modifier = Modifier
-                .verticalScroll(scrollState)
-        ) {
-            ScreenSection(title = "여행지") {
-                TravelInitText(
-                    text = destination?.destinationString ?: "여행지를 선택해 주세요.",
-                    onClick = onAreaPickerClick
-                )
-            }
-            ScreenSection(title = "출발 장소") {
-                TravelInitText(
-                    text = startingPoint?.name ?: "출발 장소를 입력해 주세요.",
-                    onClick = onStartingPickerClick
-                )
-            }
-            ScreenSection(title = "여행 일정") {
-                TravelInitText(
-                    text = (uiState as? TravelInitUiState.Success)?.dateDuration?.toStringType()
-                        ?: "여행 일정을 선택해 주세요.",
-                    onClick = viewModel::showTravelDurationDialog
-                )
-            }
-            ScreenSection(title = "이동 수단") {
-                TravelMeans(
-                    meansItems = (uiState as TravelInitUiState.Success).meansItems,
-                    onItemClick = viewModel::meansItemPicked
-                )
-            }
-            AnimatedVisibility(
-                visible = arrayOf(
-                    MeansType.CAR,
-                    MeansType.PUBLIC_TRANS
-                ).contains((uiState as TravelInitUiState.Success).meansItems.find { it.isSelected }?.type),
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                ScreenSection(title = "여행 출발 시간") {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        CustomTimePicker(
-                            onTimePick = viewModel::startTimePicked,
-                            timeFormat = TimeFormat.AM_PM,
-                            size = DpSize(200.dp, 128.dp)
-                        )
-                    }
-                }
-            }
-            // "비행기, 기차 이용시 출발역, 도착역, 출발공항, 도착공항, 출발시간, 도착시간, API를 통해 입력"
-            Spacer(Modifier.height(32.dp))
-            TravelInitCompleteBtn(
-                onClick = {
-                    viewModel.addTravelComplete(
-                        destination = destination ?: DestinationCode("", "", ""),
-                        startingPoint = startingPoint ?: StartingPoint("", 0.0, 0.0)
-                    )
-                }
-            )
-        }
     }
 
-    if (uiEffect is TravelInitUiEffect.ShowTravelDurationDialog) {
+    AnimatedVisibility(uiEffect is TravelInitUiEffect.ShowTravelDurationDialog) {
         DurationDatePicker(
             onBackClick = viewModel::resetUiEffect,
             onDurationPick = viewModel::durationPicked
         )
     }
+}
 
+@Composable
+fun TravelInitScreen(
+    uiState: TravelInitUiState.Success,
+    onBackClick: () -> Unit,
+    onAreaPickerClick: () -> Unit,
+    onStartingPickerClick: () -> Unit,
+    destination: DestinationCode?,
+    startingPoint: StartingPoint?,
+    viewModel: TravelInitViewModel,
+    scrollState: ScrollState = rememberScrollState()
+) {
+    CustomTopAppBar(
+        title = "여행 기본 정보",
+        navigationType = TopAppBarNavigationType.Back,
+        onNavigationClick = onBackClick
+    )
+    Column(
+        modifier = Modifier.verticalScroll(scrollState)
+    ) {
+        ScreenSection(title = "출발 장소") {
+            TravelInitText(
+                text = startingPoint?.name ?: "출발 장소를 입력해 주세요.",
+                onClick = onStartingPickerClick
+            )
+        }
+        ScreenSection(title = "여행지") {
+            TravelInitText(
+                text = destination?.destinationString ?: "여행지를 선택해 주세요.",
+                onClick = onAreaPickerClick
+            )
+        }
+        ScreenSection(title = "여행 일정") {
+            TravelInitText(
+                text = uiState.dateDuration?.toStringType()
+                    ?: "여행 일정을 선택해 주세요.",
+                onClick = viewModel::showTravelDurationDialog
+            )
+        }
+        ScreenSection(title = "이동 수단") {
+            TravelMeans(
+                meansItems = uiState.meansItems,
+                onItemClick = viewModel::meansItemPicked
+            )
+        }
+        AdditionalInfoByMeans(
+            uiState = uiState,
+            changeDropDownState = viewModel::changeDropDownExpanded,
+            onStationClick = viewModel::arriveStationSelected,
+            startTimePicked = viewModel::startTimePicked,
+        )
+        Spacer(Modifier.height(32.dp))
+        TravelInitCompleteBtn(
+            onClick = {
+                viewModel.addTravelComplete(
+                    destination = destination,
+                    startingPoint = startingPoint
+                )
+            }
+        )
+    }
+}
+
+@Composable
+fun AdditionalInfoByMeans(
+    uiState: TravelInitUiState.Success,
+    changeDropDownState: (StationType) -> Unit,
+    onStationClick: (TrainStation, StationType) -> Unit,
+    startTimePicked: (LocalTime) -> Unit,
+) {
+    when (uiState.selectedMeans) {
+        CAR -> CarAdditionalInfo(startTimePicked)
+        PLANE -> PlaneAdditionalInfo()
+        TRAIN -> TrainAdditionalInfo(
+            uiState = uiState,
+            changeDropDownState = changeDropDownState,
+            onStationClick = onStationClick
+        )
+    }
+}
+
+@Composable
+fun CarAdditionalInfo(
+    startTimePicked: (LocalTime) -> Unit
+) {
+    AnimatedVisibility(true) {
+        ScreenSection(title = "여행 출발 시간") {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CustomTimePicker(
+                    onTimePick = startTimePicked,
+                    timeFormat = TimeFormat.AM_PM,
+                    size = DpSize(200.dp, 128.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun PlaneAdditionalInfo(
+) {
+    AnimatedVisibility(true) {
+
+        ScreenSection(title = "여행 출발 시간") {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+            }
+        }
+
+    }
+}
+
+@Composable
+fun TrainAdditionalInfo(
+    uiState: TravelInitUiState.Success,
+    changeDropDownState: (StationType) -> Unit,
+    onStationClick: (TrainStation, StationType) -> Unit,
+) {
+    AnimatedVisibility(true) {
+        Column {
+            ScreenSection(title = "출발역") {
+                TravelInitText(
+                    text = uiState.selectedDepartStation?.stationName
+                        ?: "출발 장소를 먼저 입력해 주세요.",
+                    onClick = {
+                        if (uiState.arriveTrainStations.isNotEmpty())
+                            changeDropDownState(StationType.DEPART)
+                    }
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
+                ) {
+                    DropdownMenu(
+                        expanded = uiState.departDropDownExpanded,
+                        onDismissRequest = { changeDropDownState(StationType.DEPART) }
+                    ) {
+                        uiState.departTrainStations.forEach {
+                            DropdownMenuItem(
+                                text = { Text(it.stationName) },
+                                onClick = { onStationClick(it, StationType.DEPART) },
+                            )
+                        }
+                    }
+                }
+            }
+            ScreenSection(title = "여행지 역") {
+                TravelInitText(
+                    text = uiState.selectedArriveStation?.stationName
+                        ?: "여행지를 먼저 선택해 주세요.",
+                    onClick = {
+                        if (uiState.arriveTrainStations.isNotEmpty())
+                            changeDropDownState(StationType.ARRIVE)
+                    }
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
+                ) {
+                    DropdownMenu(
+                        expanded = uiState.arriveDropDownExpanded,
+                        onDismissRequest = { changeDropDownState(StationType.ARRIVE) }
+                    ) {
+                        uiState.arriveTrainStations.forEach {
+                            DropdownMenuItem(
+                                text = { Text(it.stationName) },
+                                onClick = { onStationClick(it, StationType.ARRIVE) },
+                            )
+                        }
+                    }
+                }
+            }
+            AnimatedVisibility(visible = uiState.selectedDepartStation != null) {
+                ScreenSection(title = "여행가는 기차") {
+                    TravelInitText(
+                        text = uiState.selectedDepartStation?.stationName
+                            ?: "출발 장소를 먼저 입력해 주세요.",
+                        onClick = {
+                            if (uiState.arriveTrainStations.isNotEmpty())
+                                changeDropDownState(StationType.DEPART)
+                        }
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp)
+                    ) {
+                        DropdownMenu(
+                            expanded = uiState.departDropDownExpanded,
+                            onDismissRequest = { changeDropDownState(StationType.DEPART) }
+                        ) {
+                            uiState.departTrainStations.forEach {
+                                DropdownMenuItem(
+                                    text = { Text(it.stationName) },
+                                    onClick = { onStationClick(it, StationType.DEPART) },
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+            AnimatedVisibility(visible = uiState.selectedDepartStation != null) {
+                ScreenSection(title = "돌아오는 기차") {
+                    TravelInitText(
+                        text = uiState.selectedDepartStation?.stationName
+                            ?: "출발 장소를 먼저 입력해 주세요.",
+                        onClick = {
+                            if (uiState.arriveTrainStations.isNotEmpty())
+                                changeDropDownState(StationType.DEPART)
+                        }
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp)
+                    ) {
+                        DropdownMenu(
+                            expanded = uiState.departDropDownExpanded,
+                            onDismissRequest = { changeDropDownState(StationType.DEPART) }
+                        ) {
+                            uiState.departTrainStations.forEach {
+                                DropdownMenuItem(
+                                    text = { Text(it.stationName) },
+                                    onClick = { onStationClick(it, StationType.DEPART) },
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable

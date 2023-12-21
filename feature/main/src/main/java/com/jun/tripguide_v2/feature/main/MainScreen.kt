@@ -95,7 +95,7 @@ internal fun MainScreen(
                         onShowErrorSnackBar = onShowErrorSnackBar
                     )
                     recommendNavGraph(
-
+                        onShowErrorSnackBar = onShowErrorSnackBar
                     )
                     settingNavGraph(
 
@@ -103,15 +103,20 @@ internal fun MainScreen(
                     travelInitNavGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
                         onBackClickAreaCodes = { areaCode, sigunguCode ->
+                            val title = if (areaCode != sigunguCode) {
+                                "${areaCode.name} ${sigunguCode.name}"
+                            } else {
+                                areaCode.name
+                            }
                             navigator.popBackStackWithData(
                                 "destination",
-                                "${areaCode.code}/${sigunguCode.code}/${areaCode.name} ${sigunguCode.name}"
+                                "${areaCode.code}/${sigunguCode.code}/$title"
                             )
                         },
                         onBackClickAddress = { address ->
                             navigator.popBackStackWithData(
                                 "startingPoint",
-                                "${address.name}/${address.x}/${address.y}"
+                                "${address.name}/${address.address}/${address.x}/${address.y}"
                             )
                         },
                         onPickTravelInfoClick = navigator::navigatePickDestination,
