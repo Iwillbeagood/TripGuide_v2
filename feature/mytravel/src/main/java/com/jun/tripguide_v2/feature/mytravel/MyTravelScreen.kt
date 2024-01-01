@@ -32,14 +32,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.jun.tripguide_v2.core.designsystem.component.AutoSlidingCarousel
 import com.jun.tripguide_v2.core.designsystem.component.CustomAlertDialog
-import com.jun.tripguide_v2.core.designsystem.component.CustomCoilImage
+import com.jun.tripguide_v2.core.designsystem.component.CustomImage
 import com.jun.tripguide_v2.core.designsystem.component.CustomGifImage
 import com.jun.tripguide_v2.core.designsystem.component.CustomLoading
 import com.jun.tripguide_v2.core.designsystem.theme.Black
@@ -47,6 +46,7 @@ import com.jun.tripguide_v2.core.designsystem.theme.DuskGray
 import com.jun.tripguide_v2.core.designsystem.theme.LightGray
 import com.jun.tripguide_v2.core.designsystem.theme.PaperGray
 import com.jun.tripguide_v2.core.designsystem.theme.White
+import com.jun.tripguide_v2.core.model.ContentType
 import com.jun.tripguide_v2.core.model.DateDuration
 import com.jun.tripguide_v2.core.model.Travel
 import com.jun.tripguide_v2.feature.mytravel.util.toDateStringType
@@ -162,8 +162,7 @@ fun LazyListScope.myTravelLazyColumn(
                 .padding(horizontal = 15.dp)
         ) {
             CustomGifImage(
-                gifImage = id,
-                modifier = Modifier.size(40.dp)
+                gifImage = id, modifier = Modifier.size(40.dp)
             )
             Spacer(modifier = Modifier.width(10.dp))
             Text(
@@ -185,8 +184,7 @@ fun LazyListScope.myTravelLazyColumn(
                 .fillMaxSize()
                 .padding(start = 14.dp, end = 14.dp, top = 7.dp, bottom = 7.dp)
                 .animateItemPlacement()
-                .combinedClickable(
-                    onClick = { onClickTravel(it) },
+                .combinedClickable(onClick = { onClickTravel(it) },
                     onLongClick = { onLongClickTravel(it) })
         )
     }
@@ -195,7 +193,11 @@ fun LazyListScope.myTravelLazyColumn(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MyTravelItem(
-    title: String, images: List<String>, startDate: Long, endDate: Long, modifier: Modifier
+    title: String,
+    images: List<String>,
+    startDate: Long,
+    endDate: Long,
+    modifier: Modifier
 ) {
     Surface(
         shape = MaterialTheme.shapes.small,
@@ -206,41 +208,49 @@ fun MyTravelItem(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box {
+            Box(
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 AutoSlidingCarousel(itemsCount = images.size, itemContent = { index ->
-                    CustomCoilImage(
+                    CustomImage(
                         imageUrl = images[index],
+                        type = ContentType.All,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(250.dp),
                     )
                 })
-                Row(
+                Box(
                     modifier = Modifier
-                        .padding(5.dp)
-                        .clip(MaterialTheme.shapes.small)
                         .fillMaxWidth()
-                        .background(White.copy(alpha = 0.7f))
                         .wrapContentSize(Alignment.Center)
+                        .padding(2.dp)
                 ) {
-                    Text(
-                        text = DateDuration(startDate, endDate).toYearStringType(),
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = Black,
+                    Row(
                         modifier = Modifier
-                            .padding(2.dp)
-                            .alignByBaseline()
-                    )
-                    Text(
-                        text = DateDuration(startDate, endDate).toDateStringType(),
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = Black,
-                        modifier = Modifier
-                            .padding(2.dp)
-                            .alignByBaseline()
-                    )
+                            .clip(MaterialTheme.shapes.small)
+                            .background(White.copy(alpha = 0.7f))
+                            .padding(3.dp)
+                    ) {
+                        Text(
+                            text = DateDuration(startDate, endDate).toYearStringType(),
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Black,
+                            modifier = Modifier
+                                .padding(2.dp)
+                                .alignByBaseline()
+                        )
+                        Text(
+                            text = DateDuration(startDate, endDate).toDateStringType(),
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Black,
+                            modifier = Modifier
+                                .padding(2.dp)
+                                .alignByBaseline()
+                        )
+                    }
                 }
             }
             Text(
@@ -257,8 +267,7 @@ fun MyTravelItem(
 @Composable
 fun MyTravelEmptyScreen() {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
+        horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()
     ) {
         Spacer(modifier = Modifier.height(40.dp))
         CustomGifImage(

@@ -1,9 +1,10 @@
 package com.jun.tripguide_v2.core.data.mapper
 
 import com.jun.tripguide_v2.core.data.api.tourapi.model.location_tourist.LocationTouristItem
+import com.jun.tripguide_v2.core.data.api.tourapi.model.tourist.TouristItem
 import com.jun.tripguide_v2.core.model.Tourist
 
-fun LocationTouristItem.toData(): Tourist = Tourist(
+fun TouristItem.toData(): Tourist = Tourist(
     id = this.contentid,
     title = this.title,
     address = this.addr1,

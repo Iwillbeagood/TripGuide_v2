@@ -50,6 +50,7 @@ import com.jun.tripguide_v2.core.designsystem.theme.Gray
 import com.jun.tripguide_v2.core.designsystem.theme.LightGray
 import com.jun.tripguide_v2.core.designsystem.theme.PaperGray
 import com.jun.tripguide_v2.core.designsystem.theme.White
+import com.jun.tripguide_v2.core.model.ContentType
 import com.jun.tripguide_v2.core.model.FilterValue
 import com.jun.tripguide_v2.core.model.Tourist
 import com.jun.tripguide_v2.feature.travelRecommend.component.FilterTouristDialog
@@ -296,6 +297,7 @@ private fun TouristLazyColumn(
             ) { tourist ->
                 TouristItem(
                     title = tourist.title,
+                    type = ContentType.findByType(tourist.type),
                     address = tourist.address,
                     imageUrl = tourist.firstImage,
                     selected = tourist.isSelected,

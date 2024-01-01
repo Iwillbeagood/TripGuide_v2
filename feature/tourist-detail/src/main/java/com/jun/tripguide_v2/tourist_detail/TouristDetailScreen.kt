@@ -47,12 +47,13 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.jun.tripguide_v2.core.designsystem.component.CustomCoilImage
+import com.jun.tripguide_v2.core.designsystem.component.CustomImage
 import com.jun.tripguide_v2.core.designsystem.component.CustomLoading
 import com.jun.tripguide_v2.core.designsystem.theme.DarkGray
 import com.jun.tripguide_v2.core.designsystem.theme.Gray
 import com.jun.tripguide_v2.core.designsystem.theme.PaperGray
 import com.jun.tripguide_v2.core.designsystem.theme.White
+import com.jun.tripguide_v2.core.model.ContentType
 import com.jun.tripguide_v2.core.model.tourApi.CommonInfo
 import com.jun.tripguide_v2.core.model.tourApi.DetailIntro
 
@@ -113,8 +114,9 @@ fun TouristDetailScreen(
             .background(PaperGray)
             .systemBarsPadding()
     ) {
-        CustomCoilImage(
+        CustomImage(
             imageUrl = commonInfo.firstimage,
+            type = ContentType.findByType(commonInfo.contenttypeid),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(250.dp)

@@ -29,10 +29,12 @@ import com.jun.tripguide_v2.core.designsystem.theme.Gray
 import com.jun.tripguide_v2.core.designsystem.theme.LightGray
 import com.jun.tripguide_v2.core.designsystem.theme.Sky
 import com.jun.tripguide_v2.core.designsystem.theme.White
+import com.jun.tripguide_v2.core.model.ContentType
 
 @Composable
 fun TouristItem(
     title: String,
+    type: ContentType,
     address: String,
     imageUrl: String,
     selected: Boolean,
@@ -51,8 +53,9 @@ fun TouristItem(
             horizontalAlignment = Alignment.Start
         ) {
             Box {
-                CustomCoilImage(
+                CustomImage(
                     imageUrl = imageUrl,
+                    type = type,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp),

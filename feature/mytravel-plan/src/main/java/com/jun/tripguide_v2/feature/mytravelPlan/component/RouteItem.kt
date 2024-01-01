@@ -44,7 +44,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.jun.tripguide_v2.core.designsystem.component.CustomCoilImage
+import com.jun.tripguide_v2.core.designsystem.component.CustomImage
 import com.jun.tripguide_v2.core.designsystem.theme.DuskGray
 import com.jun.tripguide_v2.core.designsystem.theme.LightGray
 import com.jun.tripguide_v2.core.designsystem.theme.White
@@ -97,16 +97,11 @@ fun RouteItem(
                                 shape = RoundedCornerShape(2.dp),
                                 modifier = Modifier.padding(5.dp),
                             ) {
-                                CustomCoilImage(
+                                CustomImage(
                                     imageUrl = imageUrl,
-                                    modifier = Modifier
-                                        .size(60.dp),
-                                ) {
-                                    Icon(
-                                        imageVector = getImageOfType(type), contentDescription = null,
-                                        modifier = Modifier.size(30.dp)
-                                    )
-                                }
+                                    type = type,
+                                    modifier = Modifier.size(60.dp),
+                                )
                             }
 
                             Column(

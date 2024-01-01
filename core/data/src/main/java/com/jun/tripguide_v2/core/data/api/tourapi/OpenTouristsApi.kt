@@ -1,6 +1,6 @@
 package com.jun.tripguide_v2.core.data.api.tourapi
 
-import com.jun.tripguide_v2.core.data.api.tourapi.model.location_tourist.LocationTouristResponse
+import com.jun.tripguide_v2.core.data.api.tourapi.model.tourist.TouristResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.QueryMap
@@ -15,5 +15,5 @@ interface OpenTouristsApi {
         @Query("areaCode") areaCode: String,
         @Query("sigunguCode") sigunguCode: String? = null,
         @Query("contentTypeId") contentType: String? = null
-    ): LocationTouristResponse
+    ): TouristResponse
 }

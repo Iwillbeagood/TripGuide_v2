@@ -10,6 +10,8 @@ import com.jun.tripguide_v2.core.data.api.tourapi.model.detailIntro.ShoppingItem
 import com.jun.tripguide_v2.core.data.api.tourapi.model.detailIntro.TouristSpotItem
 import com.jun.tripguide_v2.core.data.api.tourapi.model.detailIntro.TravelCourseItem
 import com.jun.tripguide_v2.core.model.tourApi.DetailIntro
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 fun ItemTemplate.toDetails(): List<DetailIntro> {
     return when(this) {
@@ -27,8 +29,8 @@ fun ItemTemplate.toDetails(): List<DetailIntro> {
         )
         is EventFestivalItem -> listOf(
             program.toDetail("행사 프로그램"),
-            eventstartdate.toDetail("행사 시작일"),
-            eventenddate.toDetail("행사 종료일"),
+            eventstartdate.dateFormatter().toDetail("행사 시작일"),
+            eventenddate.dateFormatter().toDetail("행사 종료일"),
             eventplace.toDetail("행사 장소"),
             playtime.toDetail("공연 시간"),
             spendtimefestival.toDetail("관람 소요 시간"),
@@ -70,3 +72,9 @@ fun ItemTemplate.toDetails(): List<DetailIntro> {
 }
 
 fun String?.toDetail(title: String) = DetailIntro(title, this?.htmlToString().orEmpty())
+
+private fun String.dateFormatter(): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+    val date = LocalDate.parse(this, formatter)
+    return date.format(DateTimeFormatter.ofPattern("yyyy년 M월 d일"))
+}

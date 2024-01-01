@@ -1,5 +1,7 @@
 package com.jun.tripguide_v2.feature.main
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -50,6 +52,7 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 internal fun MainScreen(
     navigator: MainNavigator = rememberMainNavigator()
@@ -95,6 +98,8 @@ internal fun MainScreen(
                         onShowErrorSnackBar = onShowErrorSnackBar
                     )
                     recommendNavGraph(
+                        onTouristDetail = navigator::navigateTouristDetail,
+                        goBack = { navigator.navigate(MainBottomNavItem.MY_TRAVEL) },
                         onShowErrorSnackBar = onShowErrorSnackBar
                     )
                     settingNavGraph(
