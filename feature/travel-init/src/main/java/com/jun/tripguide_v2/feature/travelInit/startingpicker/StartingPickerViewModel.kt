@@ -29,29 +29,26 @@ class StartingPickerViewModel @Inject constructor(
 
     private var contentJob: Job? = null
 
-    fun searchAddress(keyword: String) {
-        if (keyword == "") return
+    fun searchAddress() {
+        if (keyword.value == "") return
 
         if (contentJob != null) {
             contentJob?.cancel()
         }
 
         contentJob = viewModelScope.launch {
-            _keyword.value = keyword
             _uiState.value = StartingPickerUiState.Addresses(
-                addresses = getKakaoLocalByKeywordUsecase(keyword)
+                addresses = getKakaoLocalByKeywordUsecase(keyword.value)
             )
         }
     }
 
-    fun clearKeyword() {
-        if (contentJob != null) {
-            contentJob?.cancel()
-        }
+    fun keywordChange(keyword: String) {
+        _keyword.value = keyword
+    }
 
-        contentJob = viewModelScope.launch {
-            _keyword.value = ""
-        }
+    fun clearKeyword() {
+        _keyword.value = ""
     }
 
     fun addressPicked(address: Address) {

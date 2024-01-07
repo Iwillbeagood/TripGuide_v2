@@ -32,6 +32,7 @@ import com.jun.tripguide_v2.core.designsystem.theme.White
 @Composable
 fun CustomSearchView(
     value: String,
+    onSearch: () -> Unit,
     onValueChange: (String) -> Unit,
     onValueClear: () -> Unit,
     keyboardController: SoftwareKeyboardController?
@@ -49,7 +50,6 @@ fun CustomSearchView(
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .height(50.dp)
             .padding(start = 15.dp, end = 15.dp),
         textStyle = TextStyle(color = Color.Black, fontSize = 15.sp),
         leadingIcon = {
@@ -78,8 +78,11 @@ fun CustomSearchView(
         },
         singleLine = true,
         shape = RoundedCornerShape(15.dp),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(
-            onDone = {keyboardController?.hide()})
+            onSearch = {
+                onSearch()
+                keyboardController?.hide()
+            })
     )
 }

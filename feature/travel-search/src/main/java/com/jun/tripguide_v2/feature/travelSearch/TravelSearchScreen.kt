@@ -109,8 +109,9 @@ fun TravelSearchRoute(
         )
         CustomSearchView(
             value = keyword,
-            onValueChange = { viewModel.searchTourist(it) },
-            onValueClear = { viewModel.clearKeyword() },
+            onSearch = viewModel::searchTourist,
+            onValueChange = viewModel::keywordChange,
+            onValueClear = viewModel::clearKeyword,
             keyboardController = keyboardController
         )
         Spacer(modifier = Modifier.height(5.dp))

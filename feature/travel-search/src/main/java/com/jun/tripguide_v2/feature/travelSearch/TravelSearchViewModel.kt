@@ -47,8 +47,8 @@ class TravelSearchViewModel @Inject constructor(
         }
     }
 
-    fun searchTourist(keyword: String) {
-        if (keyword == "") return
+    fun searchTourist() {
+        if (keyword.value == "") return
 
         if (contentJob != null) {
             contentJob?.cancel()
@@ -59,9 +59,8 @@ class TravelSearchViewModel @Inject constructor(
         if (uiState !is TravelSearchUiState.Success) return
 
         contentJob = viewModelScope.launch {
-            _keyword.value = keyword
             _travelSearchUiState.value = uiState.copy(
-                tourists = getKeywordListUsecase(keyword)
+                tourists = getKeywordListUsecase(keyword.value)
             )
         }
     }
@@ -88,14 +87,12 @@ class TravelSearchViewModel @Inject constructor(
         }
     }
 
-    fun clearKeyword() {
-        if (contentJob != null) {
-            contentJob?.cancel()
-        }
+    fun keywordChange(keyword: String) {
+        _keyword.value = keyword
+    }
 
-        contentJob = viewModelScope.launch {
-            _keyword.value = ""
-        }
+    fun clearKeyword() {
+        _keyword.value = ""
     }
 
     fun scrollToFirstItem() {

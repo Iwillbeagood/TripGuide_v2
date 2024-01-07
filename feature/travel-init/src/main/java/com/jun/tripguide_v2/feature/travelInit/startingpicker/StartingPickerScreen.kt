@@ -65,13 +65,14 @@ fun StartingPickerScreen(
         )
         CustomSearchView(
             value = keyword,
-            onValueChange = { viewModel.searchAddress(it) },
-            onValueClear = { viewModel.clearKeyword() },
+            onSearch = viewModel::searchAddress,
+            onValueChange = viewModel::keywordChange,
+            onValueClear = viewModel::clearKeyword,
             keyboardController = keyboardController
         )
         AddressItemsColumn(
             addresses = (uiState as? StartingPickerUiState.Addresses)?.addresses ?: emptyList(),
-            onClickAddressItem = { viewModel.addressPicked(it) }
+            onClickAddressItem = viewModel::addressPicked
         )
     }
 }
@@ -137,13 +138,4 @@ fun AddressItem(
                 .padding(start = 16.dp, top = 5.dp, bottom = 16.dp)
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SearchViewPreview() {
-    StartingPickerScreen(
-        {},
-        {}
-    )
 }
