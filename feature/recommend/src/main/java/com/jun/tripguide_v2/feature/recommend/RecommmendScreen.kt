@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -75,16 +76,34 @@ fun RecommendRoute(
     val context = LocalContext.current
 
     LaunchedEffect(true) {
-        viewModel.errorFlow.collectLatest { onShowErrorSnackBar(it) }
+        viewModel.errorFlow.collectLatest {
+            goBack()
+            onShowErrorSnackBar(it)
+        }
+    }
+
+    val locationBasedTouristListState = rememberLazyListState()
+    LaunchedEffect(locationBasedTouristListState.canScrollForward) {
+        if (!locationBasedTouristListState.canScrollForward) {
+            viewModel.fetchNextPageLocationBasedTourist()
+        }
+    }
+
+    val festivalListState = rememberLazyListState()
+    LaunchedEffect(festivalListState.canScrollForward) {
+        if (!festivalListState.canScrollForward) {
+            viewModel.fetchNextPageFestival()
+        }
     }
 
     InitPermission(context = context, goBack = goBack, viewModel = viewModel)
-    InitListState(viewModel)
 
     RecommendContent(
         context = context,
         uiState = uiState,
-        onTouristDetail = onTouristDetail
+        onTouristDetail = onTouristDetail,
+        locationBasedTouristListState = locationBasedTouristListState,
+        festivalListState = festivalListState
     )
 }
 
@@ -124,38 +143,22 @@ fun InitPermission(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
-@Composable
-fun InitListState(
-    viewModel: RecommendViewModel
-) {
-    val locationBasedTouristListState = rememberLazyListState()
-    LaunchedEffect(locationBasedTouristListState.canScrollForward) {
-        if (!locationBasedTouristListState.canScrollForward) {
-            viewModel.fetchNextPageLocationBasedTourist()
-        }
-    }
-
-    val stayListState = rememberLazyListState()
-    LaunchedEffect(stayListState.canScrollForward) {
-        if (!stayListState.canScrollForward) {
-            viewModel.fetchNextPageStay()
-        }
-    }
-}
-
 @Composable
 fun RecommendContent(
     context: Context,
     uiState: RecommendUiState,
-    onTouristDetail: (String) -> Unit
+    onTouristDetail: (String) -> Unit,
+    locationBasedTouristListState: LazyListState,
+    festivalListState: LazyListState,
 ) {
     when (uiState) {
         RecommendUiState.Loading -> CustomLoading()
         RecommendUiState.RevokedPermissions -> RevokedScreen(context)
         is RecommendUiState.Success -> RecommendScreen(
             uiState = uiState,
-            onTouristDetail = onTouristDetail
+            onTouristDetail = onTouristDetail,
+            locationBasedTouristListState = locationBasedTouristListState,
+            festivalListState = festivalListState
         )
     }
 }
@@ -192,7 +195,9 @@ fun RevokedScreen(
 @Composable
 fun RecommendScreen(
     uiState: RecommendUiState.Success,
-    onTouristDetail: (String) -> Unit
+    onTouristDetail: (String) -> Unit,
+    locationBasedTouristListState: LazyListState,
+    festivalListState: LazyListState,
 ) {
     Column(
         modifier = Modifier
@@ -207,12 +212,14 @@ fun RecommendScreen(
         ScreenSection("근처에") {
             LocationBasedTouristLazyRow(
                 locationBasedTourists = uiState.locationBasedTourists,
+                locationBasedTouristListState = locationBasedTouristListState,
                 onClickItem = onTouristDetail
             )
         }
         ScreenSection("축제") {
             FestivalLazyRow(
                 festivals = uiState.festivals,
+                festivalListState = festivalListState,
                 onClickItem = onTouristDetail
             )
         }
@@ -222,9 +229,11 @@ fun RecommendScreen(
 @Composable
 fun LocationBasedTouristLazyRow(
     locationBasedTourists: List<LocationBasedTourist>,
+    locationBasedTouristListState: LazyListState,
     onClickItem: (String) -> Unit
 ) {
     LazyRow(
+        state = locationBasedTouristListState,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(
@@ -251,9 +260,11 @@ fun LocationBasedTouristLazyRow(
 @Composable
 fun FestivalLazyRow(
     festivals: List<Festival>,
+    festivalListState: LazyListState,
     onClickItem: (String) -> Unit
 ) {
     LazyRow(
+        state = festivalListState,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(

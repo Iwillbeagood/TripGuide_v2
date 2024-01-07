@@ -1,6 +1,7 @@
 package com.jun.tripguide_v2.feature.recommend
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -54,6 +56,8 @@ class RecommendViewModel @Inject constructor(
                     }
                     else -> uiState
                 }
+            }.catch {
+                _errorFlow.emit(it)
             }.collect {
                 _uiState.value = it
             }
@@ -61,23 +65,49 @@ class RecommendViewModel @Inject constructor(
     }
 
     fun fetchNextPageLocationBasedTourist() {
+        val uiState = uiState.value
 
+        if (uiState !is RecommendUiState.Success) return
+
+        if (uiState.locationBasedTourists.isEmpty()) return
+
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
+
+        contentJob = viewModelScope.launch {
+            getTouristByCurLocationUsecase().collect {
+                val pageNo = uiState.locationBasedTouristsPageNo + 1
+                _uiState.value = uiState.copy(
+                    locationBasedTourists = uiState.locationBasedTourists + it,
+                    festivalsPageNo = pageNo
+                )
+            }
+        }
     }
 
-    fun fetchNextPageStay() {
+    fun fetchNextPageFestival() {
+        val uiState = uiState.value
 
-    }
+        if (uiState !is RecommendUiState.Success) return
 
-    fun onFestivalItemClick() {
+        if (uiState.festivals.isEmpty()) return
 
-    }
+        if (contentJob != null) {
+            contentJob?.cancel()
+        }
 
-    fun stopUpdates() {
-        contentJob?.cancel()
+        contentJob = viewModelScope.launch {
+            val pageNo = uiState.festivalsPageNo + 1
+            _uiState.value = uiState.copy(
+                festivals = uiState.festivals + getFestivalUsecase(pageNo),
+                festivalsPageNo = pageNo
+            )
+        }
     }
 
     fun revokedPermissions() {
-
+        _uiState.value = RecommendUiState.RevokedPermissions
     }
 }
 

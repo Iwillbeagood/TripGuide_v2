@@ -7,7 +7,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.os.Looper
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -28,7 +27,6 @@ class LocationServiceImpl @Inject constructor(
     @SuppressLint("MissingPermission")
     @RequiresApi(Build.VERSION_CODES.S)
     override fun requestLocationUpdates(): Flow<LatLng?> = callbackFlow {
-
         if (!context.hasLocationPermission()) {
             trySend(null)
             return@callbackFlow
@@ -43,8 +41,8 @@ class LocationServiceImpl @Inject constructor(
             override fun onLocationResult(locationResult: LocationResult) {
                 locationResult.locations.lastOrNull()?.let {
                     trySend(LatLng(it.latitude, it.longitude))
-                    close()
                 }
+                close()
             }
         }
 
