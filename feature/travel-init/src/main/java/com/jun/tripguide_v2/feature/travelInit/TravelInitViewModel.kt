@@ -152,6 +152,8 @@ class TravelInitViewModel @Inject constructor(
                                 mapY = uiState.startingPoint.y,
                                 address = uiState.startingPoint.address
                             ),
+                            startDate = uiState.dateDuration!!.startDate,
+                            endDate = uiState.dateDuration!!.endDate,
                             destination = uiState.destination!!,
                         )
                     )

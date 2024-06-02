@@ -12,5 +12,5 @@ sealed interface TravelInitUiEffect {
 
     object ShowDestinationPickerDialog : TravelInitUiEffect
 
-    data class TravelInitComplete(val travelId: String, val selectedMeans: MeansType) : TravelInitUiEffect
+    data class TravelInitComplete(val travelId: Long, val selectedMeans: MeansType) : TravelInitUiEffect
 }

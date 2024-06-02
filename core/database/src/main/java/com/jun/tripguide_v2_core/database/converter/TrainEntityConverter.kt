@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import com.jun.tripguide_v2_core.database.entity.TrainEntity
 
 @ProvidedTypeConverter
-class TrainTypeConverter(private val gson: Gson) {
+class TrainEntityConverter(private val gson: Gson) {
 
     @TypeConverter
     fun listToJson(value: TrainEntity): String {

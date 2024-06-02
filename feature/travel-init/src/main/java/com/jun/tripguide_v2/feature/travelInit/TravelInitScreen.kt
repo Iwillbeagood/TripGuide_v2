@@ -54,7 +54,7 @@ fun TravelInitRoute(
     LaunchedEffect(uiEffect) {
         if (uiEffect is TravelInitUiEffect.TravelInitComplete) {
             onTravelInitComplete(
-                (uiEffect as TravelInitUiEffect.TravelInitComplete).travelId,
+                (uiEffect as TravelInitUiEffect.TravelInitComplete).travelId.toString(),
                 (uiEffect as TravelInitUiEffect.TravelInitComplete).selectedMeans
             )
             viewModel.resetUiEffect()

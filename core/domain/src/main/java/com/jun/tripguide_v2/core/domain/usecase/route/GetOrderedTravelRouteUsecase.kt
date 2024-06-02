@@ -39,26 +39,27 @@ class GetOrderedTravelRouteUsecase @Inject constructor(
         val routes = getRoutesUsecase(travelId)
         val travelStartTime = travel.startDate
 
-        if (travel.isOrdered) {
-            return routes.initRoutes()
-        }
-
-        val orderedRoutes = getOrderedRouteByTSLUsecase(travel.toOriginRoute(), routes)
-        val setTimeRoutes = setTimeUsecase(travelStartTime, orderedRoutes).initRoutes()
-        updateTravelUsecase(travel.copy(isOrdered = true))
-        updateRouteUsecase(setTimeRoutes)
-        insertRouteUsecase(listOf(setTimeRoutes.first(), setTimeRoutes.last()))
-        return setTimeRoutes
+//        if (travel.isOrdered) {
+//            return routes.initRoutes()
+//        }
+//
+//        val orderedRoutes = getOrderedRouteByTSLUsecase(travel.toOriginRoute(), routes)
+//        val setTimeRoutes = setTimeUsecase(travelStartTime, orderedRoutes).initRoutes()
+//        updateTravelUsecase(travel.copy(isOrdered = true))
+//        updateRouteUsecase(setTimeRoutes)
+//        insertRouteUsecase(listOf(setTimeRoutes.first(), setTimeRoutes.last()))
+//        return setTimeRoutes
+        return emptyList()
     }
 
-    private fun Travel.toOriginRoute() =
-        Route(
-            id = null,
-            travelId = travelId,
-            title = startingPoint.name,
-            mapX = startingPoint.x,
-            mapY = startingPoint.y
-        )
+//    private fun Travel.toOriginRoute() =
+//        Route(
+//            id = null,
+//            travelId = travelId,
+//            title = startingPoint.name,
+//            mapX = startingPoint.x,
+//            mapY = startingPoint.y
+//        )
 
     private fun List<Route>.initRoutes() = sortedBy { it.orderNum }.toMutableList().apply {
         this[0] = this[0].copy(isSelected = true, isFirst = true)

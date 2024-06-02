@@ -204,16 +204,16 @@ class MyTravelPlanViewModel @Inject constructor(
         if (uiState !is MyTravelPlanUiState.Success) return
 
         contentJob = viewModelScope.launch {
-            val updateRoutes = setTimeUsecase(startTime = uiState.travel.startTime,
-                routes = uiState.routes.mapIndexed { index, route ->
-                    route.copy(orderNum = index)
-                })
-
-            _uiState.value = uiState.copy(
-                isEditMode = false, routes = updateRoutes
-            )
-            initAndInsertRouteUsecase(uiState.travel.travelId, updateRoutes)
-            _uiEffect.value = MyTravelPlanUiEffect.Idle
+//            val updateRoutes = setTimeUsecase(startTime = uiState.travel.startDate,
+//                routes = uiState.routes.mapIndexed { index, route ->
+//                    route.copy(orderNum = index)
+//                })
+//
+//            _uiState.value = uiState.copy(
+//                isEditMode = false, routes = updateRoutes
+//            )
+//            initAndInsertRouteUsecase(uiState.travel.travelId, updateRoutes)
+//            _uiEffect.value = MyTravelPlanUiEffect.Idle
         }
     }
 
@@ -231,7 +231,7 @@ class MyTravelPlanViewModel @Inject constructor(
             _uiState.value = uiState.copy(
                 isEditMode = false, routes = originRoutes
             )
-            initAndInsertRouteUsecase(uiState.travel.travelId, originRoutes)
+//            initAndInsertRouteUsecase(uiState.travel.travelId, originRoutes)
             _uiEffect.value = MyTravelPlanUiEffect.Idle
         }
     }

@@ -4,6 +4,7 @@
 package com.jun.tripguide_v2.tourist_detail
 
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -127,6 +128,7 @@ fun TouristDetailScreen(
             Column(
                 modifier = Modifier
                     .clip(shape = RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
+                    .background(White)
                     .padding(horizontal = 15.dp),
             ) {
                 TouristTitle(commonInfo.title, commonInfo.addr1)
