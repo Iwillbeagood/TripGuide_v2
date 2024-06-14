@@ -1,5 +1,7 @@
 package com.jun.tripguide_v2.feature.travel_meansinfo.train
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jun.tripguide_v2.core.domain.usecase.openapi.GetTrainInfoUsecase
@@ -31,11 +33,11 @@ class TrainInfoViewModel @Inject constructor(
     private val _trainUiState = MutableStateFlow<TrainUiState>(TrainUiState.Loading)
     val trainUiState: StateFlow<TrainUiState> get() = _trainUiState
 
-    private val _trainUiEffect = MutableStateFlow<TrainUiEffect>(TrainUiEffect.Idle)
-    val trainUiEffect: StateFlow<TrainUiEffect> get() = _trainUiEffect
+    private val _trainDialogUiState = MutableStateFlow<TrainDialogUiState>(TrainDialogUiState.Idle)
+    val trainDialogUiState: StateFlow<TrainDialogUiState> get() = _trainDialogUiState
 
-    private val _toastFlow = MutableSharedFlow<String>()
-    val toastFlow = _toastFlow.asSharedFlow()
+    private val _eventFlow = MutableSharedFlow<TrainUiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     private var contentJob: Job? = null
 
@@ -60,8 +62,8 @@ class TrainInfoViewModel @Inject constructor(
         stations: List<TrainStation>,
         onClick: (TrainStation) -> Unit
     ) {
-        _trainUiEffect.update {
-            TrainUiEffect.ShowTrainStationPickerDialog(stations, onClick)
+        _trainDialogUiState.update {
+            TrainDialogUiState.ShowTrainStationPickerDialogDialog(stations, onClick)
         }
     }
 
@@ -89,18 +91,18 @@ class TrainInfoViewModel @Inject constructor(
             )
 
             if (trains.isEmpty()) {
-                _toastFlow.emit("${firstStation.stationName}에서 ${secondStation.stationName}으로 가는 기차가 없습니다.")
+                _eventFlow.emit((TrainUiEvent.ShowToast("${firstStation.stationName}에서 ${secondStation.stationName}으로 가는 기차가 없습니다.")))
             } else {
-                _trainUiEffect.update {
-                    TrainUiEffect.ShowTrainInfosPickerDialog(trains, onClick)
+                _trainDialogUiState.update {
+                    TrainDialogUiState.ShowTrainInfosPickerDialogDialog(trains, onClick)
                 }
             }
         }
     }
 
     fun resetUiEffect() {
-        _trainUiEffect.update {
-            TrainUiEffect.Idle
+        _trainDialogUiState.update {
+            TrainDialogUiState.Idle
         }
     }
 
@@ -157,11 +159,11 @@ class TrainInfoViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (uiState.selectedTrainInfo == null) {
-                _toastFlow.emit("여행지로 가는 기차를 선택해 주세요.")
+                _eventFlow.emit(TrainUiEvent.ShowToast("여행지로 가는 기차를 선택해 주세요."))
                 return@launch
             }
             if (uiState.selectedReturnTrainInfo == null) {
-                _toastFlow.emit("돌아오는 기차를 선택해 주세요.")
+                _eventFlow.emit(TrainUiEvent.ShowToast("돌아오는 기차를 선택해 주세요."))
                 return@launch
             }
 
@@ -171,26 +173,39 @@ class TrainInfoViewModel @Inject constructor(
                     returnTrainInfo = uiState.selectedReturnTrainInfo!!
                 )
             )
-            _trainUiEffect.update { TrainUiEffect.Complete(uiState.travel.travelId.toString()) }
+            _eventFlow.emit(TrainUiEvent.Complete(uiState.travel.travelId.toString()))
         }
     }
 }
 
-sealed interface TrainUiEffect {
+@Stable
+sealed interface TrainDialogUiState {
 
-    object Idle : TrainUiEffect
+    @Immutable
+    object Idle : TrainDialogUiState
 
-    data class ShowTrainStationPickerDialog(
+    @Immutable
+    data class ShowTrainStationPickerDialogDialog(
         val stations: List<TrainStation>,
         val onClick: (TrainStation) -> Unit
-    ) : TrainUiEffect
+    ) : TrainDialogUiState
 
-    data class ShowTrainInfosPickerDialog(
+    @Immutable
+    data class ShowTrainInfosPickerDialogDialog(
         val trains: List<TrainInfo>,
         val onClick: (List<TrainInfo>) -> Unit
-    ) : TrainUiEffect
+    ) : TrainDialogUiState
 
-    data class Complete(val travelId: String) : TrainUiEffect
+}
+
+@Stable
+sealed interface TrainUiEvent {
+
+    @Immutable
+    data class ShowToast(val message: String) : TrainUiEvent
+
+    @Immutable
+    data class Complete(val travelId: String) : TrainUiEvent
 }
 
 enum class TrainInfoType {

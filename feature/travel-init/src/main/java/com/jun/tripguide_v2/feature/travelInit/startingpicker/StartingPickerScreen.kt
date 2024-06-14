@@ -60,7 +60,6 @@ fun StartingPickerDialog(
             )
             CustomSearchView(
                 value = keyword,
-                onSearch = viewModel::searchAddress,
                 onValueChange = viewModel::keywordChange,
                 onValueClear = viewModel::clearKeyword,
                 keyboardController = keyboardController
@@ -93,7 +92,7 @@ private fun StartingPickerContent(
 @Composable
 private fun AddressEmptyScreen() {
     Box(modifier = Modifier.fillMaxSize()) {
-        Text(text = "검색어를 입력해 출발 장소를 선택해 주세요.",modifier = Modifier.align(Alignment.Center))
+        Text(text = "검색 결과가 존재하지 않습니다.",modifier = Modifier.align(Alignment.Center))
     }
 }
 

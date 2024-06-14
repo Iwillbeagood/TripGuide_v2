@@ -2,16 +2,13 @@ package com.jun.tripguide_v2.feature.travel_meansinfo.train
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -20,10 +17,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -32,9 +27,6 @@ import com.jun.tripguide_v2.core.designsystem.component.CustomLoading
 import com.jun.tripguide_v2.core.designsystem.component.CustomTopAppBar
 import com.jun.tripguide_v2.core.designsystem.component.InitText
 import com.jun.tripguide_v2.core.designsystem.component.TopAppBarNavigationType
-import com.jun.tripguide_v2.core.designsystem.theme.MyTheme
-import com.jun.tripguide_v2.core.designsystem.theme.PaperGray
-import com.jun.tripguide_v2.core.designsystem.theme.surfaceDim
 import com.jun.tripguide_v2.feature.travel_meansinfo.component.TrainInfoPickerDialog
 import com.jun.tripguide_v2.feature.travel_meansinfo.component.TrainStationPickerDialog
 
@@ -46,22 +38,21 @@ fun TrainInfoRoute(
     viewModel: TrainInfoViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.trainUiState.collectAsStateWithLifecycle()
-    val uiEffect by viewModel.trainUiEffect.collectAsStateWithLifecycle()
+    val dialogUiState by viewModel.trainDialogUiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-
-    LaunchedEffect(uiEffect) {
-        if (uiEffect is TrainUiEffect.Complete) {
-            onComplete((uiEffect as TrainUiEffect.Complete).travelId +  "isInit")
-        }
-    }
 
     LaunchedEffect(travelId) {
         viewModel.fetchTrainInfo(travelId)
     }
 
     LaunchedEffect(true) {
-        viewModel.toastFlow.collect {
-            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+        viewModel.eventFlow.collect {
+            when (it) {
+                is TrainUiEvent.ShowToast -> {
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                }
+                is TrainUiEvent.Complete -> onComplete(it.travelId +  "isInit")
+            }
         }
     }
 
@@ -89,7 +80,7 @@ fun TrainInfoRoute(
         ) {
             TrainInfoContent(
                 uiState = uiState,
-                uiEffect = uiEffect,
+                dialogUiState = dialogUiState,
                 viewModel = viewModel
             )
         }
@@ -99,7 +90,7 @@ fun TrainInfoRoute(
 @Composable
 fun TrainInfoContent(
     uiState: TrainUiState,
-    uiEffect: TrainUiEffect,
+    dialogUiState: TrainDialogUiState,
     viewModel: TrainInfoViewModel
 ) {
     when (uiState) {
@@ -107,7 +98,7 @@ fun TrainInfoContent(
         is TrainUiState.Success -> {
             TrainInfoScreen(
                 uiState = uiState,
-                uiEffect = uiEffect,
+                dialogUiState = dialogUiState,
                 viewModel = viewModel
             )
         }
@@ -117,7 +108,7 @@ fun TrainInfoContent(
 @Composable
 fun TrainInfoScreen(
     uiState: TrainUiState.Success,
-    uiEffect: TrainUiEffect,
+    dialogUiState: TrainDialogUiState,
     viewModel: TrainInfoViewModel
 ) {
     Column(
@@ -170,17 +161,17 @@ fun TrainInfoScreen(
                 }
             }
         }
-        TrainDialogEvents(uiEffect, viewModel)
+        TrainDialogEvents(dialogUiState, viewModel)
     }
 }
 
 @Composable
 fun TrainDialogEvents(
-    uiEffect: TrainUiEffect,
+    uiEffect: TrainDialogUiState,
     viewModel: TrainInfoViewModel
 ) {
     when (uiEffect) {
-        is TrainUiEffect.ShowTrainStationPickerDialog -> {
+        is TrainDialogUiState.ShowTrainStationPickerDialogDialog -> {
             TrainStationPickerDialog(
                 onDismissRequest = viewModel::resetUiEffect,
                 list = uiEffect.stations,
@@ -188,7 +179,7 @@ fun TrainDialogEvents(
             )
         }
 
-        is TrainUiEffect.ShowTrainInfosPickerDialog -> {
+        is TrainDialogUiState.ShowTrainInfosPickerDialogDialog -> {
             TrainInfoPickerDialog(
                 onDismissRequest = viewModel::resetUiEffect,
                 list = uiEffect.trains,

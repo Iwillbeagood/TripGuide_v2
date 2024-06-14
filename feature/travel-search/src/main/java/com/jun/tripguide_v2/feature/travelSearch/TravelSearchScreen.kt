@@ -54,29 +54,21 @@ fun TravelSearchRoute(
 ) {
 
     val uiState by viewModel.travelSearchUiState.collectAsStateWithLifecycle()
-    val uiEffect by viewModel.travelSearchUiEffect.collectAsStateWithLifecycle()
     val keyword by viewModel.keyword.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(true) {
-        viewModel.errorFlow.collectLatest { onShowErrorSnackBar(it) }
-    }
-
-    LaunchedEffect(uiEffect) {
-        when (uiEffect) {
-            TravelSearchUiEffect.Idle,
-            TravelSearchUiEffect.ScrollToFirstItem -> {
-                listState.scrollToItem(0)
-                viewModel.resetUiEffect()
-            }
-
-            TravelSearchUiEffect.TravelSearchComplete -> {
-                if (isInit) {
-                    onTravelSearchComplete()
-                    viewModel.resetUiEffect()
-                } else {
-                    onBackClick()
+        viewModel.eventFlow.collectLatest {
+            when (it) {
+                is TravelSearchUiEvent.ShowErrorSnackBar -> onShowErrorSnackBar(it.throwable)
+                TravelSearchUiEvent.ScrollToFirstItem -> listState.scrollToItem(0)
+                TravelSearchUiEvent.TravelSearchComplete -> {
+                    if (isInit) {
+                        onTravelSearchComplete()
+                    } else {
+                        onBackClick()
+                    }
                 }
             }
         }
@@ -135,7 +127,7 @@ fun TravelSearchContent(
     onTouristDetail: (Tourist) -> Unit
 ) {
     when (uiState) {
-        TravelSearchUiState.Loading -> CustomLoading()
+        TravelSearchUiState.Empty -> CustomLoading()
         is TravelSearchUiState.Success -> {
             TravelSearchScreen(
                 listState = listState,

@@ -11,7 +11,7 @@ import com.jun.tripguide_v2_core.database.entity.TravelEntity
 interface TravelDao {
 
     @Insert
-    suspend fun insertTravel(travelEntity: TravelEntity)
+    suspend fun insertTravel(travelEntity: TravelEntity): Long
 
     @Update
     suspend fun upDateTravel(travelEntity: TravelEntity)

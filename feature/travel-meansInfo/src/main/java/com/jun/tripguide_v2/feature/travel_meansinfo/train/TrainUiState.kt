@@ -1,15 +1,20 @@
 package com.jun.tripguide_v2.feature.travel_meansinfo.train
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import com.jun.tripguide_v2.core.model.TrainInfo
 import com.jun.tripguide_v2.core.model.TrainStation
 import com.jun.tripguide_v2.core.model.TrainType
 import com.jun.tripguide_v2.core.model.Travel
 import com.jun.tripguide_v2.feature.travel_meansinfo.utils.longToTrainDate
 
+@Stable
 sealed interface TrainUiState {
 
+    @Immutable
     object Loading : TrainUiState
 
+    @Immutable
     data class Success(
         val travel: Travel,
         val departDropDownExpanded: Boolean = false,

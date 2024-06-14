@@ -35,7 +35,7 @@ import com.jun.tripguide_v2.core.designsystem.theme.LightGray
 fun CustomSearchView(
     modifier: Modifier = Modifier,
     value: String,
-    onSearch: () -> Unit,
+    onSearch: () -> Unit = {},
     onValueChange: (String) -> Unit,
     onValueClear: () -> Unit,
     keyboardController: SoftwareKeyboardController?

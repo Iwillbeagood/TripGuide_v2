@@ -69,11 +69,7 @@ fun TravelRecommendRoute(
     viewModel: TravelRecommendViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.recommendUiState.collectAsStateWithLifecycle()
-    val uiEffect by viewModel.uiEffect.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        viewModel.errorFlow.collectLatest { onShowErrorSnackBar(it) }
-    }
 
     val listState = rememberLazyListState()
     LaunchedEffect(listState.canScrollForward) {
@@ -82,19 +78,17 @@ fun TravelRecommendRoute(
         }
     }
 
-    LaunchedEffect(uiEffect) {
-        when(uiEffect) {
-            TravelRecommendUiEffect.Idle,
-            TravelRecommendUiEffect.ScrollToFirstItem -> {
-                listState.scrollToItem(0)
-                viewModel.resetUiEffect()
-            }
-            TravelRecommendUiEffect.TravelRecommendComplete -> {
-                if (isInit) {
-                    onTravelRecommendComplete(travelId + "isInit")
-                    viewModel.resetUiEffect()
-                } else {
-                    onBackClick()
+    LaunchedEffect(true) {
+        viewModel.eventFlow.collectLatest {
+            when (it) {
+                TravelRecommendUiEvent.ScrollToFirstItem -> listState.scrollToItem(0)
+                is TravelRecommendUiEvent.ShowErrorSnackBar -> onShowErrorSnackBar(it.throwable)
+                TravelRecommendUiEvent.TravelRecommendComplete -> {
+                    if (isInit) {
+                        onTravelRecommendComplete(travelId + "isInit")
+                    } else {
+                        onBackClick()
+                    }
                 }
             }
         }

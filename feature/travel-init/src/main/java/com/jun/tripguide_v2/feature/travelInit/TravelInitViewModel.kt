@@ -1,26 +1,31 @@
 package com.jun.tripguide_v2.feature.travelInit
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jun.tripguide_v2.core.domain.usecase.room.InsertDefaultTravelUsecase
 import com.jun.tripguide_v2.core.model.Address
 import com.jun.tripguide_v2.core.model.DateDuration
 import com.jun.tripguide_v2.core.model.DestinationCode
+import com.jun.tripguide_v2.core.model.MeansItem
 import com.jun.tripguide_v2.core.model.MeansType
 import com.jun.tripguide_v2.core.model.StartingPoint
 import com.jun.tripguide_v2.core.model.Tourist
 import com.jun.tripguide_v2.core.model.Travel
+import com.jun.tripguide_v2.feature.travelInit.util.toStringType
+import com.jun.tripguide_v2.feature.travel_init.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,14 +33,11 @@ class TravelInitViewModel @Inject constructor(
     private val insertDefaultTravelUsecase: InsertDefaultTravelUsecase,
 ) : ViewModel() {
 
-    private val _errorFlow = MutableSharedFlow<Throwable>()
-    val errorFlow: SharedFlow<Throwable> get() = _errorFlow
-
     private val _uiState = MutableStateFlow(TravelInitUiState())
     val uiState: StateFlow<TravelInitUiState> get() = _uiState
 
-    private val _uiEffect = MutableStateFlow<TravelInitUiEffect>(TravelInitUiEffect.Idle)
-    val uiEffect: StateFlow<TravelInitUiEffect> get() = _uiEffect
+    private val _eventFlow = MutableSharedFlow<TravelInitEvent>()
+    val eventFlow: SharedFlow<TravelInitEvent> get() = _eventFlow.asSharedFlow()
 
     private var contentJob: Job? = null
 
@@ -50,7 +52,6 @@ class TravelInitViewModel @Inject constructor(
                     dateDuration = dateDuration
                 )
             }
-            _uiEffect.value = TravelInitUiEffect.Idle
         }
     }
 
@@ -69,36 +70,6 @@ class TravelInitViewModel @Inject constructor(
                     }
                 )
             }
-        }
-    }
-
-    fun showTravelDurationDialog() {
-        if (contentJob != null) {
-            contentJob?.cancel()
-        }
-
-        contentJob = viewModelScope.launch {
-            _uiEffect.value = TravelInitUiEffect.ShowTravelDurationDialog
-        }
-    }
-
-    fun showDestinationPickerDialog() {
-        if (contentJob != null) {
-            contentJob?.cancel()
-        }
-
-        contentJob = viewModelScope.launch {
-            _uiEffect.value = TravelInitUiEffect.ShowDestinationPickerDialog
-        }
-    }
-
-    fun showStartingPickerDialog() {
-        if (contentJob != null) {
-            contentJob?.cancel()
-        }
-
-        contentJob = viewModelScope.launch {
-            _uiEffect.value = TravelInitUiEffect.ShowStartingPickerDialog
         }
     }
 
@@ -153,29 +124,51 @@ class TravelInitViewModel @Inject constructor(
                                 address = uiState.startingPoint.address
                             ),
                             startDate = uiState.dateDuration!!.startDate,
-                            endDate = uiState.dateDuration!!.endDate,
+                            endDate = uiState.dateDuration.endDate,
                             destination = uiState.destination!!,
                         )
                     )
                 )
             }.catch { throwable ->
-                _errorFlow.emit(throwable)
+                _eventFlow.emit(TravelInitEvent.ShowErrorSnackBar(throwable))
             }.collect { travelId ->
-                _uiEffect.value = TravelInitUiEffect.TravelInitComplete(
+                _eventFlow.emit(TravelInitEvent.TravelInitComplete(
                     travelId = travelId,
                     uiState.selectedMeans
-                )
+                ))
             }
         }
     }
+}
 
-    fun resetUiEffect() {
-        if (contentJob != null) {
-            contentJob?.cancel()
-        }
+@Immutable
+data class TravelInitUiState(
+    val dateDuration: DateDuration? = null,
+    val startingPoint: StartingPoint? = null,
+    val destination: DestinationCode? = null,
+    val meansItems: List<MeansItem> = listOf(
+        MeansItem(R.drawable.ic_car, R.drawable.gif_car, MeansType.CAR, isSelected = true),
+        MeansItem(R.drawable.ic_train, R.drawable.gif_train, MeansType.TRAIN)
+    ),
+) {
 
-        contentJob = viewModelScope.launch {
-            _uiEffect.value = TravelInitUiEffect.Idle
-        }
-    }
+    val selectedMeans: MeansType
+        get() = meansItems.find { it.isSelected }?.type ?: MeansType.CAR
+
+    val startingName get() = startingPoint?.name ?: "출발 장소를 입력해 주세요."
+
+    val destinationName get() = destination?.destinationString ?: "여행지를 선택해 주세요."
+
+    val dateDurationString
+        get() = dateDuration?.toStringType() ?: "여행 일정을 선택해 주세요."
+}
+
+@Stable
+sealed interface TravelInitEvent {
+
+    @Immutable
+    data class ShowErrorSnackBar(val error: Throwable) : TravelInitEvent
+
+    @Immutable
+    data class TravelInitComplete(val travelId: Long, val selectedMeans: MeansType) : TravelInitEvent
 }

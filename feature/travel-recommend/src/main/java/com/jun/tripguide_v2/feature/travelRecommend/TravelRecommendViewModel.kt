@@ -1,9 +1,13 @@
 package com.jun.tripguide_v2.feature.travelRecommend
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jun.tripguide_v2.core.domain.usecase.room.InsertTouristToRouteUsecase
 import com.jun.tripguide_v2.core.domain.usecase.tourapi.GetTouristsUsecase
+import com.jun.tripguide_v2.core.model.Arrange
+import com.jun.tripguide_v2.core.model.ContentType
 import com.jun.tripguide_v2.core.model.FilterValue
 import com.jun.tripguide_v2.core.model.Tourist
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,6 +16,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,15 +27,11 @@ class TravelRecommendViewModel @Inject constructor(
     private val insertTouristToRouteUsecase: InsertTouristToRouteUsecase
 ) : ViewModel() {
 
-    private val _errorFlow = MutableSharedFlow<Throwable>()
-    val errorFlow: SharedFlow<Throwable> get() = _errorFlow
-
-    private val _recommendUiState =
-        MutableStateFlow<TravelRecommendUiState>(TravelRecommendUiState.Loading)
+    private val _recommendUiState = MutableStateFlow<TravelRecommendUiState>(TravelRecommendUiState.Loading)
     val recommendUiState: StateFlow<TravelRecommendUiState> get() = _recommendUiState
 
-    private val _uiEffect = MutableStateFlow<TravelRecommendUiEffect>(TravelRecommendUiEffect.Idle)
-    val uiEffect: StateFlow<TravelRecommendUiEffect> get() = _uiEffect
+    private val _eventFlow = MutableSharedFlow<TravelRecommendUiEvent>()
+    val eventFlow: SharedFlow<TravelRecommendUiEvent> get() = _eventFlow.asSharedFlow()
 
     private var contentJob: Job? = null
 
@@ -205,17 +206,7 @@ class TravelRecommendViewModel @Inject constructor(
         }
 
         contentJob = viewModelScope.launch {
-            _uiEffect.value = TravelRecommendUiEffect.ScrollToFirstItem
-        }
-    }
-
-    fun resetUiEffect() {
-        if (contentJob != null) {
-            contentJob?.cancel()
-        }
-
-        contentJob = viewModelScope.launch {
-            _uiEffect.value = TravelRecommendUiEffect.Idle
+            _eventFlow.emit(TravelRecommendUiEvent.ScrollToFirstItem)
         }
     }
 
@@ -228,15 +219,57 @@ class TravelRecommendViewModel @Inject constructor(
 
         if (uiState !is TravelRecommendUiState.Success) return
 
-        if (uiState.selectedTourists.isEmpty()) {
-            _uiEffect.value = TravelRecommendUiEffect.TravelRecommendComplete
-            return
-        }
+
 
         contentJob = viewModelScope.launch {
-            insertTouristToRouteUsecase(uiState.travelId, uiState.selectedTourists.toList(), orderNum)
-
-            _uiEffect.value = TravelRecommendUiEffect.TravelRecommendComplete
+            if (uiState.selectedTourists.isEmpty()) {
+                _eventFlow.emit(TravelRecommendUiEvent.TravelRecommendComplete)
+            } else {
+                insertTouristToRouteUsecase(
+                    uiState.travelId,
+                    uiState.selectedTourists.toList(),
+                    orderNum
+                )
+                _eventFlow.emit(TravelRecommendUiEvent.TravelRecommendComplete)
+            }
         }
     }
+}
+
+@Stable
+sealed interface TravelRecommendUiState {
+
+    @Immutable
+    object Loading : TravelRecommendUiState
+
+    @Immutable
+    data class Success(
+        val travelId: String = "",
+        val pageNo: Int = 1,
+        val tourists: List<Tourist>,
+        val selectedTourists: Set<Tourist> = emptySet(),
+        val arrangeTypes: List<FilterValue> = Arrange.getValues(),
+        val contentTypes: List<FilterValue> = ContentType.getValues(),
+        val dialogVisibility: Boolean = false
+    ) : TravelRecommendUiState {
+
+        val selectedArrange: FilterValue
+            get() = arrangeTypes.find { it.isSelected }!!
+
+        val selectedContent: FilterValue
+            get() = contentTypes.find { it.isSelected }!!
+    }
+}
+
+@Stable
+sealed interface TravelRecommendUiEvent {
+
+    @Immutable
+    data class ShowErrorSnackBar(val throwable: Throwable) : TravelRecommendUiEvent
+
+    @Immutable
+    object ScrollToFirstItem : TravelRecommendUiEvent
+
+    @Immutable
+    object TravelRecommendComplete : TravelRecommendUiEvent
 }

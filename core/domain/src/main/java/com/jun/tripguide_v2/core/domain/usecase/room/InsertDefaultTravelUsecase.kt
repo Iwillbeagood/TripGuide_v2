@@ -8,8 +8,5 @@ class InsertDefaultTravelUsecase @Inject constructor(
     private val travelRepository: TravelRepository
 ) {
 
-    suspend operator fun invoke(travel: Travel): Long {
-        travelRepository.insertTravel(travel)
-        return travel.travelId
-    }
+    suspend operator fun invoke(travel: Travel) = travelRepository.insertTravel(travel)
 }

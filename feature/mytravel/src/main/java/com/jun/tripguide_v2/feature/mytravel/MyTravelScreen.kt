@@ -22,6 +22,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,6 +54,9 @@ fun MyTravelRoute(
     viewModel: MyTravelViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var showDeleteDialog by remember {
+        mutableStateOf(false)
+    }
     val uiEffect by viewModel.uiEffect.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
@@ -65,13 +71,17 @@ fun MyTravelRoute(
         MyTravelContent(
             uiState = uiState,
             onClickTravel = { onTravelClick(it.travelId.toString()) },
-            onLongClickTravel = viewModel::showDeleteConfirmationDialog
+            onLongClickTravel = {
+                showDeleteDialog = true
+            }
         )
     }
 
-    if (uiEffect is MyTravelUiEffect.ShowDeleteDialog) {
+    if (showDeleteDialog) {
         CustomAlertDialog(
-            onDismissRequest = viewModel::resetUiEffect,
+            onDismissRequest = {
+                showDeleteDialog = false
+            },
             onConfirmation = { viewModel.deleteSelectedTravel((uiEffect as MyTravelUiEffect.ShowDeleteDialog).travel) },
             dialogTitle = "여행 일정 삭제",
             dialogText = "선택한 여행 일정을 삭제하시겠습니까?"

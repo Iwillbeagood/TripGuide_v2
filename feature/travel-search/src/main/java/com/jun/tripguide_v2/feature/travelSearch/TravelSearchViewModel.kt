@@ -1,5 +1,7 @@
 package com.jun.tripguide_v2.feature.travelSearch
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jun.tripguide_v2.core.domain.usecase.room.InsertTouristToRouteUsecase
@@ -9,9 +11,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,16 +32,12 @@ class TravelSearchViewModel @Inject constructor(
     private val _keyword = MutableStateFlow("")
     val keyword = _keyword.asStateFlow()
 
-    private val _errorFlow = MutableSharedFlow<Throwable>()
-    val errorFlow: SharedFlow<Throwable> get() = _errorFlow
-
     private val _travelSearchUiState =
         MutableStateFlow<TravelSearchUiState>(TravelSearchUiState.Success())
     val travelSearchUiState: StateFlow<TravelSearchUiState> get() = _travelSearchUiState
 
-    private val _travelSearchUiEffect =
-        MutableStateFlow<TravelSearchUiEffect>(TravelSearchUiEffect.Idle)
-    val travelSearchUiEffect: StateFlow<TravelSearchUiEffect> get() = _travelSearchUiEffect
+    private val _eventFlow = MutableSharedFlow<TravelSearchUiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     private var contentJob: Job? = null
 
@@ -99,17 +103,7 @@ class TravelSearchViewModel @Inject constructor(
         }
 
         contentJob = viewModelScope.launch {
-            _travelSearchUiEffect.value = TravelSearchUiEffect.ScrollToFirstItem
-        }
-    }
-
-    fun resetUiEffect() {
-        if (contentJob != null) {
-            contentJob?.cancel()
-        }
-
-        contentJob = viewModelScope.launch {
-            _travelSearchUiEffect.value = TravelSearchUiEffect.Idle
+            _eventFlow.emit(TravelSearchUiEvent.ScrollToFirstItem)
         }
     }
 
@@ -122,15 +116,44 @@ class TravelSearchViewModel @Inject constructor(
 
         if (uiState !is TravelSearchUiState.Success) return
 
-        if (uiState.selectedTourists.isEmpty()) {
-            _travelSearchUiEffect.value = TravelSearchUiEffect.TravelSearchComplete
-            return
-        }
+
 
         contentJob = viewModelScope.launch {
-            insertTouristToRouteUsecase(uiState.travelId, uiState.selectedTourists.toList(), orderNum)
-
-            _travelSearchUiEffect.value = TravelSearchUiEffect.TravelSearchComplete
+            if (uiState.selectedTourists.isEmpty()) {
+                _eventFlow.emit(TravelSearchUiEvent.TravelSearchComplete)
+            } else {
+                insertTouristToRouteUsecase(uiState.travelId, uiState.selectedTourists.toList(), orderNum)
+                _eventFlow.emit(TravelSearchUiEvent.TravelSearchComplete)
+            }
         }
     }
+}
+
+@Stable
+sealed interface TravelSearchUiState {
+
+    @Immutable
+    object Empty : TravelSearchUiState
+
+    @Immutable
+    data class Success(
+        val travelId: String = "",
+        val tourists: List<Tourist> = emptyList()
+    ): TravelSearchUiState {
+        val selectedTourists : List<Tourist>
+            get() = tourists.filter { it.isSelected }
+    }
+}
+
+@Stable
+sealed interface TravelSearchUiEvent {
+
+    @Immutable
+    data class ShowErrorSnackBar(val throwable: Throwable) : TravelSearchUiEvent
+
+    @Immutable
+    object ScrollToFirstItem : TravelSearchUiEvent
+
+    @Immutable
+    object TravelSearchComplete : TravelSearchUiEvent
 }

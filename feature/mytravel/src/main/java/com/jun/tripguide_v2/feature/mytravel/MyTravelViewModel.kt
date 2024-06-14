@@ -1,5 +1,7 @@
 package com.jun.tripguide_v2.feature.mytravel
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jun.tripguide_v2.core.domain.usecase.room.DeleteTravelUsecase
@@ -71,4 +73,41 @@ class MyTravelViewModel @Inject constructor(
         _uiEffect.value = MyTravelUiEffect.Idle
     }
 
+}
+
+@Stable
+sealed interface MyTravelUiState {
+
+    @Immutable
+    object Loading : MyTravelUiState
+
+    @Immutable
+    object Empty : MyTravelUiState
+
+    @Immutable
+    data class Travels(
+        val travels: List<Travel> = emptyList()
+    ): MyTravelUiState {
+
+        val previousTravels : List<Travel>
+            get() = travels.filter { it.endDate < currentMillis }
+
+        val currentTravels : List<Travel>
+            get() = travels.filter { currentMillis in it.startDate..it.endDate }
+
+        val planedTravels : List<Travel>
+            get() = travels.filter { it.startDate > currentMillis }
+
+
+        companion object {
+            private val currentMillis = System.currentTimeMillis()
+        }
+    }
+}
+
+sealed interface MyTravelUiEffect {
+
+    object Idle : MyTravelUiEffect
+
+    data class ShowDeleteDialog(val travel: Travel) : MyTravelUiEffect
 }

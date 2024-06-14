@@ -1,15 +1,12 @@
 package com.jun.tripguide_v2.feature.travelInit
 
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -18,7 +15,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,8 +27,6 @@ import com.jun.tripguide_v2.core.designsystem.component.CompleteBtn
 import com.jun.tripguide_v2.core.designsystem.component.CustomTopAppBar
 import com.jun.tripguide_v2.core.designsystem.component.InitText
 import com.jun.tripguide_v2.core.designsystem.component.TopAppBarNavigationType
-import com.jun.tripguide_v2.core.designsystem.theme.PaperGray
-import com.jun.tripguide_v2.core.model.DestinationCode
 import com.jun.tripguide_v2.core.model.MeansType
 import com.jun.tripguide_v2.feature.travelInit.areapicker.AreaPickerDialog
 import com.jun.tripguide_v2.feature.travelInit.component.DurationDatePicker
@@ -45,19 +42,19 @@ fun TravelInitRoute(
     viewModel: TravelInitViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val uiEffect by viewModel.uiEffect.collectAsStateWithLifecycle()
+    var showTravelDurationDialog by remember { mutableStateOf(false) }
+    var showStartingPickerDialog by remember { mutableStateOf(false) }
+    var showDestinationPickerDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(true) {
-        viewModel.errorFlow.collectLatest { onShowErrorSnackBar(it) }
-    }
-
-    LaunchedEffect(uiEffect) {
-        if (uiEffect is TravelInitUiEffect.TravelInitComplete) {
-            onTravelInitComplete(
-                (uiEffect as TravelInitUiEffect.TravelInitComplete).travelId.toString(),
-                (uiEffect as TravelInitUiEffect.TravelInitComplete).selectedMeans
-            )
-            viewModel.resetUiEffect()
+        viewModel.eventFlow.collectLatest {
+            when (it) {
+                is TravelInitEvent.ShowErrorSnackBar -> onShowErrorSnackBar(it.error)
+                is TravelInitEvent.TravelInitComplete -> onTravelInitComplete(
+                    it.travelId.toString(),
+                    it.selectedMeans
+                )
+            }
         }
     }
 
@@ -79,28 +76,40 @@ fun TravelInitRoute(
         TravelInitScreen(
             modifier = Modifier.padding(it),
             uiState = uiState,
-            viewModel = viewModel,
+            showTravelDurationDialog = { showTravelDurationDialog = true },
+            showStartingPickerDialog = { showStartingPickerDialog = true },
+            showDestinationPickerDialog = { showDestinationPickerDialog = true },
+            meansItemPicked = viewModel::meansItemPicked
         )
     }
 
-    if (uiEffect is TravelInitUiEffect.ShowStartingPickerDialog) {
+    if (showStartingPickerDialog) {
         StartingPickerDialog(
             onStartingPick = viewModel::startingPicked,
-            onDismissRequest = viewModel::resetUiEffect
+            onDismissRequest = {
+                showStartingPickerDialog = false
+            }
         )
     }
 
-    if (uiEffect is TravelInitUiEffect.ShowDestinationPickerDialog) {
+    if (showDestinationPickerDialog) {
         AreaPickerDialog(
             onAreaPicked = viewModel::destinationPicked,
-            onDismissRequest = viewModel::resetUiEffect
+            onDismissRequest = {
+                showDestinationPickerDialog = false
+            }
         )
     }
 
-    if (uiEffect is TravelInitUiEffect.ShowTravelDurationDialog) {
+    if (showTravelDurationDialog) {
         DurationDatePicker(
-            onBackClick = viewModel::resetUiEffect,
-            onDurationPick = viewModel::durationPicked
+            onBackClick = {
+                showTravelDurationDialog = false
+            },
+            onDurationPick = {
+                showTravelDurationDialog = false
+                viewModel.durationPicked(it)
+            }
         )
     }
 }
@@ -109,7 +118,10 @@ fun TravelInitRoute(
 fun TravelInitScreen(
     modifier: Modifier,
     uiState: TravelInitUiState,
-    viewModel: TravelInitViewModel,
+    showTravelDurationDialog: () -> Unit,
+    showStartingPickerDialog: () -> Unit,
+    showDestinationPickerDialog: () -> Unit,
+    meansItemPicked: (MeansType) -> Unit,
     scrollState: ScrollState = rememberScrollState()
 ) {
     Column(
@@ -118,25 +130,25 @@ fun TravelInitScreen(
         ScreenSection(title = "출발 장소") {
             InitText(
                 text = uiState.startingName,
-                onClick = viewModel::showStartingPickerDialog
+                onClick = showStartingPickerDialog
             )
         }
         ScreenSection(title = "여행지") {
             InitText(
                 text = uiState.destinationName,
-                onClick = viewModel::showDestinationPickerDialog
+                onClick = showDestinationPickerDialog
             )
         }
         ScreenSection(title = "여행 일정") {
             InitText(
                 text = uiState.dateDurationString,
-                onClick = viewModel::showTravelDurationDialog
+                onClick = showTravelDurationDialog
             )
         }
         ScreenSection(title = "이동 수단") {
             TravelMeans(
                 meansItems = uiState.meansItems,
-                onItemClick = viewModel::meansItemPicked
+                onItemClick = meansItemPicked
             )
         }
     }

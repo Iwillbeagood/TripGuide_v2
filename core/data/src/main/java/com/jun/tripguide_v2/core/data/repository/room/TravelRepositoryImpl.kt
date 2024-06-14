@@ -9,7 +9,7 @@ class TravelRepositoryImpl @Inject constructor(
     private val travelDao: TravelDao
 ) : TravelRepository {
 
-    override suspend fun insertTravel(travel: Travel) {
+    override suspend fun insertTravel(travel: Travel): Long {
         return travelDao.insertTravel(travel.toData())
     }
 

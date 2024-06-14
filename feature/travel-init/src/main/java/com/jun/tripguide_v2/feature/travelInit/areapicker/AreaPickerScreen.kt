@@ -50,13 +50,15 @@ fun AreaPickerDialog(
     viewModel: AreaPickerViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val effect by viewModel.uiEffect.collectAsStateWithLifecycle()
 
-    LaunchedEffect(effect) {
-        if (effect is AreaPickerUiEffect.DestinationAreaCodePicked) {
-            onDismissRequest()
-            onAreaPicked((effect as AreaPickerUiEffect.DestinationAreaCodePicked).destinationCode)
-            viewModel.resetUiEffect()
+    LaunchedEffect(true) {
+        viewModel.eventFlow.collect { event ->
+            when (event) {
+                is AreaPickerUiEvent.DestinationAreaCodePicked -> {
+                    onDismissRequest()
+                    onAreaPicked(event.destinationCode)
+                }
+            }
         }
     }
 
@@ -115,7 +117,7 @@ private fun AreaCodeScreen(
     ) {
         AreaCodeItemsColumn(
             areaCodes = defaultAreaCodes,
-            onClickAreaItem = { onClickDefaultAreaCodeItem(it) },
+            onClickAreaItem = onClickDefaultAreaCodeItem,
             modifier = Modifier.weight(1.5f)
         )
         Divider(
@@ -126,7 +128,7 @@ private fun AreaCodeScreen(
         )
         AreaCodeItemsColumn(
             areaCodes = areaCodes,
-            onClickAreaItem = { onClickAreaItem(it) },
+            onClickAreaItem = onClickAreaItem,
             isDefaultAreaCodeSelected = true,
             modifier = Modifier.weight(2f)
         )

@@ -6,3 +6,7 @@ plugins {
 android {
     namespace = "com.jun.tripguide_v2.feature.travel_search"
 }
+
+dependencies {
+    implementation(libs.kotlinx.immutable)
+}
