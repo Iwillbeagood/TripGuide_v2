@@ -15,26 +15,24 @@ class GetTouristsUsecase @Inject constructor(
 
     suspend operator fun invoke(
         travelId: String,
-        pageNo: String = "1",
-        arrange: String = "P",
+        pageNo: Int = 1,
+        arrange: String? = "P",
         contentType: String? = null
-    ): Flow<List<Tourist>> {
+    ): List<Tourist> {
         val travel = getTravelByIdUsecase(travelId)
         val places = travel.places
 
         val areaCode = travel.destination.areaCode
         val sigunguCode = travel.destination.sigunguCode
 
-        return flow {
-            emit(touristsRepository.getTouristsApi(
-                queryParams = queryParams,
-                pageNo = pageNo,
-                arrange = arrange,
-                areaCode = areaCode.code,
-                sigunguCode = if (sigunguCode.code != "0") sigunguCode.code else null,
-                contentType = contentType
-            ).filter { tourist -> tourist.id !in places.map { it.id } })
-        }
+        return touristsRepository.getTouristsApi(
+            queryParams = queryParams,
+            pageNo = pageNo.toString(),
+            arrange = arrange ?: "P",
+            areaCode = areaCode.code,
+            sigunguCode = if (sigunguCode.code != "0") sigunguCode.code else null,
+            contentType = contentType
+        ).filter { tourist -> tourist.id !in places.map { it.id } }
 
     }
 }

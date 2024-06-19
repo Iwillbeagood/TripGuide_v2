@@ -15,7 +15,7 @@ dependencies {
     implementation(projects.feature.setting)
     implementation(projects.feature.travelInit)
     implementation(projects.feature.travelMeansInfo)
-    implementation(projects.feature.travelRecommend)
+    implementation(projects.feature.travelAddDialog)
     implementation(projects.feature.travelSearch)
     implementation(projects.feature.touristDetail)
 

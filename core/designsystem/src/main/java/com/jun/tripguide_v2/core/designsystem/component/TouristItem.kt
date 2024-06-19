@@ -12,8 +12,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -34,6 +38,50 @@ import com.jun.tripguide_v2.core.designsystem.theme.MyTheme
 import com.jun.tripguide_v2.core.designsystem.theme.Sky
 import com.jun.tripguide_v2.core.designsystem.theme.White
 import com.jun.tripguide_v2.core.model.ContentType
+import com.jun.tripguide_v2.core.model.Tourist
+
+
+@Composable
+fun TouristLazyColumn(
+    listState: LazyListState,
+    touristList: List<Tourist>,
+    onClickTourist: (Tourist) -> Unit,
+    onSelectTourist: (Tourist) -> Unit,
+    scrollToFirstItem: () -> Unit,
+    content: @Composable () -> Unit = {}
+) {
+    Box {
+        LazyColumn(state = listState) {
+            item {
+                content()
+            }
+
+            items(
+                items = touristList,
+                key = { item -> item.id }
+            ) { tourist ->
+                TouristItem(
+                    title = tourist.title,
+                    type = ContentType.findByType(tourist.type),
+                    address = tourist.address,
+                    imageUrl = tourist.firstImage,
+                    selected = tourist.isSelected,
+                    onSelectTourist = { onSelectTourist(tourist) },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable {
+                            onClickTourist(tourist)
+                        }
+                )
+            }
+        }
+        ScrollUpButton(
+            visible = listState.canScrollBackward,
+            icon = Icons.Default.KeyboardArrowUp,
+            onClicked = scrollToFirstItem
+        )
+    }
+}
 
 @Composable
 fun TouristItem(

@@ -34,7 +34,7 @@ include(
     ":feature:recommend",
 
     ":feature:travel-init",
-    ":feature:travel-recommend",
+    ":feature:travel-add-dialog",
     ":feature:travel-search"
 )
 include(":feature:tourist-detail")

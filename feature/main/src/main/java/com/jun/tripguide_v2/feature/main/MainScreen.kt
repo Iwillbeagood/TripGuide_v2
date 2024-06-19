@@ -21,7 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
@@ -54,7 +53,7 @@ import com.jun.tripguide_v2.feature.mytravelPlan.navigation.myTravelPlanNavGraph
 import com.jun.tripguide_v2.feature.recommend.navigation.recommendNavGraph
 import com.jun.tripguide_v2.feature.setting.navigation.settingNavGraph
 import com.jun.tripguide_v2.feature.travelInit.navigation.travelInitNavGraph
-import com.jun.tripguide_v2.feature.travelRecommend.navigation.travelRecommendNavGraph
+import com.jun.tripguide_v2.feature.travelAddDialog.navigation.travelRecommendNavGraph
 import com.jun.tripguide_v2.feature.travelSearch.navigation.travelSearchNavGraph
 import com.jun.tripguide_v2.feature.travel_meansinfo.navigation.travelMeansInfoNavGraph
 import com.jun.tripguide_v2.tourist_detail.navigation.touristDetailNavGraph
@@ -132,7 +131,9 @@ internal fun MainScreen(
                         travelRecommendNavGraph(
                             onBackClick = navigator::popBackStackIfNotHome,
                             onShowErrorSnackBar = onShowErrorSnackBar,
-                            onTravelRouteComplete = navigator::navigateTravelSearch,
+                            onTravelRecommendComplete = {
+
+                            },
                             onTouristDetail = navigator::navigateTouristDetail,
                         )
                         travelSearchNavGraph(

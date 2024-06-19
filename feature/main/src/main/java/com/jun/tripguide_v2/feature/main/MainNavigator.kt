@@ -15,7 +15,7 @@ import com.jun.tripguide_v2.feature.mytravelPlan.navigation.navigateTravelPlan
 import com.jun.tripguide_v2.feature.recommend.navigation.navigateRecommend
 import com.jun.tripguide_v2.feature.setting.navigation.navigateSetting
 import com.jun.tripguide_v2.feature.travelInit.navigation.navigateTravelInit
-import com.jun.tripguide_v2.feature.travelRecommend.navigation.navigateTravelRecommend
+import com.jun.tripguide_v2.feature.travelAddDialog.navigation.navigateTravelRecommend
 import com.jun.tripguide_v2.feature.travelSearch.navigation.navigateTravelSearchRoute
 import com.jun.tripguide_v2.feature.travel_meansinfo.navigation.navigateCarInfo
 import com.jun.tripguide_v2.feature.travel_meansinfo.navigation.navigateTrainInfo
