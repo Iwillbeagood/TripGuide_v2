@@ -9,9 +9,8 @@ class StayRepositoryImpl @Inject constructor(
     private val tourStayApi: TourStayApi
 ): StayRepository {
 
-    override suspend fun getStays(queryParams: Map<String, String>, pageNo: Int): List<Stay> {
+    override suspend fun getStays(pageNo: Int): List<Stay> {
         return tourStayApi.getStays(
-            queryParams =  queryParams,
             pageNo = pageNo).response.body.items.item.map { it.toStay() }
     }
 }

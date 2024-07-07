@@ -8,8 +8,8 @@ import retrofit2.http.QueryMap
 interface TourDetailIntroApi {
     @GET("detailIntro1")
     suspend fun getDetailIntro(
-        @QueryMap queryParams: Map<String, String>,
         @Query("contentId") contentId: String,
         @Query("contentTypeId") contentType: String,
+        @QueryMap queryParams: Map<String, String> = Const.queryParams,
     ): DetailIntroResponse
 }

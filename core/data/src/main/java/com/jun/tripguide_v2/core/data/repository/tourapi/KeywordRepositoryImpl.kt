@@ -10,13 +10,12 @@ class KeywordRepositoryImpl @Inject constructor(
 ): KeywordRepository {
 
     override suspend fun getTouristList(
-        queryParams: Map<String, String>,
         keyword: String
     ): List<Tourist> {
         return keywordApi.getTouristList(
-            queryParams, keyword
-        ).response.body.items.item.map {
+            keyword
+        ).response.body.items?.item?.map {
             it.toData()
-        }
+        } ?: emptyList()
     }
 }

@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jun.tripguide_v2.core.domain.usecase.room.InsertDefaultTravelUsecase
+import com.jun.tripguide_v2.core.data.repository.room.TravelRepository
 import com.jun.tripguide_v2.core.model.Address
 import com.jun.tripguide_v2.core.model.DateDuration
 import com.jun.tripguide_v2.core.model.DestinationCode
@@ -30,14 +30,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TravelInitViewModel @Inject constructor(
-    private val insertDefaultTravelUsecase: InsertDefaultTravelUsecase,
+    private val travelRepository: TravelRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TravelInitUiState())
     val uiState: StateFlow<TravelInitUiState> get() = _uiState
 
-    private val _eventFlow = MutableSharedFlow<TravelInitEvent>()
-    val eventFlow: SharedFlow<TravelInitEvent> get() = _eventFlow.asSharedFlow()
+    private val _initEffect = MutableSharedFlow<TravelInitEffect>()
+    val initEffect: SharedFlow<TravelInitEffect> get() = _initEffect.asSharedFlow()
 
     private var contentJob: Job? = null
 
@@ -115,7 +115,7 @@ class TravelInitViewModel @Inject constructor(
         contentJob = viewModelScope.launch {
             flow {
                 emit(
-                    insertDefaultTravelUsecase(
+                    travelRepository.insertTravel(
                         Travel(
                             startPlace = Tourist(
                                 title = uiState.startingName,
@@ -130,9 +130,9 @@ class TravelInitViewModel @Inject constructor(
                     )
                 )
             }.catch { throwable ->
-                _eventFlow.emit(TravelInitEvent.ShowErrorSnackBar(throwable))
+                _initEffect.emit(TravelInitEffect.ShowErrorSnackBar(throwable))
             }.collect { travelId ->
-                _eventFlow.emit(TravelInitEvent.TravelInitComplete(
+                _initEffect.emit(TravelInitEffect.TravelInitComplete(
                     travelId = travelId,
                     uiState.selectedMeans
                 ))
@@ -164,11 +164,11 @@ data class TravelInitUiState(
 }
 
 @Stable
-sealed interface TravelInitEvent {
+sealed interface TravelInitEffect {
 
     @Immutable
-    data class ShowErrorSnackBar(val error: Throwable) : TravelInitEvent
+    data class ShowErrorSnackBar(val error: Throwable) : TravelInitEffect
 
     @Immutable
-    data class TravelInitComplete(val travelId: Long, val selectedMeans: MeansType) : TravelInitEvent
+    data class TravelInitComplete(val travelId: Long, val selectedMeans: MeansType) : TravelInitEffect
 }

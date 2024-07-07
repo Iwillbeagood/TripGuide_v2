@@ -10,11 +10,9 @@ class CommonInfoRepositoryImpl @Inject constructor(
 ) : CommonInfoRepository {
 
     override suspend fun getCommonInfo(
-        queryParams: Map<String, String>,
         contentId: String
     ): CommonInfo {
         return commonInfoApi.getCommonInfo(
-            queryParams,
             contentId
         ).response.body.items.item.first().toCommonInfo()
     }

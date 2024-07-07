@@ -8,12 +8,10 @@ class KakaoRouteRepositoryImpl @Inject constructor(
 ): KakaoRouteRepository {
 
     override suspend fun getRouteDuration(
-        key: String,
         origin: String,
         destinations: String
     ): Int {
         return kakaoRouteAPI.getKakaoRoute(
-            key = key,
             origin = origin,
             destination = destinations
         ).routes.first().summary.duration

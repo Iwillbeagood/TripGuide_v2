@@ -10,11 +10,10 @@ internal class AreaCodeRepositoryImpl @Inject constructor(
 ) : AreaCodeRepository {
 
     override suspend fun getAreaCode(
-        queryParams: Map<String, String>,
         areaCode: String?
     ): List<AreaCode> {
         return mutableListOf(AreaCode("0", "전체")).apply {
-            addAll(tourAreaCodeApi.getAreaCode(queryParams, areaCode).response.body.items.item.map {
+            addAll(tourAreaCodeApi.getAreaCode(areaCode).response.body.items.item.map {
                 it.toData()
             })
         }

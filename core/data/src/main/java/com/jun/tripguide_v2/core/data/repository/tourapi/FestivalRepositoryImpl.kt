@@ -9,9 +9,8 @@ class FestivalRepositoryImpl @Inject constructor(
     private val tourFestivalApi: TourFestivalApi
 ): FestivalRepository {
 
-    override suspend fun getFestivals(queryParams: Map<String, String>, pageNo: Int, eventStartDate: String): List<Festival> {
+    override suspend fun getFestivals(pageNo: Int, eventStartDate: String): List<Festival> {
         return tourFestivalApi.getFestivals(
-            queryParams =  queryParams,
             pageNo = pageNo,
             eventStartDate = eventStartDate).response.body.items.item.map { it.toFestival() }
     }

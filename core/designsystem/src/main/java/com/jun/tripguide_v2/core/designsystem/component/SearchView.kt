@@ -38,7 +38,7 @@ fun CustomSearchView(
     onSearch: () -> Unit = {},
     onValueChange: (String) -> Unit,
     onValueClear: () -> Unit,
-    keyboardController: SoftwareKeyboardController?
+    keyboardController: SoftwareKeyboardController? = null
 ) {
     BasicTextField(
         modifier = modifier.padding(5.dp),

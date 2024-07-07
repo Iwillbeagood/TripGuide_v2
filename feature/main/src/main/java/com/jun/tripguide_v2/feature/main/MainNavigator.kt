@@ -14,8 +14,8 @@ import com.jun.tripguide_v2.feature.mytravel.navigation.navigateMyTravel
 import com.jun.tripguide_v2.feature.mytravelPlan.navigation.navigateTravelPlan
 import com.jun.tripguide_v2.feature.recommend.navigation.navigateRecommend
 import com.jun.tripguide_v2.feature.setting.navigation.navigateSetting
+import com.jun.tripguide_v2.feature.travelAddDialog.navigation.navigateTouristAdd
 import com.jun.tripguide_v2.feature.travelInit.navigation.navigateTravelInit
-import com.jun.tripguide_v2.feature.travelAddDialog.navigation.navigateTravelRecommend
 import com.jun.tripguide_v2.feature.travelSearch.navigation.navigateTravelSearchRoute
 import com.jun.tripguide_v2.feature.travel_meansinfo.navigation.navigateCarInfo
 import com.jun.tripguide_v2.feature.travel_meansinfo.navigation.navigateTrainInfo
@@ -63,16 +63,16 @@ internal class MainNavigator(
         }
     }
 
-    fun navigateCarInfo(travelId: String) {
+    private fun navigateCarInfo(travelId: String) {
         navController.navigateCarInfo(travelId)
     }
 
-    fun navigateTrainInfo(travelId: String) {
+    private fun navigateTrainInfo(travelId: String) {
         navController.navigateTrainInfo(travelId)
     }
 
-    fun navigateTravelRecommend(travelId: String) {
-        navController.navigateTravelRecommend(travelId)
+    fun navigateTouristAdd(travelId: String) {
+        navController.navigateTouristAdd(travelId)
     }
 
     fun navigateTravelSearch(travelId: String) {

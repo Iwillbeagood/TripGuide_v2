@@ -9,8 +9,8 @@ interface TourStayApi {
 
     @GET("searchStay1")
     suspend fun getStays(
-        @QueryMap queryParams: Map<String, String>,
         @Query("pageNo") pageNo: Int,
-        @Query("arrange") arrange: String = "P"
+        @Query("arrange") arrange: String = "P",
+        @QueryMap queryParams: Map<String, String> = Const.queryParams,
     ): StayResponse
 }

@@ -9,10 +9,10 @@ interface TourLocationTouristApi {
 
     @GET("locationBasedList1")
     suspend fun getLocationBasedTourists(
-        @QueryMap queryParams: Map<String, String>,
         @Query("pageNo") pageNo: Int,
         @Query("mapX") mapX: Double,
         @Query("mapY") mapY: Double,
-        @Query("radius") radius: Int = 200000
+        @Query("radius") radius: Int = 200000,
+        @QueryMap queryParams: Map<String, String> = Const.queryParams
     ): LocationTouristResponse
 }

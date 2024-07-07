@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jun.tripguide_v2.core.designsystem.theme.LightGray
 import com.jun.tripguide_v2.core.designsystem.theme.White
+import com.jun.tripguide_v2.core.model.ContentType
 import com.jun.tripguide_v2.core.model.Tourist
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil.CoilImage
@@ -59,6 +60,7 @@ fun SelectedTourist(
                 ) { tourist ->
                     SelectedTouristItem(
                         title = tourist.title,
+                        type = ContentType.findByType(tourist.type),
                         imageUrl = tourist.firstImage,
                         modifier = Modifier
                             .animateItemPlacement()
@@ -76,6 +78,7 @@ fun SelectedTourist(
 fun SelectedTouristItem(
     title: String,
     imageUrl: String,
+    type: ContentType,
     modifier: Modifier
 ) {
     Surface(
@@ -86,12 +89,9 @@ fun SelectedTouristItem(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CoilImage(
-                imageModel = { imageUrl },
-                imageOptions = ImageOptions(
-                    contentScale = ContentScale.Crop,
-                    alignment = Alignment.Center
-                ),
+            CustomImage(
+                imageUrl = imageUrl,
+                type = type,
                 modifier = Modifier.size(60.dp)
             )
             Text(

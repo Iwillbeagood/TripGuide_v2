@@ -4,5 +4,5 @@ import com.jun.tripguide_v2.core.model.Address
 
 interface KakaoKeywordRepository {
 
-    suspend fun getAddressByKeyword(key: String, keyword: String) : List<Address>
+    suspend fun getAddressByKeyword(keyword: String) : List<Address>
 }

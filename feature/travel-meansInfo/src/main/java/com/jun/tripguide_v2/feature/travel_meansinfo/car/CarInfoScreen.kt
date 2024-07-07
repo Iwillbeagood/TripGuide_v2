@@ -37,7 +37,7 @@ fun CarInfoRoute(
     CarInfoScreen(
         travelId = travelId,
         onBackClick = onBackClick,
-        onMeansInfoComplete = { onComplete(travelId + "isInit") },
+        onMeansInfoComplete = { onComplete(travelId) },
         startTimePicked = viewModel::startTimePicked,
         carInfoComplete = viewModel::carInfoComplete
     )

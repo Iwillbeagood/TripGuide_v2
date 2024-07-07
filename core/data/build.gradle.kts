@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("jun.android.library")
     id("jun.android.hilt")
@@ -6,6 +8,16 @@ plugins {
 
 android {
     namespace = "com.jun.tripguide_v2.core.data"
+
+    defaultConfig {
+        buildConfigField("String", "KAKAO_API_KEY", getApiKey("kakao.api.key"))
+        buildConfigField("String", "OPEN_API_KEY", getApiKey("tour.api.key"))
+        buildConfigField("String", "KAKAO_NATIVE_KEY", getApiKey("kakao.native.key"))
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
@@ -21,4 +33,8 @@ dependencies {
 
     implementation(libs.google.compose.maps)
     implementation(libs.play.services.location)
+}
+
+fun getApiKey(propertyKey: String): String {
+    return gradleLocalProperties(rootDir).getProperty(propertyKey)
 }

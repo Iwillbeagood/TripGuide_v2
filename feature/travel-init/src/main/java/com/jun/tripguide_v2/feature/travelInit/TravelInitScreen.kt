@@ -47,10 +47,10 @@ fun TravelInitRoute(
     var showDestinationPickerDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(true) {
-        viewModel.eventFlow.collectLatest {
+        viewModel.initEffect.collectLatest {
             when (it) {
-                is TravelInitEvent.ShowErrorSnackBar -> onShowErrorSnackBar(it.error)
-                is TravelInitEvent.TravelInitComplete -> onTravelInitComplete(
+                is TravelInitEffect.ShowErrorSnackBar -> onShowErrorSnackBar(it.error)
+                is TravelInitEffect.TravelInitComplete -> onTravelInitComplete(
                     it.travelId.toString(),
                     it.selectedMeans
                 )

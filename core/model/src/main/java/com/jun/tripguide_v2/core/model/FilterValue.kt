@@ -11,7 +11,7 @@ enum class Arrange(val filterValue: FilterValue) {
     Change(FilterValue("수정일", "Q")), Created(FilterValue("생성일", "R"));
 
     companion object {
-        fun getValues(): List<FilterValue> = values().map {
+        fun getValues(): List<FilterValue> = entries.map {
             it.filterValue
         }
     }
@@ -29,9 +29,9 @@ enum class ContentType(val filterValue: FilterValue) {
     Restaurant(FilterValue("음식점", "39"));
 
     companion object {
-        fun findByType(type: String): ContentType = values().find { it.filterValue.value == type }!!
+        fun findByType(type: String): ContentType = entries.find { it.filterValue.value == type }!!
 
-        fun getValues(): List<FilterValue> = ContentType.values().map {
+        fun getValues(): List<FilterValue> = entries.map {
             it.filterValue
         }
     }

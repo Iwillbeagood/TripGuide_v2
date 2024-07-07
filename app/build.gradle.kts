@@ -40,7 +40,6 @@ dependencies {
     implementation(libs.kakaoNavi)
 }
 
-
 fun getApiKey(propertyKey: String): String {
     return gradleLocalProperties(rootDir).getProperty(propertyKey)
 }

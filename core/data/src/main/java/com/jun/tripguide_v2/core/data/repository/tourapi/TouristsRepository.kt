@@ -5,7 +5,6 @@ import com.jun.tripguide_v2.core.model.Tourist
 interface TouristsRepository {
 
     suspend fun getTouristsApi(
-        queryParams: Map<String, String>,
         pageNo: String,
         arrange: String,
         areaCode: String,

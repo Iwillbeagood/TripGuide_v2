@@ -9,9 +9,9 @@ interface TourFestivalApi {
 
     @GET("searchFestival1")
     suspend fun getFestivals(
-        @QueryMap queryParams: Map<String, String>,
         @Query("pageNo") pageNo: Int,
         @Query("arrange") arrange: String = "P",
-        @Query("eventStartDate") eventStartDate: String
+        @Query("eventStartDate") eventStartDate: String,
+        @QueryMap queryParams: Map<String, String> = Const.queryParams,
     ): FestivalResponse
 }

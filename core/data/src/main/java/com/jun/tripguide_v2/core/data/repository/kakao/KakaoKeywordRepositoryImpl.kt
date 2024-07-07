@@ -9,8 +9,8 @@ class KakaoKeywordRepositoryImpl @Inject constructor(
     private val keywordApi: KakaoKeywordApi
 ): KakaoKeywordRepository {
 
-    override suspend fun getAddressByKeyword(key: String, keyword: String): List<Address> {
-        return keywordApi.getKakaoLocalByKeyword(key, keyword).documents.map {
+    override suspend fun getAddressByKeyword(keyword: String): List<Address> {
+        return keywordApi.getKakaoLocalByKeyword(address = keyword).documents.map {
             it.toData()
         }
     }

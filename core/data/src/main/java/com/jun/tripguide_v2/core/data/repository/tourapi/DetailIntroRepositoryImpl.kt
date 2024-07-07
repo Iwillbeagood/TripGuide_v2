@@ -10,12 +10,11 @@ class DetailIntroRepositoryImpl @Inject constructor(
 ) : DetailIntroRepository {
 
     override suspend fun getDetailIntro(
-        queryParams: Map<String, String>,
         contentId: String,
         contentType: String
     ): List<DetailIntro> {
         return detailIntroApi.getDetailIntro(
-            queryParams, contentId, contentType
+            contentId, contentType
         ).response.body.items.item.first().toDetails()
     }
 }

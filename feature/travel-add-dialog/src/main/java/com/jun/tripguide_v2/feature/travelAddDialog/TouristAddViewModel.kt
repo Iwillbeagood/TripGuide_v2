@@ -11,14 +11,23 @@ import com.jun.tripguide_v2.core.model.ContentType
 import com.jun.tripguide_v2.core.model.FilterValue
 import com.jun.tripguide_v2.core.model.Tourist
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,11 +38,8 @@ class TouristAddViewModel @Inject constructor(
     private val getKeywordListUsecase: GetKeywordListUsecase,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<TravelAddDialogUiState>(TravelAddDialogUiState.Loading)
-    val uiState: StateFlow<TravelAddDialogUiState> get() = _uiState
-
-    private val _eventFlow = MutableSharedFlow<TravelAddDialogUiEvent>()
-    val eventFlow: SharedFlow<TravelAddDialogUiEvent> get() = _eventFlow.asSharedFlow()
+    private val _effectState = MutableSharedFlow<TravelAddDialogUiEffect>()
+    val effectState: SharedFlow<TravelAddDialogUiEffect> get() = _effectState.asSharedFlow()
 
     var tab = MutableStateFlow(TravelAddTabs.Recommend)
         private set
@@ -41,138 +47,134 @@ class TouristAddViewModel @Inject constructor(
     var keyword = MutableStateFlow("")
         private set
 
+    private var pageNo = MutableStateFlow(0)
+
+    private val _filterState = MutableStateFlow(FilterState())
+    val filterState: StateFlow<FilterState> get() = _filterState
+
+    var recommendTourists = MutableStateFlow<List<Tourist>>(emptyList())
+        private set
+
+    private val _selectedTourists = MutableStateFlow<List<Tourist>>(emptyList())
+    val selectedTourists: StateFlow<List<Tourist>> get() = _selectedTourists
+
+    val searchTourists: StateFlow<List<Tourist>>
+        get() = combine(
+            keyword,
+            selectedTourists
+        ) { keyword, selectedTourists ->
+            if (keyword.isBlank()) emptyList() else getKeywordListUsecase(keyword).filter {
+                it !in selectedTourists
+            }
+        }.catch {
+            _effectState.emit(TravelAddDialogUiEffect.ShowErrorSnackBar(it))
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList(),
+        )
+
+
     private var contentJob: Job? = null
 
-    fun changeTab(newTabs: TravelAddTabs) {
-        tab.update { newTabs }
-    }
-
-
-    fun initTourist(travelId: String) {
+    fun initViewModel(travelId: String) {
         viewModelScope.launch {
-            val tourists = when (tab.value) {
-                TravelAddTabs.Recommend -> getTouristsUsecase(travelId)
-                TravelAddTabs.Search -> getKeywordListUsecase(keyword.value)
-            }
-            _uiState.update {
-                TravelAddDialogUiState.S uccess(
-                    travelId = travelId,
-                    tourists = tourists
-                )
-            }
-        }
-    }
-
-    fun getNextPageTourist() {
-        contentJob?.cancel()
-
-        val uiState = uiState.value
-        if (uiState !is TravelAddDialogUiState.Success) return
-
-        viewModelScope.launch {
-            val newPage = uiState.pageNo + 1
-            val tourists = when (tab.value) {
-                TravelAddTabs.Recommend -> getTouristsUsecase(uiState.travelId, pageNo = newPage)
-                TravelAddTabs.Search -> getKeywordListUsecase(keyword.value)
-            }
-            _uiState.update {
-                uiState.copy(
-                    tourists = uiState.tourists + tourists
-                )
-            }
-        }
-    }
-
-    fun getFilterTourist(
-        arrange: String,
-        contentType: String
-    ) {
-        contentJob?.cancel()
-
-        val uiState = uiState.value
-        if (uiState !is TravelAddDialogUiState.Success) return
-
-        contentJob = viewModelScope.launch {
-            _uiState.update {
-                uiState.copy(
-                    tourists = uiState.tourists + tourists
-                )
-            }
-
             combine(
-                recommendUiState,
+                pageNo,
+                filterState,
+                selectedTourists
+            ) { page, filter, selectedList ->
                 getTouristsUsecase(
-                    travelId = uiState.travelId,
-                    pageNo = if (isNextPage) uiState.pageNo.toString() else "1",
-                    arrange = selectedArrange,
-                    contentType = selectedContentType
-                )
-            ) { uiState, tourists ->
-                when (uiState) {
-                    TravelRecommendUiState.Loading -> uiState
-                    is TravelRecommendUiState.Success -> {
-                        if (isNextPage) {
-                            uiState.copy(
-                                tourists = uiState.tourists + tourists,
-                                dialogVisibility = false
-                            )
-                        } else {
-                            uiState.copy(
-                                pageNo = 1,
-                                tourists = tourists,
-                                dialogVisibility = false
-                            )
-                        }
-                    }
+                    travelId = travelId,
+                    pageNo = page,
+                    arrange = filter.selectedArrange.value,
+                    contentType = filter.selectedContentType.value
+                ).filter {
+                    it.id !in selectedList.map { it.id }
                 }
-            }.collect {
-                _recommendUiState.value = it
+            }.collectLatest { tourists ->
+                recommendTourists.update {
+                    tourists
+                }
             }
         }
     }
 
+    fun nextPage() {
+        pageNo.update { it + 1 }
+    }
 
-    fun travelRecommendComplete() {
+    fun selectedTourist(tourist: Tourist) {
         viewModelScope.launch {
-            val tourists = uiState.value.selectedTourists.toList()
-            _eventFlow.emit(TravelAddDialogUiEvent.TravelRecommendComplete(tourists))
+            _selectedTourists.update { currentList ->
+                if (tourist in currentList) {
+                    currentList - tourist
+                } else {
+                    currentList + tourist
+                }
+            }
+        }
+    }
+
+    fun changeArrange(value: FilterValue) {
+        viewModelScope.launch {
+            _filterState.update {
+                it.copy(
+                    arranges = it.arranges.map {
+                        it.copy(
+                            isSelected = it == value
+                        )
+                    }
+                )
+            }
+        }
+    }
+
+    fun changeContentType(value: FilterValue) {
+        viewModelScope.launch {
+            _filterState.update {
+                it.copy(
+                    contentTypes = it.contentTypes.map {
+                        it.copy(
+                            isSelected = it == value
+                        )
+                    }
+                )
+            }
+        }
+    }
+
+    fun changeKeyword(newValue: String) {
+        keyword.update {
+            newValue
+        }
+    }
+
+    fun changeTab(index: Int) {
+        tab.update {
+            TravelAddTabs.entries.first { it.index == index }
         }
     }
 }
 
-@Stable
-sealed interface TravelAddDialogUiState {
+@Immutable
+data class FilterState(
+    val arranges: List<FilterValue> = Arrange.getValues(),
+    val contentTypes: List<FilterValue> = ContentType.getValues(),
+) {
+    val selectedArrange: FilterValue
+        get() = arranges.first { it.isSelected }
 
-    @Immutable
-    object Loading : TravelAddDialogUiState
-
-    @Immutable
-    object Empty : TravelAddDialogUiState
-
-    @Immutable
-    data class Success(
-        val travelId: String = "",
-        val pageNo: Int = 1,
-        val tourists: List<Tourist>,
-        val selectedTourists: Set<Tourist> = emptySet(),
-        val arrangeTypes: List<FilterValue> = Arrange.getValues(),
-        val contentTypes: List<FilterValue> = ContentType.getValues()
-    ) : TravelAddDialogUiState {
-
-        val selectedArrange: FilterValue
-            get() = arrangeTypes.find { it.isSelected }!!
-
-        val selectedContent: FilterValue
-            get() = contentTypes.find { it.isSelected }!!
-    }
+    val selectedContentType: FilterValue
+        get() = contentTypes.first { it.isSelected }
 }
 
 @Stable
-sealed interface TravelAddDialogUiEvent {
+sealed interface TravelAddDialogUiEffect {
 
     @Immutable
-    data class ShowErrorSnackBar(val throwable: Throwable) : TravelAddDialogUiEvent
+    data class ShowErrorSnackBar(val throwable: Throwable) : TravelAddDialogUiEffect
 
     @Immutable
-    data class TravelRecommendComplete(val tourists: List<Tourist>) : TravelAddDialogUiEvent
+    data class TravelRecommendComplete(val tourists: List<Tourist>) : TravelAddDialogUiEffect
 }

@@ -8,7 +8,7 @@ import retrofit2.http.QueryMap
 interface TourAreaCodeApi {
     @GET("areaCode1")
     suspend fun getAreaCode(
-        @QueryMap queryParams: Map<String, String>,
-        @Query("areaCode") areaCode: String? = null
+        @Query("areaCode") areaCode: String? = null,
+        @QueryMap queryParams: Map<String, String> = Const.queryParams,
     ): AreaCodeResponse
 }

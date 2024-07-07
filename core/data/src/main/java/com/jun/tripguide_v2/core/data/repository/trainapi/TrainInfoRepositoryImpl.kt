@@ -10,14 +10,12 @@ class TrainInfoRepositoryImpl @Inject constructor(
 ) : TrainInfoRepository {
 
     override suspend fun getTrainInfo(
-        serviceKey: String,
         depPlaceId: String,
         arrPlaceId: String,
         depPlanedTime: String
     ): List<TrainInfo> {
         return try {
             trainInfoApi.getTrainStations(
-                serviceKey = serviceKey,
                 depPlaceId = depPlaceId,
                 arrPlaceId = arrPlaceId,
                 depPlanedTime = depPlanedTime

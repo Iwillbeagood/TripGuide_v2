@@ -2,8 +2,7 @@ package com.jun.tripguide_v2.feature.travel_meansinfo.car
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jun.tripguide_v2.core.domain.usecase.room.GetTravelByIdUsecase
-import com.jun.tripguide_v2.core.domain.usecase.room.UpdateTravelUsecase
+import com.jun.tripguide_v2.core.data.repository.room.TravelRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,8 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CarInfoViewModel @Inject constructor(
-    private val getTravelByIdUsecase: GetTravelByIdUsecase,
-    private val updateTravelUsecase: UpdateTravelUsecase
+    private val travelRepository: TravelRepository
 ) : ViewModel() {
 
     private var startTime = MutableStateFlow(LocalTime.now())
@@ -34,9 +32,9 @@ class CarInfoViewModel @Inject constructor(
 
     fun carInfoComplete(travelId: String) {
         viewModelScope.launch {
-            val travel = getTravelByIdUsecase(travelId)
+            val travel = travelRepository.getTravelById(travelId)
             val arrivalDate = travel.startPlace.arrivalDateTime.toLocalDate()
-            updateTravelUsecase(
+            travelRepository.updateTravel(
                 travel.copy(
                 startPlace = travel.startPlace.copy(
                     arrivalDateTime = startTime.value.atDate(arrivalDate)

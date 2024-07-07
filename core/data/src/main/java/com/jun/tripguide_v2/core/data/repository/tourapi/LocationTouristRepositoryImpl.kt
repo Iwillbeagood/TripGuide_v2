@@ -10,12 +10,11 @@ class LocationTouristRepositoryImpl @Inject constructor(
 ) : LocationTouristRepository {
 
     override suspend fun getLocationBasedTourists(
-        queryParams: Map<String, String>,
         pageNo: Int,
         mapX: Double,
         mapY: Double
     ): List<LocationBasedTourist> {
-        return locationTouristApi.getLocationBasedTourists(queryParams, pageNo, mapX, mapY).response.body.items.item.map {
+        return locationTouristApi.getLocationBasedTourists(pageNo, mapX, mapY).response.body.items.item.map {
             it.toLocationBasedTourist()
         }
     }

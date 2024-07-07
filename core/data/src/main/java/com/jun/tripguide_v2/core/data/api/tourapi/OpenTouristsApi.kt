@@ -9,7 +9,7 @@ interface OpenTouristsApi {
 
     @GET("areaBasedList1")
     suspend fun getTourists(
-        @QueryMap queryParams: Map<String, String>,
+        @QueryMap queryParams: Map<String, String> = Const.queryParams,
         @Query("pageNo") pageNo: String,
         @Query("arrange") arrange: String,
         @Query("areaCode") areaCode: String,

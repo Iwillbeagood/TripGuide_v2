@@ -1,11 +1,8 @@
 package com.jun.tripguide_v2.core.domain.usecase.tourapi
 
 import com.jun.tripguide_v2.core.data.repository.tourapi.TouristsRepository
-import com.jun.tripguide_v2.core.domain.Const.queryParams
 import com.jun.tripguide_v2.core.domain.usecase.room.GetTravelByIdUsecase
 import com.jun.tripguide_v2.core.model.Tourist
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class GetTouristsUsecase @Inject constructor(
@@ -26,13 +23,11 @@ class GetTouristsUsecase @Inject constructor(
         val sigunguCode = travel.destination.sigunguCode
 
         return touristsRepository.getTouristsApi(
-            queryParams = queryParams,
             pageNo = pageNo.toString(),
             arrange = arrange ?: "P",
             areaCode = areaCode.code,
             sigunguCode = if (sigunguCode.code != "0") sigunguCode.code else null,
             contentType = contentType
         ).filter { tourist -> tourist.id !in places.map { it.id } }
-
     }
 }

@@ -46,14 +46,13 @@ import com.jun.tripguide_v2.core.designsystem.theme.Black
 import com.jun.tripguide_v2.core.designsystem.theme.Gray
 import com.jun.tripguide_v2.core.designsystem.theme.PaperGray
 import com.jun.tripguide_v2.core.designsystem.theme.SkyGray
-import com.jun.tripguide_v2.core.designsystem.theme.surfaceDim
 import com.jun.tripguide_v2.feature.main.R.string
 import com.jun.tripguide_v2.feature.mytravel.navigation.myTravelNavGraph
 import com.jun.tripguide_v2.feature.mytravelPlan.navigation.myTravelPlanNavGraph
 import com.jun.tripguide_v2.feature.recommend.navigation.recommendNavGraph
 import com.jun.tripguide_v2.feature.setting.navigation.settingNavGraph
+import com.jun.tripguide_v2.feature.travelAddDialog.navigation.touristAddNavGraph
 import com.jun.tripguide_v2.feature.travelInit.navigation.travelInitNavGraph
-import com.jun.tripguide_v2.feature.travelAddDialog.navigation.travelRecommendNavGraph
 import com.jun.tripguide_v2.feature.travelSearch.navigation.travelSearchNavGraph
 import com.jun.tripguide_v2.feature.travel_meansinfo.navigation.travelMeansInfoNavGraph
 import com.jun.tripguide_v2.tourist_detail.navigation.touristDetailNavGraph
@@ -108,7 +107,7 @@ internal fun MainScreen(
                         myTravelPlanNavGraph(
                             onBackClick = navigator::popBackStackIfNotHome,
                             onSearchRoute = navigator::navigateTravelSearch,
-                            onRecommendRoute = navigator::navigateTravelRecommend,
+                            onRecommendRoute = navigator::navigateTouristAdd,
                             onShowErrorSnackBar = onShowErrorSnackBar
                         )
                         recommendNavGraph(
@@ -126,20 +125,12 @@ internal fun MainScreen(
                         )
                         travelMeansInfoNavGraph(
                             onBackClick = navigator::popBackStackIfNotHome,
-                            onComplete = navigator::navigateTravelRecommend
+                            onComplete = navigator::navigateTouristAdd
                         )
-                        travelRecommendNavGraph(
+                        touristAddNavGraph(
                             onBackClick = navigator::popBackStackIfNotHome,
                             onShowErrorSnackBar = onShowErrorSnackBar,
-                            onTravelRecommendComplete = {
-
-                            },
-                            onTouristDetail = navigator::navigateTouristDetail,
-                        )
-                        travelSearchNavGraph(
-                            onBackClick = navigator::popBackStackIfNotHome,
-                            onShowErrorSnackBar = onShowErrorSnackBar,
-                            onTravelSearchComplete = navigator::popBackUntilStart,
+                            onTravelRecommendComplete = {  },
                             onTouristDetail = navigator::navigateTouristDetail,
                         )
                         touristDetailNavGraph(
@@ -209,7 +200,7 @@ private fun MainBottomBar(
 }
 
 @Composable
-fun ItemAddFAB(
+private fun ItemAddFAB(
     visible: Boolean,
     icon: ImageVector,
     onClicked: () -> Unit

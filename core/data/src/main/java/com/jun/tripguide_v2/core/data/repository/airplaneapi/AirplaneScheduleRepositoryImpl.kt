@@ -10,13 +10,12 @@ class AirplaneScheduleRepositoryImpl @Inject constructor(
 ) : AirplaneScheduleRepository {
 
     override suspend fun getAirplaneSchedule(
-        serviceKey: String,
         departCityCode: String,
         arriveCityCode: String,
         pageNo: String
     ): List<AirplaneSchedule> {
         return airplaneSchedulesApi.getAirplaneSchedules(
-            serviceKey, departCityCode, arriveCityCode, pageNo
+            departCityCode, arriveCityCode, pageNo
         ).response.body.airplaneScheduleItems.map { it.toAirplaneSchedule() }
     }
 }

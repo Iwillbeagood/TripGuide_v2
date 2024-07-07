@@ -8,12 +8,12 @@ import retrofit2.http.QueryMap
 interface TourCommonInfoApi {
     @GET("detailCommon1")
     suspend fun getCommonInfo(
-        @QueryMap queryParams: Map<String, String>,
         @Query("contentId") contentId: String,
         @Query("defaultYN") defaultYN: String = "Y",
         @Query("firstImageYN") firstImageYN: String = "Y",
         @Query("addrinfoYN") addrinfoYN: String = "Y",
         @Query("mapinfoYN") mapinfoYN: String = "Y",
         @Query("overviewYN") overviewYN: String = "Y",
+        @QueryMap queryParams: Map<String, String> = Const.queryParams,
     ): CommonInfoResponse
 }

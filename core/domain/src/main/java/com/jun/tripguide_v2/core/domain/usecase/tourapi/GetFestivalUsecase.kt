@@ -1,7 +1,6 @@
 package com.jun.tripguide_v2.core.domain.usecase.tourapi
 
 import com.jun.tripguide_v2.core.data.repository.tourapi.FestivalRepository
-import com.jun.tripguide_v2.core.domain.Const
 import com.jun.tripguide_v2.core.model.tourApi.Festival
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -16,6 +15,6 @@ class GetFestivalUsecase @Inject constructor(
     ): List<Festival> {
         val today = LocalDate.now()
         val dateFormatter = DateTimeFormatter.ofPattern("YYYYMMdd")
-        return festivalRepository.getFestivals(Const.queryParams, pageNo, today.format(dateFormatter))
+        return festivalRepository.getFestivals(pageNo, today.format(dateFormatter))
     }
 }

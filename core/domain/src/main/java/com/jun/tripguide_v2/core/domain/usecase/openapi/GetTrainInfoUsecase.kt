@@ -1,8 +1,6 @@
 package com.jun.tripguide_v2.core.domain.usecase.openapi
 
 import com.jun.tripguide_v2.core.data.repository.trainapi.TrainInfoRepository
-import com.jun.tripguide_v2.core.domain.BuildConfig
-import com.jun.tripguide_v2.core.domain.Const.OPEN_API_KEY
 import com.jun.tripguide_v2.core.model.TrainInfo
 import javax.inject.Inject
 
@@ -16,7 +14,6 @@ class GetTrainInfoUsecase @Inject constructor(
         depPlanedTime: String
     ): List<TrainInfo> {
         return trainInfoRepository.getTrainInfo(
-            serviceKey = OPEN_API_KEY,
             depPlaceId = depPlaceId,
             arrPlaceId = arrPlaceId,
             depPlanedTime = depPlanedTime

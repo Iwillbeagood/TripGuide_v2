@@ -1,10 +1,7 @@
 package com.jun.tripguide_v2.core.domain.usecase.kakao
 
 import com.jun.tripguide_v2.core.data.repository.kakao.KakaoRouteRepository
-import com.jun.tripguide_v2.core.domain.BuildConfig
-import com.jun.tripguide_v2.core.domain.Const.KAKAO_API_KEY
 import com.jun.tripguide_v2.core.model.Route
-import java.lang.Exception
 import javax.inject.Inject
 
 class GetKakaoRouteDurationUsecase @Inject constructor(
@@ -14,7 +11,6 @@ class GetKakaoRouteDurationUsecase @Inject constructor(
     suspend operator fun invoke(origin: Route, destinations: Route): Int {
         return try {
             kakaoRouteRepository.getRouteDuration(
-                key = KAKAO_API_KEY,
                 origin = origin.toPoint(),
                 destinations = destinations.toPoint()
             )

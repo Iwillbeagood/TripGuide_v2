@@ -9,7 +9,7 @@ interface TourSearchKeywordApi {
 
     @GET("searchKeyword1")
     suspend fun getTouristList(
-        @QueryMap queryParams: Map<String, String>,
-        @Query("keyword") keyword: String
+        @Query("keyword") keyword: String,
+        @QueryMap queryParams: Map<String, String> = Const.queryParams
     ): TouristResponse
 }

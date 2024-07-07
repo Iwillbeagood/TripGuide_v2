@@ -1,6 +1,5 @@
 plugins {
     id("jun.android.feature")
-    id("org.jetbrains.kotlin.android")
 }
 
 android {

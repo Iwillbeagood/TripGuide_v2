@@ -10,7 +10,6 @@ class TouristsRepositoryImpl @Inject constructor(
 ) : TouristsRepository {
 
     override suspend fun getTouristsApi(
-        queryParams: Map<String, String>,
         pageNo: String,
         arrange: String,
         areaCode: String,
@@ -18,14 +17,13 @@ class TouristsRepositoryImpl @Inject constructor(
         contentType: String?
     ): List<Tourist> {
         return openTouristsApi.getTourists(
-            queryParams = queryParams,
             pageNo = pageNo,
             arrange = arrange,
             areaCode = areaCode,
             sigunguCode = sigunguCode,
             contentType = contentType
-        ).response.body.items.item.map {
+        ).response.body.items?.item?.map {
             it.toData()
-        }
+        } ?: emptyList()
     }
 }
