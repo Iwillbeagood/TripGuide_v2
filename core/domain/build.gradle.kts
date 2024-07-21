@@ -1,11 +1,11 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import com.jun.tripguide.setNamespace
 
 plugins {
-    id("jun.android.library")
+    alias(libs.plugins.jun.android.library)
 }
 
 android {
-    namespace = "com.jun.tripguide_v2.core.domain"
+    setNamespace("core.domain")
 }
 
 dependencies {

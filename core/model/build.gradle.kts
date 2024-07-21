@@ -1,6 +1,12 @@
+import com.jun.tripguide.setNamespace
+
 plugins {
-    id("jun.kotlin.library")
+    alias(libs.plugins.jun.android.library)
     id("kotlinx-serialization")
+}
+
+android {
+    setNamespace("core.model")
 }
 
 dependencies {

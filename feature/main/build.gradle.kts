@@ -1,11 +1,12 @@
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import com.jun.tripguide.setNamespace
 
 plugins {
-    id("jun.android.feature")
+    alias(libs.plugins.jun.android.feature)
 }
 
 android {
-    namespace = "com.jun.tripguide_v2.feature.main"
+    setNamespace("feature.main")
 }
 
 dependencies {

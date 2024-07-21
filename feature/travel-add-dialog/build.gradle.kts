@@ -1,7 +1,9 @@
+import com.jun.tripguide.setNamespace
+
 plugins {
-    id("jun.android.feature")
+    alias(libs.plugins.jun.android.feature)
 }
 
 android {
-    namespace = "com.jun.tripguide_v2.feature.travel_add_dialog"
+    setNamespace("feature.travel-add-dialog")
 }

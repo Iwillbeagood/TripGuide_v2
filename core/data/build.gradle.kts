@@ -1,13 +1,14 @@
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import com.jun.tripguide.setNamespace
 
 plugins {
-    id("jun.android.library")
-    id("jun.android.hilt")
+    alias(libs.plugins.jun.android.library)
+    alias(libs.plugins.jun.android.hilt)
     id("kotlinx-serialization")
 }
 
 android {
-    namespace = "com.jun.tripguide_v2.core.data"
+    setNamespace("core.data")
 
     defaultConfig {
         buildConfigField("String", "KAKAO_API_KEY", getApiKey("kakao.api.key"))

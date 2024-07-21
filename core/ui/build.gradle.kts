@@ -1,10 +1,12 @@
+import com.jun.tripguide.setNamespace
+
 plugins {
-    id("jun.android.library")
-    id("jun.android.compose")
+    alias(libs.plugins.jun.android.library)
+    alias(libs.plugins.jun.android.compose)
 }
 
 android {
-    namespace = "com.jun.tripguide_v2.core.ui"
+    setNamespace("core.ui")
 }
 
 dependencies {

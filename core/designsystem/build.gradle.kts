@@ -1,11 +1,12 @@
+import com.jun.tripguide.setNamespace
+
 plugins {
-    id("jun.android.library")
-    id("jun.android.compose")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.jun.android.library)
+    alias(libs.plugins.jun.android.compose)
 }
 
 android {
-    namespace = "com.jun.tripguide_v2.core.designsystem"
+    setNamespace("core.designsystem")
 }
 
 dependencies {

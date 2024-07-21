@@ -1,10 +1,11 @@
+import com.jun.tripguide.setNamespace
+
 plugins {
-    id("jun.android.feature")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.jun.android.feature)
 }
 
 android {
-    namespace = "com.jun.tripguide_v2.feature.mytravel.plan"
+    setNamespace("feature.mytravel-plan")
 }
 
 dependencies {
