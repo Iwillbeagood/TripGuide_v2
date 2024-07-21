@@ -11,5 +11,6 @@ android {
 dependencies {
     implementation(projects.core.dataApi)
     implementation(projects.core.model)
+    implementation(projects.core.location)
     implementation(libs.google.compose.maps)
 }

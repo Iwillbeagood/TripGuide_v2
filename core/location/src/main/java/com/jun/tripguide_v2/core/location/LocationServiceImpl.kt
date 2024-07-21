@@ -1,7 +1,7 @@
 /**
  * https://medium.com/@alrodiaz15/google-maps-location-jetpack-compose-36cd3fa617a4
  * */
-package com.jun.tripguide_v2.core.data.service
+package com.jun.tripguide_v2.core.location
 
 import android.annotation.SuppressLint
 import android.content.Context

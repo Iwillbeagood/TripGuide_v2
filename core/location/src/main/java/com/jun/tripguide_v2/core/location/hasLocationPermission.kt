@@ -1,4 +1,4 @@
-package com.jun.tripguide_v2.core.data.service
+package com.jun.tripguide_v2.core.location
 
 import android.Manifest
 import android.content.Context
