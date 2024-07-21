@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    setNamespace("feature.travel-meansInfo")
+    setNamespace("feature.travel_meansInfo")
 }
 
 dependencies {

@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    setNamespace("feature.travel-init")
+    setNamespace("feature.travel_init")
 }
 
 

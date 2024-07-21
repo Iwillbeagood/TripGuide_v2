@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    setNamespace("feature.travel-search")
+    setNamespace("feature.travel_search")
 }
 
 

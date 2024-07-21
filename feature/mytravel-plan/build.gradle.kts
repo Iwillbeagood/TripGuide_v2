@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    setNamespace("feature.mytravel-plan")
+    setNamespace("feature.mytravel_plan")
 }
 
 dependencies {

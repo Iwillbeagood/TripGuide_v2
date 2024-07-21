@@ -5,5 +5,5 @@ plugins {
 }
 
 android {
-    setNamespace("feature.travel-add-dialog")
+    setNamespace("feature.travel_add_dialog")
 }

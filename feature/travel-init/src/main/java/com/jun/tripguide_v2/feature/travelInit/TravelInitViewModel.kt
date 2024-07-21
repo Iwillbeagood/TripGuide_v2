@@ -13,8 +13,8 @@ import com.jun.tripguide_v2.core.model.MeansType
 import com.jun.tripguide_v2.core.model.StartingPoint
 import com.jun.tripguide_v2.core.model.Tourist
 import com.jun.tripguide_v2.core.model.Travel
-import com.jun.tripguide_v2.feature.`travel-init`.R
 import com.jun.tripguide_v2.feature.travelInit.util.toStringType
+import com.jun.tripguide_v2.feature.travel_init.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow

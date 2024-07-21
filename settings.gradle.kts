@@ -40,3 +40,4 @@ include(
 include(":feature:tourist-detail")
 include(":feature:travel-meansInfo")
 include(":core:data-api")
+include(":core:location")

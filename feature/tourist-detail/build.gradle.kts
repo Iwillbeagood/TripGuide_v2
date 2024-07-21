@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    setNamespace("feature.tourist-detail")
+    setNamespace("feature.tourist_detail")
 }
 
 
