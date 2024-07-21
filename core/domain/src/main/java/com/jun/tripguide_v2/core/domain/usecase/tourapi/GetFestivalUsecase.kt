@@ -1,5 +1,6 @@
 package com.jun.tripguide_v2.core.domain.usecase.tourapi
 
+import com.jun.tripguide_v2.core.data_api.repository.tourapi.FestivalRepository
 import com.jun.tripguide_v2.core.model.tourApi.Festival
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

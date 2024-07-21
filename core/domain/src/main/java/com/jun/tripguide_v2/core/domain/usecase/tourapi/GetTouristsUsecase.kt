@@ -1,5 +1,6 @@
 package com.jun.tripguide_v2.core.domain.usecase.tourapi
 
+import com.jun.tripguide_v2.core.data_api.repository.tourapi.TouristsRepository
 import com.jun.tripguide_v2.core.domain.usecase.room.GetTravelByIdUsecase
 import com.jun.tripguide_v2.core.model.Tourist
 import javax.inject.Inject

@@ -1,6 +1,6 @@
 package com.jun.tripguide_v2.core.domain.usecase.openapi
 
-import com.jun.tripguide_v2.core.data.repository.trainapi.TrainStationRepository
+import com.jun.tripguide_v2.core.data_api.repository.trainapi.TrainStationRepository
 import com.jun.tripguide_v2.core.model.TrainStation
 import javax.inject.Inject
 

@@ -22,9 +22,12 @@ include(
 
     ":core:designsystem",
     ":core:data",
+    ":core:data-api",
     ":core:domain",
     ":core:model",
     ":core:database",
+    ":core:location",
+    ":core:testing",
     ":core:ui",
 
     ":feature:main",
@@ -39,5 +42,3 @@ include(
 )
 include(":feature:tourist-detail")
 include(":feature:travel-meansInfo")
-include(":core:data-api")
-include(":core:location")
