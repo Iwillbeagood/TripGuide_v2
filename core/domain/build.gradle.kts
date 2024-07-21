@@ -9,7 +9,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.data)
+    implementation(projects.core.dataApi)
     implementation(projects.core.model)
     implementation(libs.google.compose.maps)
 }

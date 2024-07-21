@@ -36,7 +36,7 @@ import com.jun.tripguide_v2.core.designsystem.theme.White
 import com.jun.tripguide_v2.core.model.TrainInfo
 import com.jun.tripguide_v2.core.model.TrainStation
 import com.jun.tripguide_v2.core.model.TrainType
-import com.jun.tripguide_v2.feature.travel_meansinfo.R
+import com.jun.tripguide_v2.feature.travel_meansInfo.R
 
 @Composable
 fun TrainStationPickerDialog(
