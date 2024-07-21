@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.sp
 import com.jun.tripguide_v2.core.designsystem.theme.DuskGray
 import com.jun.tripguide_v2.core.designsystem.theme.Sky
 import com.jun.tripguide_v2.core.designsystem.theme.White
-import com.jun.tripguide_v2.core.designsystem.theme.surfaceDim
 import java.time.Duration
 
 @Composable

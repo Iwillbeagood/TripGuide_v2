@@ -1,4 +1,4 @@
-package com.jun.tripguide_v2.core.data.repository.tourapi
+package com.jun.tripguide_v2.core.data_api.tourapi
 
 import com.jun.tripguide_v2.core.model.Tourist
 

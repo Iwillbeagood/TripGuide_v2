@@ -51,7 +51,7 @@ fun SelectedTourist(
             color = White,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 14.dp, end = 14.dp, top = 14.dp),
+                .padding(start = 10.dp, end = 10.dp, top = 10.dp),
         ) {
             LazyRow {
                 items(

@@ -2,6 +2,7 @@ package com.jun.tripguide_v2.core.data.repository.trainapi
 
 import com.jun.tripguide_v2.core.data.api.trainapi.TrainInfoApi
 import com.jun.tripguide_v2.core.data.mapper.toTrainInfo
+import com.jun.tripguide_v2.core.data_api.trainapi.TrainInfoRepository
 import com.jun.tripguide_v2.core.model.TrainInfo
 import javax.inject.Inject
 

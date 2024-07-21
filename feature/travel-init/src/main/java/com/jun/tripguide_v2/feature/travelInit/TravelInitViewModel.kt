@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jun.tripguide_v2.core.data.repository.room.TravelRepository
+import com.jun.tripguide_v2.core.data_api.room.TravelRepository
 import com.jun.tripguide_v2.core.model.Address
 import com.jun.tripguide_v2.core.model.DateDuration
 import com.jun.tripguide_v2.core.model.DestinationCode

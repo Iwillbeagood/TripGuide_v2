@@ -24,9 +24,12 @@ android {
 dependencies {
     implementation(projects.core.model)
     implementation(projects.core.database)
+    implementation(projects.core.dataApi)
 
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.kotlin.serialization)
+    implementation(libs.sandwich)
+    implementation(libs.sandwich.retrofit)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
     implementation(libs.kotlinx.serialization.json)

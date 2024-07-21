@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -156,7 +157,11 @@ fun TouristScreen(
                             selected = tab.index == index,
                             onClick = { onSelectTab(index) }
                         ) {
-                            Text(text = tab.title, modifier = Modifier.padding(vertical = 15.dp))
+                            Text(
+                                text = tab.title,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(vertical = 15.dp)
+                            )
                         }
                     }
                 }

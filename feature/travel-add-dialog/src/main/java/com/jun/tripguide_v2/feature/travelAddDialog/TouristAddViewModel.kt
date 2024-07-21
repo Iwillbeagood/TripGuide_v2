@@ -1,3 +1,5 @@
+@file:OptIn(FlowPreview::class)
+
 package com.jun.tripguide_v2.feature.travelAddDialog
 
 import androidx.compose.runtime.Immutable
@@ -20,12 +22,17 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -44,8 +51,8 @@ class TouristAddViewModel @Inject constructor(
     var tab = MutableStateFlow(TravelAddTabs.Recommend)
         private set
 
-    var keyword = MutableStateFlow("")
-        private set
+    private val _keyword = MutableStateFlow("")
+    val keyword = _keyword.asStateFlow()
 
     private var pageNo = MutableStateFlow(0)
 
@@ -55,27 +62,32 @@ class TouristAddViewModel @Inject constructor(
     var recommendTourists = MutableStateFlow<List<Tourist>>(emptyList())
         private set
 
+    var searchTourists = MutableStateFlow<List<Tourist>>(emptyList())
+        private set
+
     private val _selectedTourists = MutableStateFlow<List<Tourist>>(emptyList())
     val selectedTourists: StateFlow<List<Tourist>> get() = _selectedTourists
 
-    val searchTourists: StateFlow<List<Tourist>>
-        get() = combine(
-            keyword,
-            selectedTourists
-        ) { keyword, selectedTourists ->
-            if (keyword.isBlank()) emptyList() else getKeywordListUsecase(keyword).filter {
-                it !in selectedTourists
+    init {
+        viewModelScope.launch {
+            combine(
+                keyword,
+                selectedTourists
+            ) { newKeyword, selectedList ->
+                if (newKeyword.isBlank()) {
+                    emptyList()
+                } else {
+                    getKeywordListUsecase(newKeyword).filter {
+                        it.id !in selectedList.map { it.id }
+                    }
+                }
+            }.collect { tourists ->
+                searchTourists.update {
+                    tourists
+                }
             }
-        }.catch {
-            _effectState.emit(TravelAddDialogUiEffect.ShowErrorSnackBar(it))
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList(),
-        )
-
-
-    private var contentJob: Job? = null
+        }
+    }
 
     fun initViewModel(travelId: String) {
         viewModelScope.launch {
@@ -145,7 +157,7 @@ class TouristAddViewModel @Inject constructor(
     }
 
     fun changeKeyword(newValue: String) {
-        keyword.update {
+        _keyword.update {
             newValue
         }
     }

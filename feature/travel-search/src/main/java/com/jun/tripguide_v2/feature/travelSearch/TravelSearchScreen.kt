@@ -35,12 +35,10 @@ import com.jun.tripguide_v2.core.designsystem.component.ScrollUpButton
 import com.jun.tripguide_v2.core.designsystem.component.SelectedTourist
 import com.jun.tripguide_v2.core.designsystem.component.TopAppBarNavigationType
 import com.jun.tripguide_v2.core.designsystem.component.TouristItem
-import com.jun.tripguide_v2.core.designsystem.theme.surfaceDim
 import com.jun.tripguide_v2.core.model.ContentType
 import com.jun.tripguide_v2.core.model.Tourist
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TravelSearchRoute(
     isInit: Boolean,

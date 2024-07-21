@@ -39,7 +39,6 @@ import com.jun.tripguide_v2.core.designsystem.theme.Gray
 import com.jun.tripguide_v2.core.designsystem.theme.LightGray
 import com.jun.tripguide_v2.core.designsystem.theme.PaperGray
 import com.jun.tripguide_v2.core.designsystem.theme.Sky
-import com.jun.tripguide_v2.core.designsystem.theme.surfaceDim
 import com.jun.tripguide_v2.core.model.DestinationCode
 import com.jun.tripguide_v2.core.model.tourApi.AreaCode
 

@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.jun.tripguide_v2.core.designsystem.theme.Gray
 import com.jun.tripguide_v2.core.designsystem.theme.White
-import com.jun.tripguide_v2.core.designsystem.theme.surfaceDim
 import com.jun.tripguide_v2.core.model.TrainInfo
 import com.jun.tripguide_v2.core.model.TrainStation
 import com.jun.tripguide_v2.core.model.TrainType

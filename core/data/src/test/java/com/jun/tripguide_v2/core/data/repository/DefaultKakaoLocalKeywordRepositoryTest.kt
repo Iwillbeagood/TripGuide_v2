@@ -2,7 +2,6 @@ package com.jun.tripguide_v2.core.data.repository
 
 import com.jun.tripguide_v2.core.data.api.FakeKakaoLocalKeywordApi
 import com.jun.tripguide_v2.core.data.repository.kakao.KakaoKeywordRepositoryImpl
-import com.jun.tripguide_v2.core.data.repository.kakao.KakaoKeywordRepository
 import com.jun.tripguide_v2.core.model.Address
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe

@@ -3,6 +3,7 @@ package com.jun.tripguide_v2.core.data.repository.airplaneapi
 import com.jun.tripguide_v2.core.model.AirplaneSchedule
 import com.jun.tripguide_v2.core.data.api.airplaneapi.AirplaneSchedulesApi
 import com.jun.tripguide_v2.core.data.mapper.toAirplaneSchedule
+import com.jun.tripguide_v2.core.data_api.airplaneapi.AirplaneScheduleRepository
 import javax.inject.Inject
 
 class AirplaneScheduleRepositoryImpl @Inject constructor(

@@ -1,4 +1,4 @@
-package com.jun.tripguide_v2.core.data.repository.airplaneapi
+package com.jun.tripguide_v2.core.data_api.airplaneapi
 
 import com.jun.tripguide_v2.core.model.AirplaneSchedule
 

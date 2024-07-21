@@ -1,4 +1,4 @@
-package com.jun.tripguide_v2.core.data.repository.kakao
+package com.jun.tripguide_v2.core.data_api.kakao
 
 interface KakaoRouteRepository {
 

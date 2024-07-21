@@ -1,6 +1,5 @@
 package com.jun.tripguide_v2.core.domain.usecase.kakao
 
-import com.jun.tripguide_v2.core.data.repository.kakao.KakaoRouteRepository
 import com.jun.tripguide_v2.core.model.Route
 import javax.inject.Inject
 

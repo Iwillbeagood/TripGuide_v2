@@ -41,7 +41,7 @@ fun CustomSearchView(
     keyboardController: SoftwareKeyboardController? = null
 ) {
     BasicTextField(
-        modifier = modifier.padding(5.dp),
+        modifier = modifier.padding(10.dp),
         value = value,
         textStyle = TextStyle.Default.copy(fontSize = 16.sp),
         onValueChange = onValueChange,

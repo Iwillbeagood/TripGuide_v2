@@ -1,9 +1,9 @@
 package com.jun.tripguide_v2.core.data.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.jun.tripguide_v2.core.data.api.airplaneapi.AirplaneSchedulesApi
 import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoKeywordApi
 import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoRouteAPI
-import com.jun.tripguide_v2.core.data.api.airplaneapi.AirplaneSchedulesApi
 import com.jun.tripguide_v2.core.data.api.tourapi.OpenTouristsApi
 import com.jun.tripguide_v2.core.data.api.tourapi.TourAreaCodeApi
 import com.jun.tripguide_v2.core.data.api.tourapi.TourCommonInfoApi
@@ -14,6 +14,7 @@ import com.jun.tripguide_v2.core.data.api.tourapi.TourSearchKeywordApi
 import com.jun.tripguide_v2.core.data.api.tourapi.TourStayApi
 import com.jun.tripguide_v2.core.data.api.trainapi.TrainInfoApi
 import com.jun.tripguide_v2.core.data.api.trainapi.TrainStationApi
+import com.skydoves.sandwich.retrofit.adapters.ApiResponseCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -61,6 +62,7 @@ object ApiModule {
     ): Retrofit =
         Retrofit.Builder()
             .baseUrl(TOUR_API_BASE_URI)
+            .addCallAdapterFactory(ApiResponseCallAdapterFactory.create()) // Here!
             .addConverterFactory(converterFactory)
             .client(okHttpClient).build()
 
@@ -114,6 +116,7 @@ object ApiModule {
         Retrofit.Builder()
             .baseUrl(KAKAO_BASE_URI)
             .addConverterFactory(converterFactory)
+            .addCallAdapterFactory(ApiResponseCallAdapterFactory.create()) // Here!
             .client(okHttpClient).build()
             .create(KakaoKeywordApi::class.java)
 
@@ -125,6 +128,7 @@ object ApiModule {
     ): KakaoRouteAPI =
         Retrofit.Builder()
             .baseUrl(KAKAO_MOBILITY_URI)
+            .addCallAdapterFactory(ApiResponseCallAdapterFactory.create()) // Here!
             .addConverterFactory(converterFactory)
             .client(okHttpClient).build()
             .create(KakaoRouteAPI::class.java)
@@ -138,6 +142,7 @@ object ApiModule {
         Retrofit.Builder()
             .baseUrl(AIRPLANE_BASE_URI)
             .addConverterFactory(converterFactory)
+            .addCallAdapterFactory(ApiResponseCallAdapterFactory.create()) // Here!
             .client(okHttpClient).build()
             .create(AirplaneSchedulesApi::class.java)
 
@@ -150,6 +155,7 @@ object ApiModule {
         Retrofit.Builder()
             .baseUrl(TRAIN_BASE_URI)
             .addConverterFactory(converterFactory)
+            .addCallAdapterFactory(ApiResponseCallAdapterFactory.create()) // Here!
             .client(okHttpClient).build()
             .create(TrainStationApi::class.java)
 
@@ -162,6 +168,7 @@ object ApiModule {
         Retrofit.Builder()
             .baseUrl(TRAIN_BASE_URI)
             .addConverterFactory(converterFactory)
+            .addCallAdapterFactory(ApiResponseCallAdapterFactory.create()) // Here!
             .client(okHttpClient).build()
             .create(TrainInfoApi::class.java)
 

@@ -30,10 +30,8 @@ import com.jun.tripguide_v2.core.designsystem.component.CustomSearchView
 import com.jun.tripguide_v2.core.designsystem.component.CustomTopAppBar
 import com.jun.tripguide_v2.core.designsystem.component.TopAppBarNavigationType
 import com.jun.tripguide_v2.core.designsystem.theme.Gray
-import com.jun.tripguide_v2.core.designsystem.theme.surfaceDim
 import com.jun.tripguide_v2.core.model.Address
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun StartingPickerDialog(
     onStartingPick: (Address) -> Unit,

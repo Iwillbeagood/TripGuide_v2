@@ -1,4 +1,4 @@
-package com.jun.tripguide_v2.core.data.repository.room
+package com.jun.tripguide_v2.core.data_api.room
 
 import com.jun.tripguide_v2.core.model.Route
 

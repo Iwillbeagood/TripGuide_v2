@@ -2,7 +2,7 @@ package com.jun.tripguide_v2.feature.travel_meansinfo.car
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jun.tripguide_v2.core.data.repository.room.TravelRepository
+import com.jun.tripguide_v2.core.data_api.room.TravelRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
+    surfaceDim = Black,
     primary = Purple80,
     primaryContainer = Black,
     secondary = PurpleGrey80,
@@ -26,6 +27,7 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
+    surfaceDim = White,
     primary = Sky,
     primaryContainer = White,
     secondary = PurpleGrey40,
@@ -37,10 +39,6 @@ private val LightColorScheme = lightColorScheme(
     )
 
 val LocalDarkTheme = compositionLocalOf { true }
-
-val ColorScheme.surfaceDim
-    @Composable
-    get() = if (LocalDarkTheme.current) Black else White
 
 @Composable
 fun MyTheme(

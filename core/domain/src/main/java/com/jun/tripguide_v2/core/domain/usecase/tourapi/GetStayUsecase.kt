@@ -1,6 +1,5 @@
 package com.jun.tripguide_v2.core.domain.usecase.tourapi
 
-import com.jun.tripguide_v2.core.data.repository.tourapi.StayRepository
 import com.jun.tripguide_v2.core.model.tourApi.Stay
 import javax.inject.Inject
 
