@@ -1,7 +1,7 @@
 package com.jun.tripguide_v2.core.data.repository.room
 
 import com.jun.tripguide_v2.core.data.mapper.toData
-import com.jun.tripguide_v2.core.data_api.room.TravelRepository
+import com.jun.tripguide_v2.core.data_api.repository.room.TravelRepository
 import com.jun.tripguide_v2.core.model.Travel
 import com.jun.tripguide_v2_core.database.dao.TravelDao
 import javax.inject.Inject

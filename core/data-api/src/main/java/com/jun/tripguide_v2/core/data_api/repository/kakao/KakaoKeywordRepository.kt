@@ -1,4 +1,4 @@
-package com.jun.tripguide_v2.core.data_api.kakao
+package com.jun.tripguide_v2.core.data_api.repository.kakao
 
 import com.jun.tripguide_v2.core.model.Address
 

@@ -2,7 +2,7 @@ package com.jun.tripguide_v2.core.data.repository.tourapi
 
 import com.jun.tripguide_v2.core.data.api.tourapi.TourFestivalApi
 import com.jun.tripguide_v2.core.data.mapper.toFestival
-import com.jun.tripguide_v2.core.data_api.tourapi.FestivalRepository
+import com.jun.tripguide_v2.core.data_api.repository.tourapi.FestivalRepository
 import com.jun.tripguide_v2.core.model.tourApi.Festival
 import javax.inject.Inject
 

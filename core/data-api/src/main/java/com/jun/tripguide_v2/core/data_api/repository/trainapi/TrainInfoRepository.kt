@@ -1,4 +1,4 @@
-package com.jun.tripguide_v2.core.data_api.trainapi
+package com.jun.tripguide_v2.core.data_api.repository.trainapi
 
 import com.jun.tripguide_v2.core.model.TrainInfo
 

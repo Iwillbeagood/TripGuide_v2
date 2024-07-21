@@ -2,7 +2,7 @@ package com.jun.tripguide_v2.core.data.repository.tourapi
 
 import com.jun.tripguide_v2.core.data.api.tourapi.TourStayApi
 import com.jun.tripguide_v2.core.data.mapper.toStay
-import com.jun.tripguide_v2.core.data_api.tourapi.StayRepository
+import com.jun.tripguide_v2.core.data_api.repository.tourapi.StayRepository
 import com.jun.tripguide_v2.core.model.tourApi.Stay
 import javax.inject.Inject
 

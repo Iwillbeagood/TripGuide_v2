@@ -2,7 +2,7 @@ package com.jun.tripguide_v2.core.data.repository.kakao
 
 import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoKeywordApi
 import com.jun.tripguide_v2.core.data.mapper.toData
-import com.jun.tripguide_v2.core.data_api.kakao.KakaoKeywordRepository
+import com.jun.tripguide_v2.core.data_api.repository.kakao.KakaoKeywordRepository
 import com.jun.tripguide_v2.core.model.Address
 import javax.inject.Inject
 

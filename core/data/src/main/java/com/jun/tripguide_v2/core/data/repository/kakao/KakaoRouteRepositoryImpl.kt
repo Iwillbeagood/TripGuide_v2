@@ -1,7 +1,7 @@
 package com.jun.tripguide_v2.core.data.repository.kakao
 
 import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoRouteAPI
-import com.jun.tripguide_v2.core.data_api.kakao.KakaoRouteRepository
+import com.jun.tripguide_v2.core.data_api.repository.kakao.KakaoRouteRepository
 import javax.inject.Inject
 
 class KakaoRouteRepositoryImpl @Inject constructor(

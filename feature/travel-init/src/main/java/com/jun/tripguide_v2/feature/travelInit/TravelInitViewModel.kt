@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jun.tripguide_v2.core.data_api.room.TravelRepository
+import com.jun.tripguide_v2.core.data_api.repository.room.TravelRepository
 import com.jun.tripguide_v2.core.model.Address
 import com.jun.tripguide_v2.core.model.DateDuration
 import com.jun.tripguide_v2.core.model.DestinationCode
@@ -13,8 +13,8 @@ import com.jun.tripguide_v2.core.model.MeansType
 import com.jun.tripguide_v2.core.model.StartingPoint
 import com.jun.tripguide_v2.core.model.Tourist
 import com.jun.tripguide_v2.core.model.Travel
+import com.jun.tripguide_v2.feature.`travel-init`.R
 import com.jun.tripguide_v2.feature.travelInit.util.toStringType
-import com.jun.tripguide_v2.feature.travel_init.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow

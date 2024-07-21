@@ -2,7 +2,7 @@ package com.jun.tripguide_v2.core.data.repository.tourapi
 
 import com.jun.tripguide_v2.core.data.api.tourapi.TourDetailIntroApi
 import com.jun.tripguide_v2.core.data.mapper.toDetails
-import com.jun.tripguide_v2.core.data_api.tourapi.DetailIntroRepository
+import com.jun.tripguide_v2.core.data_api.repository.tourapi.DetailIntroRepository
 import com.jun.tripguide_v2.core.model.tourApi.DetailIntro
 import javax.inject.Inject
 
