@@ -6,9 +6,10 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.jun.tripguide_v2.feature.recommend.RecommendRoute
+import com.jun.tripguide_v2.navigation.MainTabRoute
 
 fun NavController.navigateRecommend() {
-    navigate(RecommendRoute.route)
+    navigate(MainTabRoute.RecommendTravel)
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -17,15 +18,11 @@ fun NavGraphBuilder.recommendNavGraph(
     goBack: () -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit
 ) {
-    composable(route = RecommendRoute.route) {
+    composable<MainTabRoute.RecommendTravel> {
         RecommendRoute(
             onTouristDetail = onTouristDetail,
             goBack = goBack,
             onShowErrorSnackBar = onShowErrorSnackBar
         )
     }
-}
-
-object RecommendRoute {
-    const val route = "recommend"
 }

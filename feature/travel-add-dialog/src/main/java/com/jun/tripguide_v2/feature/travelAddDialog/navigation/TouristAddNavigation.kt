@@ -2,14 +2,14 @@ package com.jun.tripguide_v2.feature.travelAddDialog.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import androidx.navigation.toRoute
 import com.jun.tripguide_v2.core.model.Tourist
 import com.jun.tripguide_v2.feature.travelAddDialog.TouristAddRoute
+import com.jun.tripguide_v2.navigation.Route
 
 fun NavController.navigateTouristAdd(travelId: String) {
-    navigate(TouristAddRoute.detailRoute(travelId))
+    navigate(Route.TouristAdd(travelId))
 }
 
 fun NavGraphBuilder.touristAddNavGraph(
@@ -18,15 +18,8 @@ fun NavGraphBuilder.touristAddNavGraph(
     onTravelRecommendComplete: (List<Tourist>) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
 ) {
-    composable(
-        route = TouristAddRoute.detailRoute("{travelId}"),
-        arguments = listOf(
-            navArgument("travelId") {
-                type = NavType.StringType
-            }
-        )
-    ) { navBackStackEntry ->
-        val travelId = navBackStackEntry.arguments?.getString("travelId") ?: ""
+    composable<Route.TouristAdd> { navBackStackEntry ->
+        val travelId = navBackStackEntry.toRoute<Route.TouristAdd>().travelId
 
         TouristAddRoute(
             travelId = travelId,
@@ -36,10 +29,4 @@ fun NavGraphBuilder.touristAddNavGraph(
             onTravelRecommendComplete = onTravelRecommendComplete,
         )
     }
-}
-
-object TouristAddRoute {
-    private const val route = "tourist_add"
-
-    fun detailRoute(travelId: String): String = "$route/$travelId"
 }

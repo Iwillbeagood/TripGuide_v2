@@ -3,13 +3,13 @@ package com.jun.tripguide_v2.feature.main
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.jun.tripguide_v2.core.model.MeansType
-import com.jun.tripguide_v2.feature.mytravel.navigation.MyTravelRoute
 import com.jun.tripguide_v2.feature.mytravel.navigation.navigateMyTravel
 import com.jun.tripguide_v2.feature.mytravelPlan.navigation.navigateTravelPlan
 import com.jun.tripguide_v2.feature.recommend.navigation.navigateRecommend
@@ -19,6 +19,8 @@ import com.jun.tripguide_v2.feature.travelInit.navigation.navigateTravelInit
 import com.jun.tripguide_v2.feature.travelSearch.navigation.navigateTravelSearchRoute
 import com.jun.tripguide_v2.feature.travel_meansinfo.navigation.navigateCarInfo
 import com.jun.tripguide_v2.feature.travel_meansinfo.navigation.navigateTrainInfo
+import com.jun.tripguide_v2.navigation.MainTabRoute
+import com.jun.tripguide_v2.navigation.Route
 import com.jun.tripguide_v2.tourist_detail.navigation.navigateTouristDetail
 
 internal class MainNavigator(
@@ -29,12 +31,12 @@ internal class MainNavigator(
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
 
-    val startDestination = MyTravelRoute.route
+    val startDestination = MainBottomNavItem.MY_TRAVEL.route
 
     val currentItem: MainBottomNavItem?
-        @Composable get() = currentDestination
-            ?.route
-            ?.let(MainBottomNavItem::find)
+        @Composable get() = MainBottomNavItem.find { tab ->
+            currentDestination?.hasRoute(tab::class) == true
+        }
 
     fun navigate(item: MainBottomNavItem) {
         val navOptions = navOptions {
@@ -99,7 +101,7 @@ internal class MainNavigator(
     }
 
     fun popBackStackIfNotHome() {
-        if (!isSameCurrentDestination()) {
+        if (!isSameCurrentDestination<MainTabRoute.MyTravel>()) {
             popBackStack()
         }
     }
@@ -108,13 +110,13 @@ internal class MainNavigator(
         navController.popBackStack()
     }
 
-    private fun isSameCurrentDestination() =
-        navController.currentDestination?.route == MyTravelRoute.route
+    private inline fun <reified T : Route> isSameCurrentDestination(): Boolean {
+        return navController.currentDestination?.hasRoute<T>() == true
+    }
 
     @Composable
-    fun shouldShowBottomBar(): Boolean {
-        val currentRoute = currentDestination?.route ?: return false
-        return currentRoute in MainBottomNavItem
+    fun shouldShowBottomBar() = MainBottomNavItem.contains {
+        currentDestination?.hasRoute(it::class) == true
     }
 }
 

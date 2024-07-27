@@ -53,7 +53,6 @@ import com.jun.tripguide_v2.feature.recommend.navigation.recommendNavGraph
 import com.jun.tripguide_v2.feature.setting.navigation.settingNavGraph
 import com.jun.tripguide_v2.feature.travelAddDialog.navigation.touristAddNavGraph
 import com.jun.tripguide_v2.feature.travelInit.navigation.travelInitNavGraph
-import com.jun.tripguide_v2.feature.travelSearch.navigation.travelSearchNavGraph
 import com.jun.tripguide_v2.feature.travel_meansinfo.navigation.travelMeansInfoNavGraph
 import com.jun.tripguide_v2.tourist_detail.navigation.touristDetailNavGraph
 import kotlinx.collections.immutable.PersistentList
@@ -143,7 +142,7 @@ internal fun MainScreen(
         bottomBar = {
             MainBottomBar(
                 visible = navigator.shouldShowBottomBar(),
-                bottomItems = MainBottomNavItem.values().toList().toPersistentList(),
+                bottomItems = MainBottomNavItem.entries.toPersistentList(),
                 currentItem = navigator.currentItem,
                 onBottomItemClicked = navigator::navigate
             )

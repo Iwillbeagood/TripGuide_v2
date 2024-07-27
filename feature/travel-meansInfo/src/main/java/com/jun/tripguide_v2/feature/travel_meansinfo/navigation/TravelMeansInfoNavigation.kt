@@ -2,61 +2,37 @@ package com.jun.tripguide_v2.feature.travel_meansinfo.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import androidx.navigation.toRoute
 import com.jun.tripguide_v2.feature.travel_meansinfo.car.CarInfoRoute
-import com.jun.tripguide_v2.feature.travel_meansinfo.navigation.TravelMeansInfoRoute.car_route
-import com.jun.tripguide_v2.feature.travel_meansinfo.navigation.TravelMeansInfoRoute.train_route
 import com.jun.tripguide_v2.feature.travel_meansinfo.train.TrainInfoRoute
+import com.jun.tripguide_v2.navigation.Route
 
 fun NavController.navigateCarInfo(travelId: String) =
-    navigate(TravelMeansInfoRoute.detailRoute(car_route, travelId))
+    navigate(Route.CarInformation(travelId))
 
 fun NavController.navigateTrainInfo(travelId: String) =
-    navigate(TravelMeansInfoRoute.detailRoute(train_route, travelId))
+    navigate(Route.TrainInformation(travelId))
 
 fun NavGraphBuilder.travelMeansInfoNavGraph(
     onBackClick: () -> Unit,
     onComplete: (String) -> Unit
 ) {
-    composable(
-        route = TravelMeansInfoRoute.detailRoute(car_route, "{id}"),
-        arguments = listOf(
-            navArgument("id") {
-                type = NavType.StringType
-            }
-        )
-    ) { navBackStackEntry ->
-        val travelId = navBackStackEntry.arguments?.getString("id") ?: ""
+    composable<Route.CarInformation> { navBackStackEntry ->
+        val travelId = navBackStackEntry.toRoute<Route.CarInformation>().travelId
         CarInfoRoute(
             travelId = travelId,
             onBackClick = onBackClick,
             onComplete = onComplete,
         )
     }
-    composable(
-        route = TravelMeansInfoRoute.detailRoute(train_route, "{id}"),
-        arguments = listOf(
-            navArgument("id") {
-                type = NavType.StringType
-            }
-        )
-    ) { navBackStackEntry ->
-        val travelId = navBackStackEntry.arguments?.getString("id") ?: ""
+
+    composable<Route.TrainInformation> { navBackStackEntry ->
+        val travelId = navBackStackEntry.toRoute<Route.TrainInformation>().travelId
         TrainInfoRoute(
             travelId = travelId,
             onBackClick = onBackClick,
             onComplete = onComplete
         )
     }
-}
-
-object TravelMeansInfoRoute {
-
-    const val car_route = "car_route"
-
-    const val train_route = "train_route"
-
-    fun detailRoute(route: String, travelId: String): String = "$route/$travelId"
 }

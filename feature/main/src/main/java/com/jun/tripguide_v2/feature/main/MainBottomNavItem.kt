@@ -1,35 +1,37 @@
 package com.jun.tripguide_v2.feature.main
 
-import com.jun.tripguide_v2.feature.mytravel.navigation.MyTravelRoute
-import com.jun.tripguide_v2.feature.recommend.navigation.RecommendRoute
-import com.jun.tripguide_v2.feature.setting.navigation.SettingRoute
+import androidx.compose.runtime.Composable
+import com.jun.tripguide_v2.navigation.MainTabRoute
+import com.jun.tripguide_v2.navigation.Route
 
 internal enum class MainBottomNavItem(
-    val title: String, val icon: Int, val route: String
+    val title: String, val icon: Int, val route: MainTabRoute
 ) {
     MY_TRAVEL(
         title = "나의 여행",
         icon = R.drawable.ic_mytravel,
-        MyTravelRoute.route
+        MainTabRoute.MyTravel
     ),
     RECOMMEND(
         title = "추천 여행지",
         icon = R.drawable.ic_recommend,
-        RecommendRoute.route
+        MainTabRoute.RecommendTravel
     ),
     SETTING(
         title = "설정",
         icon = R.drawable.ic_setting,
-        SettingRoute.route
+        MainTabRoute.RecommendTravel
     );
 
     companion object {
-        operator fun contains(route: String): Boolean {
-            return values().map { it.route }.contains(route)
+        @Composable
+        fun find(predicate: @Composable (MainTabRoute) -> Boolean): MainBottomNavItem? {
+            return entries.find { predicate(it.route) }
         }
 
-        fun find(route: String): MainBottomNavItem? {
-            return values().find { it.route == route }
+        @Composable
+        fun contains(predicate: @Composable (Route) -> Boolean): Boolean {
+            return entries.map { it.route }.any { predicate(it) }
         }
     }
 }
