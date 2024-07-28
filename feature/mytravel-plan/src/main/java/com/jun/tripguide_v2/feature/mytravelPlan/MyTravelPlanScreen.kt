@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -66,11 +65,11 @@ import com.jun.tripguide_v2.core.designsystem.theme.Sky
 import com.jun.tripguide_v2.core.model.ContentType
 import com.jun.tripguide_v2.core.model.Route
 import com.jun.tripguide_v2.core.model.TravelDay
-import com.jun.tripguide_v2.feature.mytravel.plan.R
 import com.jun.tripguide_v2.feature.mytravelPlan.component.RouteItem
 import com.jun.tripguide_v2.feature.mytravelPlan.component.RouteMarkerItem
 import com.jun.tripguide_v2.feature.mytravelPlan.component.RoutesMap
 import com.jun.tripguide_v2.feature.mytravelPlan.util.startKakaoNavigation
+import com.jun.tripguide_v2.feature.mytravel_plan.R
 import kotlinx.coroutines.flow.collectLatest
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.ReorderableLazyListState

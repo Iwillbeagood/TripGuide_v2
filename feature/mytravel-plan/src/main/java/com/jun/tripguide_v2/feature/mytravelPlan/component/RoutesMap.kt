@@ -26,8 +26,8 @@ import com.google.maps.android.compose.rememberMarkerState
 import com.jun.tripguide_v2.core.designsystem.theme.Gray
 import com.jun.tripguide_v2.core.designsystem.theme.Sky
 import com.jun.tripguide_v2.core.model.Route
-import com.jun.tripguide_v2.feature.mytravel.plan.R
 import com.jun.tripguide_v2.feature.mytravelPlan.util.bitmapDescriptor
+import com.jun.tripguide_v2.feature.mytravel_plan.R
 
 @Composable
 fun RoutesMap(

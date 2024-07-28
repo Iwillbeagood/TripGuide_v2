@@ -1,5 +1,18 @@
 package com.jun.tripguide_v2.core.data.di
 
+import com.jun.tripguide_v2.core.data.api.airplaneapi.AirplaneSchedulesApi
+import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoKeywordApi
+import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoRouteAPI
+import com.jun.tripguide_v2.core.data.api.tourapi.OpenTouristsApi
+import com.jun.tripguide_v2.core.data.api.tourapi.TourAreaCodeApi
+import com.jun.tripguide_v2.core.data.api.tourapi.TourCommonInfoApi
+import com.jun.tripguide_v2.core.data.api.tourapi.TourDetailIntroApi
+import com.jun.tripguide_v2.core.data.api.tourapi.TourFestivalApi
+import com.jun.tripguide_v2.core.data.api.tourapi.TourLocationTouristApi
+import com.jun.tripguide_v2.core.data.api.tourapi.TourSearchKeywordApi
+import com.jun.tripguide_v2.core.data.api.tourapi.TourStayApi
+import com.jun.tripguide_v2.core.data.api.trainapi.TrainInfoApi
+import com.jun.tripguide_v2.core.data.api.trainapi.TrainStationApi
 import com.jun.tripguide_v2.core.data.repository.airplaneapi.AirplaneScheduleRepositoryImpl
 import com.jun.tripguide_v2.core.data.repository.kakao.KakaoKeywordRepositoryImpl
 import com.jun.tripguide_v2.core.data.repository.kakao.KakaoRouteRepositoryImpl
@@ -30,87 +43,105 @@ import com.jun.tripguide_v2.core.data_api.repository.tourapi.StayRepository
 import com.jun.tripguide_v2.core.data_api.repository.tourapi.TouristsRepository
 import com.jun.tripguide_v2.core.data_api.repository.trainapi.TrainInfoRepository
 import com.jun.tripguide_v2.core.data_api.repository.trainapi.TrainStationRepository
-import dagger.Binds
+import com.jun.tripguide_v2_core.database.dao.RouteDao
+import com.jun.tripguide_v2_core.database.dao.TravelDao
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-@Module
 @InstallIn(SingletonComponent::class)
-internal abstract class DataModule {
+@Module
+internal object DataModule {
 
-    @Binds
-    abstract fun bindsAreaCodeRepository(
-        repository: AreaCodeRepositoryImpl
-    ): AreaCodeRepository
+    @Provides
+    @Singleton
+    fun bindsAreaCodeRepository(
+        tourAreaCodeApi: TourAreaCodeApi
+    ): AreaCodeRepository = AreaCodeRepositoryImpl(tourAreaCodeApi)
 
-    @Binds
-    abstract fun bindsAreaBaseListRepository(
-        repository: TouristsRepositoryImpl
-    ): TouristsRepository
+    @Provides
+    @Singleton
+    fun bindsAreaBaseListRepository(
+        openTouristsApi: OpenTouristsApi
+    ): TouristsRepository = TouristsRepositoryImpl(openTouristsApi)
 
-    @Binds
-    abstract fun bindsKeywordRepository(
-        repository: KeywordRepositoryImpl
-    ): KeywordRepository
+    @Provides
+    @Singleton
+    fun bindsKeywordRepository(
+        keywordApi: TourSearchKeywordApi
+    ): KeywordRepository = KeywordRepositoryImpl(keywordApi)
 
-    @Binds
-    abstract fun bindsCommonInfoRepository(
-        repository: CommonInfoRepositoryImpl
-    ): CommonInfoRepository
+    @Provides
+    @Singleton
+    fun bindsCommonInfoRepository(
+        commonInfoApi: TourCommonInfoApi
+    ): CommonInfoRepository = CommonInfoRepositoryImpl(commonInfoApi)
 
-    @Binds
-    abstract fun bindsDetailIntroRepository(
-        repository: DetailIntroRepositoryImpl
-    ): DetailIntroRepository
+    @Provides
+    @Singleton
+    fun bindsDetailIntroRepository(
+        detailIntroApi: TourDetailIntroApi
+    ): DetailIntroRepository = DetailIntroRepositoryImpl(detailIntroApi)
 
-    @Binds
-    abstract fun bindsLocationTouristRepository(
-        repository: LocationTouristRepositoryImpl
-    ): LocationTouristRepository
+    @Provides
+    @Singleton
+    fun bindsLocationTouristRepository(
+        locationTouristApi: TourLocationTouristApi
+    ): LocationTouristRepository = LocationTouristRepositoryImpl(locationTouristApi)
 
-    @Binds
-    abstract fun bindsTravelRepository(
-        travelRepository: TravelRepositoryImpl
-    ): TravelRepository
+    @Provides
+    @Singleton
+    fun bindsTravelRepository(
+        travelDao: TravelDao
+    ): TravelRepository = TravelRepositoryImpl(travelDao)
 
-    @Binds
-    abstract fun bindsRouteRepository(
-        routeRepository: RouteRepositoryImpl
-    ): RouteRepository
+    @Provides
+    @Singleton
+    fun bindsRouteRepository(
+        routeDao: RouteDao
+    ): RouteRepository = RouteRepositoryImpl(routeDao)
 
-    @Binds
-    abstract fun bindsFestivalRepository(
-        festivalRepository: FestivalRepositoryImpl
-    ): FestivalRepository
+    @Provides
+    @Singleton
+    fun bindsFestivalRepository(
+        tourFestivalApi: TourFestivalApi
+    ): FestivalRepository = FestivalRepositoryImpl(tourFestivalApi)
 
-    @Binds
-    abstract fun bindsStayRepository(
-        stayRepository: StayRepositoryImpl
-    ): StayRepository
+    @Provides
+    @Singleton
+    fun bindsStayRepository(
+        tourStayApi: TourStayApi
+    ): StayRepository = StayRepositoryImpl(tourStayApi)
 
-    @Binds
-    abstract fun bindsKakaoLocalKeywordRepository(
-        kakaoLocalKeywordRepository: KakaoKeywordRepositoryImpl
-    ): KakaoKeywordRepository
+    @Provides
+    @Singleton
+    fun bindsKakaoLocalKeywordRepository(
+        keywordApi: KakaoKeywordApi
+    ): KakaoKeywordRepository = KakaoKeywordRepositoryImpl(keywordApi)
 
-    @Binds
-    abstract fun bindsKakaoRouteRepository(
-        kakaoRouteRepository: KakaoRouteRepositoryImpl
-    ): KakaoRouteRepository
+    @Provides
+    @Singleton
+    fun bindsKakaoRouteRepository(
+        kakaoRouteAPI: KakaoRouteAPI
+    ): KakaoRouteRepository = KakaoRouteRepositoryImpl(kakaoRouteAPI)
 
-    @Binds
-    abstract fun bindsAirplaneScheduleRepository(
-        airplaneScheduleRepository: AirplaneScheduleRepositoryImpl
-    ): AirplaneScheduleRepository
+    @Provides
+    @Singleton
+    fun bindsAirplaneScheduleRepository(
+        airplaneSchedulesApi: AirplaneSchedulesApi
+    ): AirplaneScheduleRepository = AirplaneScheduleRepositoryImpl(airplaneSchedulesApi)
 
-    @Binds
-    abstract fun bindsTrainStationRepository(
-        trainStationRepository: TrainStationRepositoryImpl
-    ): TrainStationRepository
+    @Provides
+    @Singleton
+    fun bindsTrainStationRepository(
+        trainStationApi: TrainStationApi
+    ): TrainStationRepository = TrainStationRepositoryImpl(trainStationApi)
 
-    @Binds
-    abstract fun bindsTrainInfoRepository(
-        trainInfoRepository: TrainInfoRepositoryImpl
-    ): TrainInfoRepository
+    @Provides
+    @Singleton
+    fun bindsTrainInfoRepository(
+        trainInfoApi: TrainInfoApi
+    ): TrainInfoRepository = TrainInfoRepositoryImpl(trainInfoApi)
 }

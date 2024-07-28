@@ -49,8 +49,8 @@ import com.jun.tripguide_v2.core.designsystem.theme.DuskGray
 import com.jun.tripguide_v2.core.designsystem.theme.LightGray
 import com.jun.tripguide_v2.core.designsystem.theme.White
 import com.jun.tripguide_v2.core.model.ContentType
-import com.jun.tripguide_v2.feature.mytravel.plan.R
 import com.jun.tripguide_v2.feature.mytravelPlan.util.dateTimeFormatter
+import com.jun.tripguide_v2.feature.mytravel_plan.R
 import java.time.LocalTime
 
 @Composable

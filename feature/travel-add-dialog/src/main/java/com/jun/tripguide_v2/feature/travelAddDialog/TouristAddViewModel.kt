@@ -51,8 +51,8 @@ class TouristAddViewModel @Inject constructor(
     var tab = MutableStateFlow(TravelAddTabs.Recommend)
         private set
 
-    private val _keyword = MutableStateFlow("")
-    val keyword = _keyword.asStateFlow()
+    var keyword = MutableStateFlow("")
+        private set
 
     private var pageNo = MutableStateFlow(0)
 
@@ -157,9 +157,7 @@ class TouristAddViewModel @Inject constructor(
     }
 
     fun changeKeyword(newValue: String) {
-        _keyword.update {
-            newValue
-        }
+        keyword.update { newValue }
     }
 
     fun changeTab(index: Int) {
