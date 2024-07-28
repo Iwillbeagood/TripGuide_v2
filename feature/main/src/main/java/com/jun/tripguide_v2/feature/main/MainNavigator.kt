@@ -48,9 +48,9 @@ internal class MainNavigator(
         }
 
         when (item) {
-            MainBottomNavItem.MY_TRAVEL -> navController.navigateMyTravel()
-            MainBottomNavItem.RECOMMEND -> navController.navigateRecommend()
-            MainBottomNavItem.SETTING -> navController.navigateSetting()
+            MainBottomNavItem.MY_TRAVEL -> navController.navigateMyTravel(navOptions)
+            MainBottomNavItem.RECOMMEND -> navController.navigateRecommend(navOptions)
+            MainBottomNavItem.SETTING -> navController.navigateSetting(navOptions)
         }
     }
 
