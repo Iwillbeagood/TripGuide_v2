@@ -13,4 +13,5 @@ dependencies {
     implementation(projects.core.model)
     implementation(projects.core.location)
     implementation(libs.google.compose.maps)
+    implementation(libs.inject)
 }
