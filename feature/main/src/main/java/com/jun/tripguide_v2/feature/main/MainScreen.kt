@@ -51,9 +51,7 @@ import com.jun.tripguide_v2.feature.mytravel.navigation.myTravelNavGraph
 import com.jun.tripguide_v2.feature.mytravelPlan.navigation.myTravelPlanNavGraph
 import com.jun.tripguide_v2.feature.recommend.navigation.recommendNavGraph
 import com.jun.tripguide_v2.feature.setting.navigation.settingNavGraph
-import com.jun.tripguide_v2.feature.travelAddDialog.navigation.touristAddNavGraph
 import com.jun.tripguide_v2.feature.travelInit.navigation.travelInitNavGraph
-import com.jun.tripguide_v2.feature.travel_meansinfo.navigation.travelMeansInfoNavGraph
 import com.jun.tripguide_v2.tourist_detail.navigation.touristDetailNavGraph
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
@@ -78,7 +76,7 @@ internal fun MainScreen(
             snackBarHostState.showSnackbar(
                 when (throwable) {
                     is NullPointerException -> localContextResource.getString(string.error_message_null_pointer)
-                    else -> localContextResource.getString(string.error_message_unknown)
+                    else -> throwable?.message ?: localContextResource.getString(string.error_message_unknown)
                 }
             )
         }
@@ -106,7 +104,6 @@ internal fun MainScreen(
                         myTravelPlanNavGraph(
                             onBackClick = navigator::popBackStackIfNotHome,
                             onSearchRoute = navigator::navigateTravelSearch,
-                            onRecommendRoute = navigator::navigateTouristAdd,
                             onShowErrorSnackBar = onShowErrorSnackBar
                         )
                         recommendNavGraph(
@@ -119,18 +116,8 @@ internal fun MainScreen(
                         )
                         travelInitNavGraph(
                             onBackClick = navigator::popBackStackIfNotHome,
-                            onTravelInitComplete = navigator::navigateMeansInfo,
-                            onShowErrorSnackBar = onShowErrorSnackBar
-                        )
-                        travelMeansInfoNavGraph(
-                            onBackClick = navigator::popBackStackIfNotHome,
-                            onComplete = navigator::navigateTouristAdd
-                        )
-                        touristAddNavGraph(
-                            onBackClick = navigator::popBackStackIfNotHome,
-                            onShowErrorSnackBar = onShowErrorSnackBar,
-                            onTravelRecommendComplete = {  },
                             onTouristDetail = navigator::navigateTouristDetail,
+                            onShowErrorSnackBar = onShowErrorSnackBar
                         )
                         touristDetailNavGraph(
                             onBackClick = navigator::popBackStackIfNotHome,

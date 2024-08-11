@@ -9,16 +9,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.jun.tripguide_v2.core.model.MeansType
 import com.jun.tripguide_v2.feature.mytravel.navigation.navigateMyTravel
 import com.jun.tripguide_v2.feature.mytravelPlan.navigation.navigateTravelPlan
 import com.jun.tripguide_v2.feature.recommend.navigation.navigateRecommend
 import com.jun.tripguide_v2.feature.setting.navigation.navigateSetting
-import com.jun.tripguide_v2.feature.travelAddDialog.navigation.navigateTouristAdd
 import com.jun.tripguide_v2.feature.travelInit.navigation.navigateTravelInit
 import com.jun.tripguide_v2.feature.travelSearch.navigation.navigateTravelSearchRoute
-import com.jun.tripguide_v2.feature.travel_meansinfo.navigation.navigateCarInfo
-import com.jun.tripguide_v2.feature.travel_meansinfo.navigation.navigateTrainInfo
 import com.jun.tripguide_v2.navigation.MainTabRoute
 import com.jun.tripguide_v2.navigation.Route
 import com.jun.tripguide_v2.tourist_detail.navigation.navigateTouristDetail
@@ -56,25 +52,6 @@ internal class MainNavigator(
 
     fun navigateTravelInit() {
         navController.navigateTravelInit()
-    }
-
-    fun navigateMeansInfo(travelId: String, selectedMeansType: MeansType) {
-        when(selectedMeansType) {
-            MeansType.CAR -> navigateCarInfo(travelId)
-            MeansType.TRAIN -> navigateTrainInfo(travelId)
-        }
-    }
-
-    private fun navigateCarInfo(travelId: String) {
-        navController.navigateCarInfo(travelId)
-    }
-
-    private fun navigateTrainInfo(travelId: String) {
-        navController.navigateTrainInfo(travelId)
-    }
-
-    fun navigateTouristAdd(travelId: String) {
-        navController.navigateTouristAdd(travelId)
     }
 
     fun navigateTravelSearch(travelId: String) {

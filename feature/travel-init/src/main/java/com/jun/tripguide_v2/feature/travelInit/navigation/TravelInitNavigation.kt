@@ -13,14 +13,14 @@ fun NavController.navigateTravelInit() {
 
 fun NavGraphBuilder.travelInitNavGraph(
     onBackClick: () -> Unit,
-    onTravelInitComplete: (String, MeansType) -> Unit,
+    onTouristDetail: (String) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit
 ) {
     composable<Route.TravelInit> {
         TravelInitRoute(
             onBackClick = onBackClick,
-            onShowErrorSnackBar = onShowErrorSnackBar,
-            onTravelInitComplete = onTravelInitComplete
+            onTouristDetail = onTouristDetail,
+            onShowErrorSnackBar = onShowErrorSnackBar
         )
     }
 }

@@ -1,7 +1,6 @@
 package com.jun.tripguide_v2.feature.travelAddDialog
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,11 +13,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,94 +21,80 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.jun.tripguide_v2.core.designsystem.component.CustomSearchView
 import com.jun.tripguide_v2.core.designsystem.component.CustomTopAppBar
 import com.jun.tripguide_v2.core.designsystem.component.SelectedTourist
 import com.jun.tripguide_v2.core.designsystem.component.TopAppBarNavigationType
 import com.jun.tripguide_v2.core.designsystem.component.TouristLazyColumn
+import com.jun.tripguide_v2.core.model.DestinationCode
 import com.jun.tripguide_v2.core.model.FilterValue
 import com.jun.tripguide_v2.core.model.Tourist
-import com.jun.tripguide_v2.feature.travelAddDialog.TravelAddTabs.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
-fun TouristAddRoute(
-    travelId: String,
-    onBackClick: () -> Unit,
-    onTravelRecommendComplete: (List<Tourist>) -> Unit,
+fun TouristAddDialog(
+    destinationCode: DestinationCode,
+    onDismissRequest: () -> Unit,
+    onTouristAddComplete: (List<Tourist>) -> Unit,
     onTouristDetail: (id: String) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     viewModel: TouristAddViewModel = hiltViewModel()
 ) {
-    val recommendTourists by viewModel.recommendTourists.collectAsStateWithLifecycle()
-    val searchTourists by viewModel.searchTourists.collectAsStateWithLifecycle()
-    val selectedTourists by viewModel.selectedTourists.collectAsStateWithLifecycle()
+    val tourists by viewModel.touristsState.collectAsStateWithLifecycle()
     val filterState by viewModel.filterState.collectAsStateWithLifecycle()
-    val keyword by viewModel.keyword.collectAsStateWithLifecycle()
+    val selectedTourists by viewModel.selectedTourists.collectAsStateWithLifecycle()
 
-    val listState = rememberLazyListState()
-    val tab by viewModel.tab.collectAsStateWithLifecycle()
-
-    LaunchedEffect(travelId) {
-        viewModel.initViewModel(travelId)
-    }
-
-    LaunchedEffect(listState.canScrollForward) {
-        if (!listState.canScrollForward) {
-            viewModel.nextPage()
-        }
+    LaunchedEffect(destinationCode) {
+        viewModel.initViewModel(destinationCode)
     }
 
     LaunchedEffect(true) {
-        viewModel.effectState.collectLatest {
+        viewModel.touristAddEffect.collectLatest {
             when (it) {
                 is TravelAddDialogUiEffect.ShowErrorSnackBar -> onShowErrorSnackBar(it.throwable)
                 is TravelAddDialogUiEffect.TravelRecommendComplete -> {
-                    onTravelRecommendComplete(it.tourists)
+                    onTouristAddComplete(it.tourists)
                 }
             }
         }
     }
 
-    TouristScreen(
-        tab = tab,
-        keyword = keyword,
-        onValueChange = viewModel::changeKeyword,
-        filterState = filterState,
-        tourists = when (tab) {
-            Recommend -> recommendTourists
-            Search -> searchTourists
-        },
-        selectedTourists = selectedTourists,
-        onSelectTab = viewModel::changeTab,
-        onTouristDetail = { onTouristDetail(it.id) },
-        onSelectTourist = viewModel::selectedTourist,
-        onBackClick = onBackClick,
-        travelRecommendComplete = {
-
-        },
-        onArrangeClick = viewModel::changeArrange,
-        onContentTypeClick = viewModel::changeContentType
-    )
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        TouristScreen(
+            filterState = filterState,
+            tourists = tourists.tourists,
+            selectedTourists = selectedTourists,
+            onTouristDetail = { onTouristDetail(it.id) },
+            onSelectTourist = viewModel::selectedTourist,
+            onUnselectTourist = viewModel::unselectedTourist,
+            onBackClick = onDismissRequest,
+            travelRecommendComplete = {
+                viewModel.touristAddComplete()
+                onDismissRequest()
+            },
+            onArrangeClick = viewModel::changeArrange,
+            onContentTypeClick = viewModel::changeContentType
+        )
+    }
 }
 
 @Composable
 fun TouristScreen(
-    tab: TravelAddTabs,
-    keyword: String,
-    onValueChange: (String) -> Unit,
     filterState: FilterState,
     listState: LazyListState = rememberLazyListState(),
     tourists: List<Tourist>,
     selectedTourists: List<Tourist>,
-    onSelectTab: (index: Int) -> Unit,
     onTouristDetail: (Tourist) -> Unit,
     onSelectTourist: (Tourist) -> Unit,
+    onUnselectTourist: (Tourist) -> Unit,
     onBackClick: () -> Unit,
     travelRecommendComplete: () -> Unit,
     onArrangeClick: (FilterValue) -> Unit,
@@ -143,28 +123,6 @@ fun TouristScreen(
                         }
                     }
                 )
-                TabRow(
-                    selectedTabIndex = tab.index,
-                    containerColor = MaterialTheme.colorScheme.surfaceDim,
-                    indicator = { tabPositions ->
-                        TabRowDefaults.Indicator(
-                            modifier = Modifier.tabIndicatorOffset(tabPositions[tab.index])
-                        )
-                    }
-                ) {
-                    TravelAddTabs.entries.forEachIndexed { index, tab ->
-                        Tab(
-                            selected = tab.index == index,
-                            onClick = { onSelectTab(index) }
-                        ) {
-                            Text(
-                                text = tab.title,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(vertical = 15.dp)
-                            )
-                        }
-                    }
-                }
             }
         },
         modifier = Modifier
@@ -177,7 +135,7 @@ fun TouristScreen(
             SelectedTourist(
                 visible = selectedTourists.isNotEmpty(),
                 selectedTouristList = selectedTourists,
-                onClickSelectedTourist = onSelectTourist
+                onClickSelectedTourist = onUnselectTourist
             )
             TouristLazyColumn(
                 listState = listState,
@@ -190,18 +148,15 @@ fun TouristScreen(
                 },
                 onSelectTourist = onSelectTourist
             ) {
-                TouristAddContent(
-                    keyword = keyword,
-                    onValueChange = onValueChange,
-                    selectedArrange = filterState.selectedArrange.title,
-                    selectedContentType = filterState.selectedContentType.title,
-                    tab = tab,
+                RecommendFilter(
+                    selectedSortType = filterState.selectedArrange.title,
+                    selectedTouristType = filterState.selectedContentType.title,
                     onArrangeClick = {
                         showArrange = true
                     },
                     onContentTypeClick = {
                         showContentType = true
-                    }
+                    },
                 )
             }
         }
@@ -222,38 +177,3 @@ fun TouristScreen(
         )
     }
 }
-
-enum class TravelAddTabs(val title: String, val index: Int) {
-    Recommend("추천", 0), Search("검색", 1)
-}
-
-@Composable
-private fun TouristAddContent(
-    keyword: String,
-    onValueChange: (String) -> Unit,
-    selectedArrange: String,
-    selectedContentType: String,
-    tab: TravelAddTabs,
-    onArrangeClick: () -> Unit,
-    onContentTypeClick: () -> Unit
-) {
-    when (tab) {
-        Recommend -> {
-            RecommendFilter(
-                selectedSortType = selectedArrange,
-                selectedTouristType = selectedContentType,
-                onArrangeClick = onArrangeClick,
-                onContentTypeClick = onContentTypeClick,
-            )
-        }
-
-        Search -> {
-            CustomSearchView(
-                value = keyword,
-                onValueChange = onValueChange,
-                onValueClear = { onValueChange("") },
-            )
-        }
-    }
-}
-

@@ -84,7 +84,7 @@ fun MyTravelPlanRoute(
     onBackClick: () -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     onSearchRoute: (String) -> Unit,
-    onRecommendRoute: (String) -> Unit,
+    onRecommendRoute: (String) -> Unit = {},
     viewModel: MyTravelPlanViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

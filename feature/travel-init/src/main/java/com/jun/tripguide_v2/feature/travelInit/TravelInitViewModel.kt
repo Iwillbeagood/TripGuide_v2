@@ -8,13 +8,10 @@ import com.jun.tripguide_v2.core.data_api.repository.room.TravelRepository
 import com.jun.tripguide_v2.core.model.Address
 import com.jun.tripguide_v2.core.model.DateDuration
 import com.jun.tripguide_v2.core.model.DestinationCode
-import com.jun.tripguide_v2.core.model.MeansItem
-import com.jun.tripguide_v2.core.model.MeansType
 import com.jun.tripguide_v2.core.model.StartingPoint
 import com.jun.tripguide_v2.core.model.Tourist
 import com.jun.tripguide_v2.core.model.Travel
 import com.jun.tripguide_v2.feature.travelInit.util.toStringType
-import com.jun.tripguide_v2.feature.travel_init.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -39,6 +36,9 @@ class TravelInitViewModel @Inject constructor(
     private val _initEffect = MutableSharedFlow<TravelInitEffect>()
     val initEffect: SharedFlow<TravelInitEffect> get() = _initEffect.asSharedFlow()
 
+    var showTouristAddPickerDialog = MutableStateFlow(false)
+        private set
+
     private var contentJob: Job? = null
 
     fun durationPicked(dateDuration: DateDuration) {
@@ -50,24 +50,6 @@ class TravelInitViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     dateDuration = dateDuration
-                )
-            }
-        }
-    }
-
-    fun meansItemPicked(type: MeansType) {
-        if (contentJob != null) {
-            contentJob?.cancel()
-        }
-
-        contentJob = viewModelScope.launch {
-            _uiState.update { initUiState ->
-                initUiState.copy(
-                    meansItems = initUiState.meansItems.map {
-                        it.copy(
-                            isSelected = it.type == type
-                        )
-                    }
                 )
             }
         }
@@ -126,16 +108,38 @@ class TravelInitViewModel @Inject constructor(
                             startDate = uiState.dateDuration!!.startDate,
                             endDate = uiState.dateDuration.endDate,
                             destination = uiState.destination!!,
+                            places = uiState.tourists!!
                         )
                     )
                 )
             }.catch { throwable ->
                 _initEffect.emit(TravelInitEffect.ShowErrorSnackBar(throwable))
-            }.collect { travelId ->
-                _initEffect.emit(TravelInitEffect.TravelInitComplete(
-                    travelId = travelId,
-                    uiState.selectedMeans
-                ))
+            }.collect {
+                _initEffect.emit(TravelInitEffect.TravelInitComplete)
+            }
+        }
+    }
+
+    fun showTouristAddDialog() {
+        viewModelScope.launch {
+            if (uiState.value.destination == null) {
+                _initEffect.emit(TravelInitEffect.ShowErrorSnackBar(Throwable("먼저 여행지를 선택해 주세요.")))
+            } else {
+                showTouristAddPickerDialog.update { true }
+            }
+        }
+    }
+
+    fun dismissTouristAddDialog() {
+        showTouristAddPickerDialog.update { false }
+    }
+
+    fun touristAdd(tourists: List<Tourist>) {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    tourists = tourists
+                )
             }
         }
     }
@@ -146,14 +150,8 @@ data class TravelInitUiState(
     val dateDuration: DateDuration? = null,
     val startingPoint: StartingPoint? = null,
     val destination: DestinationCode? = null,
-    val meansItems: List<MeansItem> = listOf(
-        MeansItem(R.drawable.ic_car, R.drawable.gif_car, MeansType.CAR, isSelected = true),
-        MeansItem(R.drawable.ic_train, R.drawable.gif_train, MeansType.TRAIN)
-    ),
+    val tourists: List<Tourist>? = null
 ) {
-
-    val selectedMeans: MeansType
-        get() = meansItems.find { it.isSelected }?.type ?: MeansType.CAR
 
     val startingName get() = startingPoint?.name ?: "출발 장소를 입력해 주세요."
 
@@ -161,6 +159,8 @@ data class TravelInitUiState(
 
     val dateDurationString
         get() = dateDuration?.toStringType() ?: "여행 일정을 선택해 주세요."
+
+    val touristsName get() = tourists?.joinToString { it.title } ?: "여행 장소를 선택해 주세요."
 }
 
 @Stable
@@ -170,5 +170,5 @@ sealed interface TravelInitEffect {
     data class ShowErrorSnackBar(val error: Throwable) : TravelInitEffect
 
     @Immutable
-    data class TravelInitComplete(val travelId: Long, val selectedMeans: MeansType) : TravelInitEffect
+    data object TravelInitComplete : TravelInitEffect
 }

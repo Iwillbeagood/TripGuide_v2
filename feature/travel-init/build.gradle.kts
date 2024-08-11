@@ -10,6 +10,7 @@ android {
 
 
 dependencies {
+    implementation(projects.feature.travelAddDialog)
     implementation(libs.wheelPicker)
     implementation(libs.kotlinx.immutable)
 }

@@ -27,21 +27,21 @@ import com.jun.tripguide_v2.core.designsystem.component.CompleteBtn
 import com.jun.tripguide_v2.core.designsystem.component.CustomTopAppBar
 import com.jun.tripguide_v2.core.designsystem.component.InitText
 import com.jun.tripguide_v2.core.designsystem.component.TopAppBarNavigationType
-import com.jun.tripguide_v2.core.model.MeansType
+import com.jun.tripguide_v2.feature.travelAddDialog.TouristAddDialog
 import com.jun.tripguide_v2.feature.travelInit.areapicker.AreaPickerDialog
 import com.jun.tripguide_v2.feature.travelInit.component.DurationDatePicker
-import com.jun.tripguide_v2.feature.travelInit.component.TravelMeans
 import com.jun.tripguide_v2.feature.travelInit.startingpicker.StartingPickerDialog
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun TravelInitRoute(
     onBackClick: () -> Unit,
+    onTouristDetail: (String) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
-    onTravelInitComplete: (String, MeansType) -> Unit,
     viewModel: TravelInitViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val showTouristAddPickerDialog by viewModel.showTouristAddPickerDialog.collectAsStateWithLifecycle()
     var showTravelDurationDialog by remember { mutableStateOf(false) }
     var showStartingPickerDialog by remember { mutableStateOf(false) }
     var showDestinationPickerDialog by remember { mutableStateOf(false) }
@@ -50,10 +50,7 @@ fun TravelInitRoute(
         viewModel.initEffect.collectLatest {
             when (it) {
                 is TravelInitEffect.ShowErrorSnackBar -> onShowErrorSnackBar(it.error)
-                is TravelInitEffect.TravelInitComplete -> onTravelInitComplete(
-                    it.travelId.toString(),
-                    it.selectedMeans
-                )
+                is TravelInitEffect.TravelInitComplete -> onBackClick()
             }
         }
     }
@@ -79,7 +76,7 @@ fun TravelInitRoute(
             showTravelDurationDialog = { showTravelDurationDialog = true },
             showStartingPickerDialog = { showStartingPickerDialog = true },
             showDestinationPickerDialog = { showDestinationPickerDialog = true },
-            meansItemPicked = viewModel::meansItemPicked
+            showTouristAddPickerDialog = viewModel::showTouristAddDialog
         )
     }
 
@@ -112,6 +109,16 @@ fun TravelInitRoute(
             }
         )
     }
+
+    if (showTouristAddPickerDialog) {
+        TouristAddDialog(
+            destinationCode = uiState.destination!!,
+            onDismissRequest = viewModel::dismissTouristAddDialog,
+            onTouristAddComplete = viewModel::touristAdd,
+            onTouristDetail = onTouristDetail,
+            onShowErrorSnackBar = onShowErrorSnackBar
+        )
+    }
 }
 
 @Composable
@@ -121,7 +128,7 @@ fun TravelInitScreen(
     showTravelDurationDialog: () -> Unit,
     showStartingPickerDialog: () -> Unit,
     showDestinationPickerDialog: () -> Unit,
-    meansItemPicked: (MeansType) -> Unit,
+    showTouristAddPickerDialog: () -> Unit,
     scrollState: ScrollState = rememberScrollState()
 ) {
     Column(
@@ -145,10 +152,10 @@ fun TravelInitScreen(
                 onClick = showTravelDurationDialog
             )
         }
-        ScreenSection(title = "이동 수단") {
-            TravelMeans(
-                meansItems = uiState.meansItems,
-                onItemClick = meansItemPicked
+        ScreenSection(title = "여행 장소") {
+            InitText(
+                text = uiState.touristsName,
+                onClick = showTouristAddPickerDialog
             )
         }
     }

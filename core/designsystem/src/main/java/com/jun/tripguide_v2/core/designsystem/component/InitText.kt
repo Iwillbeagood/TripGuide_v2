@@ -29,9 +29,9 @@ fun InitText(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
             .background(White)
-            .heightIn(min = 56.dp)
+            .heightIn(min = 40.dp)
+            .padding(horizontal = 16.dp)
             .border(
                 width = 1.dp,
                 color = Sky,
@@ -43,7 +43,8 @@ fun InitText(
             text = text,
             fontWeight = FontWeight.Bold,
             color = Sky,
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            modifier = Modifier.padding(16.dp)
         )
     }
 }
