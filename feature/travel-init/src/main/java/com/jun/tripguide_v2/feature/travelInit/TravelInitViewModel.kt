@@ -107,7 +107,7 @@ class TravelInitViewModel @Inject constructor(
                             ),
                             startDate = uiState.dateDuration!!.startDate,
                             endDate = uiState.dateDuration.endDate,
-                            destination = uiState.destination!!,
+                            title = uiState.destination?.destinationString!!,
                             places = uiState.tourists!!
                         )
                     )

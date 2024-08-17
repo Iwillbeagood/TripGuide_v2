@@ -1,8 +1,5 @@
 package com.jun.tripguide_v2.feature.recommend
 
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jun.tripguide_v2.core.domain.usecase.tourapi.GetFestivalUsecase
@@ -21,7 +18,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@RequiresApi(Build.VERSION_CODES.S)
 @HiltViewModel
 class RecommendViewModel @Inject constructor(
     private val getTouristByCurLocationUsecase: GetTouristByCurLocationUsecase,
@@ -113,7 +109,7 @@ class RecommendViewModel @Inject constructor(
 
 sealed interface RecommendUiState {
 
-    object Loading : RecommendUiState
+    data object Loading : RecommendUiState
 
     data class Success(
         val locationBasedTourists: List<LocationBasedTourist>,

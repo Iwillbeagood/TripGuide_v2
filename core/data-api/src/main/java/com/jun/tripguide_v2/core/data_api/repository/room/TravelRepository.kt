@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface TravelRepository {
 
-    suspend fun insertTravel(travel: Travel): Long
+    suspend fun insertTravel(travel: Travel)
 
     suspend fun updateTravel(travel: Travel)
 

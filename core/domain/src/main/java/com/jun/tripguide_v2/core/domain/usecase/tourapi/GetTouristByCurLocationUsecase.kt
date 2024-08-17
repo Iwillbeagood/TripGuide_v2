@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-@RequiresApi(Build.VERSION_CODES.S)
 class GetTouristByCurLocationUsecase @Inject constructor(
     private val getLocationUseCase: GetLocationUseCase,
     private val locationTouristRepository: LocationTouristRepository

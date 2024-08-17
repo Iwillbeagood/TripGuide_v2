@@ -177,7 +177,7 @@ fun MyTravelPlanContent(
                 stateMarkerColumn = stateMarkerColumn,
                 stateRouteColumn = stateRouteColumn,
                 isEditMode = uiState.isEditMode,
-                title = uiState.travel.destination.destinationString,
+                title = uiState.travel.title,
                 travelDays = uiState.travelDays,
                 dayRoutes = uiState.dayRoutes,
                 selectedRoute = uiState.selectedRoute,

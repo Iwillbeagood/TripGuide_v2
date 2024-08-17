@@ -15,11 +15,6 @@ data class TravelEntity(
     val title: String,
     val startPlace: Tourist,
     val startDate: Long,
-    val endPlace: Tourist,
     val endDate: Long,
-    val trainEntity: TrainEntity,
-    val returnTrainEntity: TrainEntity,
-    val places: List<Tourist>,
-    val areaCode: AreaCode,
-    val sigunguCode: AreaCode
+    val places: List<Tourist>
 )

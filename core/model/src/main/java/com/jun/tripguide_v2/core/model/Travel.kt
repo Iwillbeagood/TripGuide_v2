@@ -9,7 +9,7 @@ data class Travel(
     val trainInfo: TrainInfo = TrainInfo(),
     val returnTrainInfo: TrainInfo = TrainInfo(),
     val places: List<Tourist> = emptyList(),
-    val destination: DestinationCode
+    val title: String
 ) {
     val images get() = places.map {
         it.firstImage

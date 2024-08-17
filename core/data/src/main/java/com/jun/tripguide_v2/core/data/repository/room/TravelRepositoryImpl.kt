@@ -12,8 +12,8 @@ class TravelRepositoryImpl @Inject constructor(
     private val travelDao: TravelDao
 ) : TravelRepository {
 
-    override suspend fun insertTravel(travel: Travel): Long {
-        return travelDao.insertTravel(travel.toData())
+    override suspend fun insertTravel(travel: Travel) {
+        travelDao.insertTravel(travel.toData())
     }
 
     override suspend fun updateTravel(travel: Travel) {
