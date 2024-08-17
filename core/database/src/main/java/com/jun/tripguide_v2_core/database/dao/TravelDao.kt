@@ -1,11 +1,11 @@
 package com.jun.tripguide_v2_core.database.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.jun.tripguide_v2_core.database.entity.TravelEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TravelDao {
@@ -20,8 +20,8 @@ interface TravelDao {
     suspend fun getTravelById(id: String): TravelEntity
 
     @Query("SELECT * FROM travels")
-    suspend fun getTravels(): List<TravelEntity>
+    fun getTravelsFlow(): Flow<List<TravelEntity>>
 
-    @Delete
-    suspend fun deleteTravel(travelEntity: TravelEntity)
+    @Query("DELETE FROM travels WHERE travelId = :travelId")
+    suspend fun deleteTravelById(travelId: Long)
 }

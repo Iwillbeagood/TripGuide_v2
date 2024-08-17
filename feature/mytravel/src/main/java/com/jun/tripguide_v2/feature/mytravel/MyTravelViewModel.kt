@@ -4,8 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jun.tripguide_v2.core.domain.usecase.room.DeleteTravelUsecase
-import com.jun.tripguide_v2.core.domain.usecase.room.GetTravelsUsecase
+import com.jun.tripguide_v2.core.data_api.repository.room.TravelRepository
 import com.jun.tripguide_v2.core.model.Travel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -13,10 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -24,47 +19,34 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyTravelViewModel @Inject constructor(
-    private val getTravelsUsecase: GetTravelsUsecase,
-    private val deleteTravelUsecase: DeleteTravelUsecase
+    private val travelRepository: TravelRepository,
 ) : ViewModel() {
 
     private val _errorFlow = MutableSharedFlow<Throwable>()
     val errorFlow: SharedFlow<Throwable> get() = _errorFlow
 
-    private val _uiState = MutableStateFlow<MyTravelUiState>(MyTravelUiState.Loading)
-    val uiState: StateFlow<MyTravelUiState> get() = _uiState
-
     private val _uiEffect = MutableStateFlow<MyTravelUiEffect>(MyTravelUiEffect.Idle)
     val uiEffect: StateFlow<MyTravelUiEffect> get() = _uiEffect
 
-    init {
-        viewModelScope.launch {
-            flow { emit(getTravelsUsecase()) }
-                .map { travels ->
-                    if (travels.isNotEmpty()) {
-                        MyTravelUiState.Travels(travels)
-                    } else {
-                        MyTravelUiState.Empty
-                    }
-                }.collect {
-                    _uiState.value = it
-                }
-        }
-    }
+    val uiState: StateFlow<MyTravelUiState> = travelRepository.getTravelsFlow()
+        .map { travels ->
+            MyTravelUiState.Travels(travels)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = MyTravelUiState.Empty
+        )
 
     fun showDeleteConfirmationDialog(travel: Travel) {
         _uiEffect.value = MyTravelUiEffect.ShowDeleteDialog(travel)
     }
 
     fun deleteSelectedTravel(travel: Travel) {
-
         val uiState = uiState.value
-
         if (uiState !is MyTravelUiState.Travels) return
 
         viewModelScope.launch {
-            deleteTravelUsecase(travel)
-            _uiState.value = uiState.copy(travels = uiState.travels.toMutableList().apply { remove(travel) })
+            travelRepository.deleteTravel(travel.travelId)
             resetUiEffect()
         }
     }
@@ -79,10 +61,10 @@ class MyTravelViewModel @Inject constructor(
 sealed interface MyTravelUiState {
 
     @Immutable
-    object Loading : MyTravelUiState
+    data object Loading : MyTravelUiState
 
     @Immutable
-    object Empty : MyTravelUiState
+    data object Empty : MyTravelUiState
 
     @Immutable
     data class Travels(
@@ -107,7 +89,7 @@ sealed interface MyTravelUiState {
 
 sealed interface MyTravelUiEffect {
 
-    object Idle : MyTravelUiEffect
+    data object Idle : MyTravelUiEffect
 
     data class ShowDeleteDialog(val travel: Travel) : MyTravelUiEffect
 }

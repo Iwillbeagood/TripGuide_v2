@@ -54,9 +54,6 @@ fun MyTravelRoute(
     viewModel: MyTravelViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var showDeleteDialog by remember {
-        mutableStateOf(false)
-    }
     val uiEffect by viewModel.uiEffect.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
@@ -71,22 +68,31 @@ fun MyTravelRoute(
         MyTravelContent(
             uiState = uiState,
             onClickTravel = { onTravelClick(it.travelId.toString()) },
-            onLongClickTravel = {
-                showDeleteDialog = true
-            }
+            onLongClickTravel = viewModel::showDeleteConfirmationDialog
         )
     }
 
-    if (showDeleteDialog) {
-        CustomAlertDialog(
-            onDismissRequest = {
-                showDeleteDialog = false
-            },
-            onConfirmation = { viewModel.deleteSelectedTravel((uiEffect as MyTravelUiEffect.ShowDeleteDialog).travel) },
-            dialogTitle = "여행 일정 삭제",
-            dialogText = "선택한 여행 일정을 삭제하시겠습니까?"
+    (uiEffect as? MyTravelUiEffect.ShowDeleteDialog)?.let {
+        DeleteDialog(
+            uiEffect = it,
+            onDismissRequest = viewModel::resetUiEffect,
+            deleteTravel = viewModel::deleteSelectedTravel
         )
     }
+}
+
+@Composable
+fun DeleteDialog(
+    uiEffect: MyTravelUiEffect.ShowDeleteDialog,
+    onDismissRequest: () -> Unit,
+    deleteTravel: (Travel) -> Unit,
+) {
+    CustomAlertDialog(
+        onDismissRequest = onDismissRequest,
+        onConfirmation = { deleteTravel(uiEffect.travel) },
+        dialogTitle = "여행 일정 삭제",
+        dialogText = "선택한 여행 일정을 삭제하시겠습니까?"
+    )
 }
 
 @Composable

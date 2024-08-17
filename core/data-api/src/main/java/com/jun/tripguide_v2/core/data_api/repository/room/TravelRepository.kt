@@ -1,6 +1,7 @@
 package com.jun.tripguide_v2.core.data_api.repository.room
 
 import com.jun.tripguide_v2.core.model.Travel
+import kotlinx.coroutines.flow.Flow
 
 interface TravelRepository {
 
@@ -10,7 +11,7 @@ interface TravelRepository {
 
     suspend fun getTravelById(id: String): Travel
 
-    suspend fun getTravels(): List<Travel>
+    fun getTravelsFlow(): Flow<List<Travel>>
 
-    suspend fun deleteTravel(travel: Travel)
+    suspend fun deleteTravel(travelId: Long)
 }
