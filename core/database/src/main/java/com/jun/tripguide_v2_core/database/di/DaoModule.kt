@@ -2,7 +2,6 @@ package com.jun.tripguide_v2_core.database.di
 
 import android.content.Context
 import com.jun.tripguide_v2_core.database.AppDatabase
-import com.jun.tripguide_v2_core.database.dao.RouteDao
 import com.jun.tripguide_v2_core.database.dao.TravelDao
 import dagger.Module
 import dagger.Provides
@@ -26,9 +25,4 @@ object DaoModule {
     @Provides
     fun provideTravelDaoRepository(database: AppDatabase
     ): TravelDao = database.travelDao
-
-    @Singleton
-    @Provides
-    fun provideRouteDaoRepository(database: AppDatabase
-    ): RouteDao = database.routeDao
 }

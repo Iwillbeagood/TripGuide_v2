@@ -5,6 +5,7 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jun.tripguide_v2.core.data_api.repository.room.TravelRepository
+import com.jun.tripguide_v2.core.domain.usecase.tourapi.InsertTravelByRouteUsecase
 import com.jun.tripguide_v2.core.model.Address
 import com.jun.tripguide_v2.core.model.DateDuration
 import com.jun.tripguide_v2.core.model.DestinationCode
@@ -27,7 +28,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TravelInitViewModel @Inject constructor(
-    private val travelRepository: TravelRepository
+    private val insertTravelByRouteUsecase: InsertTravelByRouteUsecase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TravelInitUiState())
@@ -95,28 +96,21 @@ class TravelInitViewModel @Inject constructor(
 
         val uiState = uiState.value
         contentJob = viewModelScope.launch {
-            flow {
-                emit(
-                    travelRepository.insertTravel(
-                        Travel(
-                            startPlace = Tourist(
-                                title = uiState.startingName,
-                                mapX = uiState.startingPoint!!.x,
-                                mapY = uiState.startingPoint.y,
-                                address = uiState.startingPoint.address
-                            ),
-                            startDate = uiState.dateDuration!!.startDate,
-                            endDate = uiState.dateDuration.endDate,
-                            title = uiState.destination?.destinationString!!,
-                            places = uiState.tourists!!
-                        )
-                    )
+            insertTravelByRouteUsecase(
+                Travel(
+                    startPlace = Tourist(
+                        title = uiState.startingName,
+                        mapX = uiState.startingPoint!!.x,
+                        mapY = uiState.startingPoint.y,
+                        address = uiState.startingPoint.address
+                    ),
+                    startDate = uiState.dateDuration!!.startDate,
+                    endDate = uiState.dateDuration.endDate,
+                    title = uiState.destination?.destinationString!!,
+                    places = uiState.tourists!!
                 )
-            }.catch { throwable ->
-                _initEffect.emit(TravelInitEffect.ShowErrorSnackBar(throwable))
-            }.collect {
-                _initEffect.emit(TravelInitEffect.TravelInitComplete)
-            }
+            )
+            _initEffect.emit(TravelInitEffect.TravelInitComplete)
         }
     }
 
