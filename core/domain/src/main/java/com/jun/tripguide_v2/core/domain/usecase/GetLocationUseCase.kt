@@ -1,4 +1,4 @@
-package com.jun.tripguide_v2.core.domain.usecase.location
+package com.jun.tripguide_v2.core.domain.usecase
 
 import com.google.android.gms.maps.model.LatLng
 import com.jun.tripguide_v2.core.location.LocationService

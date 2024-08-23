@@ -1,6 +1,5 @@
 package com.jun.tripguide_v2.core.data.di
 
-import com.jun.tripguide_v2.core.data.api.airplaneapi.AirplaneSchedulesApi
 import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoKeywordApi
 import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoRouteAPI
 import com.jun.tripguide_v2.core.data.api.tourapi.OpenTouristsApi
@@ -11,12 +10,8 @@ import com.jun.tripguide_v2.core.data.api.tourapi.TourFestivalApi
 import com.jun.tripguide_v2.core.data.api.tourapi.TourLocationTouristApi
 import com.jun.tripguide_v2.core.data.api.tourapi.TourSearchKeywordApi
 import com.jun.tripguide_v2.core.data.api.tourapi.TourStayApi
-import com.jun.tripguide_v2.core.data.api.trainapi.TrainInfoApi
-import com.jun.tripguide_v2.core.data.api.trainapi.TrainStationApi
-import com.jun.tripguide_v2.core.data.repository.airplaneapi.AirplaneScheduleRepositoryImpl
 import com.jun.tripguide_v2.core.data.repository.kakao.KakaoKeywordRepositoryImpl
 import com.jun.tripguide_v2.core.data.repository.kakao.KakaoRouteRepositoryImpl
-import com.jun.tripguide_v2.core.data.repository.room.RouteRepositoryImpl
 import com.jun.tripguide_v2.core.data.repository.room.TravelRepositoryImpl
 import com.jun.tripguide_v2.core.data.repository.tourapi.AreaCodeRepositoryImpl
 import com.jun.tripguide_v2.core.data.repository.tourapi.CommonInfoRepositoryImpl
@@ -26,12 +21,8 @@ import com.jun.tripguide_v2.core.data.repository.tourapi.KeywordRepositoryImpl
 import com.jun.tripguide_v2.core.data.repository.tourapi.LocationTouristRepositoryImpl
 import com.jun.tripguide_v2.core.data.repository.tourapi.StayRepositoryImpl
 import com.jun.tripguide_v2.core.data.repository.tourapi.TouristsRepositoryImpl
-import com.jun.tripguide_v2.core.data.repository.trainapi.TrainInfoRepositoryImpl
-import com.jun.tripguide_v2.core.data.repository.trainapi.TrainStationRepositoryImpl
-import com.jun.tripguide_v2.core.data_api.repository.airplaneapi.AirplaneScheduleRepository
 import com.jun.tripguide_v2.core.data_api.repository.kakao.KakaoKeywordRepository
 import com.jun.tripguide_v2.core.data_api.repository.kakao.KakaoRouteRepository
-import com.jun.tripguide_v2.core.data_api.repository.room.RouteRepository
 import com.jun.tripguide_v2.core.data_api.repository.room.TravelRepository
 import com.jun.tripguide_v2.core.data_api.repository.tourapi.AreaCodeRepository
 import com.jun.tripguide_v2.core.data_api.repository.tourapi.CommonInfoRepository
@@ -41,9 +32,6 @@ import com.jun.tripguide_v2.core.data_api.repository.tourapi.KeywordRepository
 import com.jun.tripguide_v2.core.data_api.repository.tourapi.LocationTouristRepository
 import com.jun.tripguide_v2.core.data_api.repository.tourapi.StayRepository
 import com.jun.tripguide_v2.core.data_api.repository.tourapi.TouristsRepository
-import com.jun.tripguide_v2.core.data_api.repository.trainapi.TrainInfoRepository
-import com.jun.tripguide_v2.core.data_api.repository.trainapi.TrainStationRepository
-import com.jun.tripguide_v2_core.database.dao.RouteDao
 import com.jun.tripguide_v2_core.database.dao.TravelDao
 import dagger.Module
 import dagger.Provides
@@ -99,12 +87,6 @@ internal object DataModule {
 
     @Provides
     @Singleton
-    fun bindsRouteRepository(
-        routeDao: RouteDao
-    ): RouteRepository = RouteRepositoryImpl(routeDao)
-
-    @Provides
-    @Singleton
     fun bindsFestivalRepository(
         tourFestivalApi: TourFestivalApi
     ): FestivalRepository = FestivalRepositoryImpl(tourFestivalApi)
@@ -126,22 +108,4 @@ internal object DataModule {
     fun bindsKakaoRouteRepository(
         kakaoRouteAPI: KakaoRouteAPI
     ): KakaoRouteRepository = KakaoRouteRepositoryImpl(kakaoRouteAPI)
-
-    @Provides
-    @Singleton
-    fun bindsAirplaneScheduleRepository(
-        airplaneSchedulesApi: AirplaneSchedulesApi
-    ): AirplaneScheduleRepository = AirplaneScheduleRepositoryImpl(airplaneSchedulesApi)
-
-    @Provides
-    @Singleton
-    fun bindsTrainStationRepository(
-        trainStationApi: TrainStationApi
-    ): TrainStationRepository = TrainStationRepositoryImpl(trainStationApi)
-
-    @Provides
-    @Singleton
-    fun bindsTrainInfoRepository(
-        trainInfoApi: TrainInfoApi
-    ): TrainInfoRepository = TrainInfoRepositoryImpl(trainInfoApi)
 }

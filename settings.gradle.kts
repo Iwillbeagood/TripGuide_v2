@@ -29,6 +29,7 @@ include(
     ":core:location",
     ":core:testing",
     ":core:ui",
+    ":core:navigation",
 
     ":feature:main",
     ":feature:mytravel",
@@ -38,7 +39,5 @@ include(
 
     ":feature:travel-init",
     ":feature:travel-add-dialog",
-    ":feature:travel-search"
+    ":feature:tourist-detail"
 )
-include(":feature:tourist-detail")
-include(":core:navigation")

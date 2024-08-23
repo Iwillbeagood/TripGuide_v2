@@ -2,10 +2,6 @@ package com.jun.tripguide_v2.feature.mytravelPlan
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jun.tripguide_v2.core.domain.usecase.room.GetTravelByIdUsecase
-import com.jun.tripguide_v2.core.domain.usecase.room.InitAndInsertRouteUsecase
-import com.jun.tripguide_v2.core.domain.usecase.route.GetOrderedTravelRouteUsecase
-import com.jun.tripguide_v2.core.domain.usecase.route.SetTimeUsecase
 import com.jun.tripguide_v2.core.model.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -24,10 +20,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyTravelPlanViewModel @Inject constructor(
-    private val getOrderedTravelRouteUsecase: GetOrderedTravelRouteUsecase,
-    private val getTravelByIdUsecase: GetTravelByIdUsecase,
-    private val initAndInsertRouteUsecase: InitAndInsertRouteUsecase,
-    private val setTimeUsecase: SetTimeUsecase
 ) : ViewModel() {
 
     private val _errorFlow = MutableSharedFlow<Throwable>()
@@ -42,28 +34,7 @@ class MyTravelPlanViewModel @Inject constructor(
     private var contentJob: Job? = null
 
     fun fetchOrderedTravelRoute(travelId: String) {
-        contentJob = viewModelScope.launch {
-            val routesFlow = flow { emit(getOrderedTravelRouteUsecase(travelId)) }
-            combine(
-                uiState,
-                routesFlow,
-                flow { emit(getTravelByIdUsecase(travelId)) }
-            ) { uiState, routes, travel ->
-                when(uiState) {
-                    MyTravelPlanUiState.Loading -> MyTravelPlanUiState.Success(
-                        travel = travel,
-                        originRoutes = routes.filter { it.time != LocalTime.of(0, 0, 0) },
-                        routes = routes,
-                        duration = getDurationOfRoutes(routes)
-                    )
-                    is MyTravelPlanUiState.Success -> uiState.copy(routes = routes)
-                }
-            }.catch { throwable ->
-                _errorFlow.emit(throwable)
-            }.collect {
-                _uiState.value = it
-            }
-        }
+
     }
 
     private fun getDurationOfRoutes(routes: List<Route>): Duration {

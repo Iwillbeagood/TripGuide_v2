@@ -1,4 +1,4 @@
-package com.jun.tripguide_v2.core.domain.usecase.kakao
+package com.jun.tripguide_v2.core.domain.usecase
 
 import com.jun.tripguide_v2.core.data_api.repository.kakao.KakaoRouteRepository
 import com.jun.tripguide_v2.core.model.Route

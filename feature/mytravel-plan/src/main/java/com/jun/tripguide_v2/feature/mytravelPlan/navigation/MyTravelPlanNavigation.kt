@@ -13,7 +13,7 @@ fun NavController.navigateTravelPlan(travelId: String) {
 
 fun NavGraphBuilder.myTravelPlanNavGraph(
     onBackClick: () -> Unit,
-    onSearchRoute: (String) -> Unit,
+    onSearchRoute: (String) -> Unit = {},
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
 ) {
     composable<Route.MyTravelPlanRoute> { navBackStackEntry ->

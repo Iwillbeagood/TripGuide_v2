@@ -1,7 +1,6 @@
 package com.jun.tripguide_v2.core.data.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.jun.tripguide_v2.core.data.api.airplaneapi.AirplaneSchedulesApi
 import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoKeywordApi
 import com.jun.tripguide_v2.core.data.api.kakaoapi.KakaoRouteAPI
 import com.jun.tripguide_v2.core.data.api.tourapi.OpenTouristsApi
@@ -12,8 +11,6 @@ import com.jun.tripguide_v2.core.data.api.tourapi.TourFestivalApi
 import com.jun.tripguide_v2.core.data.api.tourapi.TourLocationTouristApi
 import com.jun.tripguide_v2.core.data.api.tourapi.TourSearchKeywordApi
 import com.jun.tripguide_v2.core.data.api.tourapi.TourStayApi
-import com.jun.tripguide_v2.core.data.api.trainapi.TrainInfoApi
-import com.jun.tripguide_v2.core.data.api.trainapi.TrainStationApi
 import com.skydoves.sandwich.retrofit.adapters.ApiResponseCallAdapterFactory
 import dagger.Module
 import dagger.Provides
@@ -132,45 +129,6 @@ object ApiModule {
             .addConverterFactory(converterFactory)
             .client(okHttpClient).build()
             .create(KakaoRouteAPI::class.java)
-
-    @Provides
-    @Singleton
-    fun provideAirplaneScheduleApi(
-        okHttpClient: OkHttpClient,
-        converterFactory: Converter.Factory
-    ): AirplaneSchedulesApi =
-        Retrofit.Builder()
-            .baseUrl(AIRPLANE_BASE_URI)
-            .addConverterFactory(converterFactory)
-            .addCallAdapterFactory(ApiResponseCallAdapterFactory.create()) // Here!
-            .client(okHttpClient).build()
-            .create(AirplaneSchedulesApi::class.java)
-
-    @Provides
-    @Singleton
-    fun provideTrainStationApi(
-        okHttpClient: OkHttpClient,
-        converterFactory: Converter.Factory
-    ): TrainStationApi =
-        Retrofit.Builder()
-            .baseUrl(TRAIN_BASE_URI)
-            .addConverterFactory(converterFactory)
-            .addCallAdapterFactory(ApiResponseCallAdapterFactory.create()) // Here!
-            .client(okHttpClient).build()
-            .create(TrainStationApi::class.java)
-
-    @Provides
-    @Singleton
-    fun provideTrainInfoApi(
-        okHttpClient: OkHttpClient,
-        converterFactory: Converter.Factory
-    ): TrainInfoApi =
-        Retrofit.Builder()
-            .baseUrl(TRAIN_BASE_URI)
-            .addConverterFactory(converterFactory)
-            .addCallAdapterFactory(ApiResponseCallAdapterFactory.create()) // Here!
-            .client(okHttpClient).build()
-            .create(TrainInfoApi::class.java)
 
     @Provides
     @Singleton

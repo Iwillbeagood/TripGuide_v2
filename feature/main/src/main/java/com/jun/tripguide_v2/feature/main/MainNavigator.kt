@@ -14,7 +14,6 @@ import com.jun.tripguide_v2.feature.mytravelPlan.navigation.navigateTravelPlan
 import com.jun.tripguide_v2.feature.recommend.navigation.navigateRecommend
 import com.jun.tripguide_v2.feature.setting.navigation.navigateSetting
 import com.jun.tripguide_v2.feature.travelInit.navigation.navigateTravelInit
-import com.jun.tripguide_v2.feature.travelSearch.navigation.navigateTravelSearchRoute
 import com.jun.tripguide_v2.navigation.MainTabRoute
 import com.jun.tripguide_v2.navigation.Route
 import com.jun.tripguide_v2.tourist_detail.navigation.navigateTouristDetail
@@ -52,10 +51,6 @@ internal class MainNavigator(
 
     fun navigateTravelInit() {
         navController.navigateTravelInit()
-    }
-
-    fun navigateTravelSearch(travelId: String) {
-        navController.navigateTravelSearchRoute(travelId)
     }
 
     fun navigateTouristDetail(touristId: String) {

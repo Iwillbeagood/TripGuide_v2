@@ -103,7 +103,6 @@ internal fun MainScreen(
                         )
                         myTravelPlanNavGraph(
                             onBackClick = navigator::popBackStackIfNotHome,
-                            onSearchRoute = navigator::navigateTravelSearch,
                             onShowErrorSnackBar = onShowErrorSnackBar
                         )
                         recommendNavGraph(

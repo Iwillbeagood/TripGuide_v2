@@ -1,9 +1,7 @@
 package com.jun.tripguide_v2.core.domain.usecase.tourapi
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.jun.tripguide_v2.core.data_api.repository.tourapi.LocationTouristRepository
-import com.jun.tripguide_v2.core.domain.usecase.location.GetLocationUseCase
+import com.jun.tripguide_v2.core.domain.usecase.GetLocationUseCase
 import com.jun.tripguide_v2.core.model.tourApi.LocationBasedTourist
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

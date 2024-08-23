@@ -14,7 +14,6 @@ dependencies {
     implementation(projects.feature.recommend)
     implementation(projects.feature.setting)
     implementation(projects.feature.travelInit)
-    implementation(projects.feature.travelSearch)
     implementation(projects.feature.touristDetail)
 
     implementation(libs.androidx.core.ktx)
