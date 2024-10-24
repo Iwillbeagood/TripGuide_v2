@@ -27,9 +27,9 @@
 
 ## Technical Blog
 
-KSP: https://everyday-develop-myself.tistory.com/364
-Compose Navigation: https://everyday-develop-myself.tistory.com/361
-Google Play services location APIs: https://everyday-develop-myself.tistory.com/351
+- KSP: https://everyday-develop-myself.tistory.com/364
+- Compose Navigation: https://everyday-develop-myself.tistory.com/361
+- Google Play services location APIs: https://everyday-develop-myself.tistory.com/351
 
 
 ## Architecture
