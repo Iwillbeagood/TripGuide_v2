@@ -25,11 +25,11 @@
 - [ksp](https://github.com/google/ksp): Kotlin Symbol Processing API for code generation and analysis.
 - [Landscapist Glide](https://github.com/skydoves/landscapist#glide), [animation](https://github.com/skydoves/landscapist#animation), [placeholder](https://github.com/skydoves/landscapist#placeholder): A pluggable, highly optimized Jetpack Compose and Kotlin Multiplatform image loading library that fetches and displays network images with Glide, Coil, and Fresco.
 
-## Technical Contents
+## Technical Blog
 
-If you're interested in learning the tech stacks used to build Pokedex Compose, you can find detailed information in the articles linked below:
-
-- [Shared Element Transition In Jetpack Compose: Provide Enriched User Experiences](https://medium.com/@skydoves/shared-element-transition-in-jetpack-compose-provide-enriched-user-experiences-163d4e435869)
+KSP: https://everyday-develop-myself.tistory.com/364
+Compose Navigation: https://everyday-develop-myself.tistory.com/361
+Google Play services location APIs: https://everyday-develop-myself.tistory.com/351
 
 
 ## Architecture
