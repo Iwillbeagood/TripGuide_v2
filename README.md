@@ -1,12 +1,11 @@
+<h1 align="center" style="color: red;">개발 중</h1>
+
 <h1 align="center">TripGuide_v2</h1>
 
 <p align="center">  
 🗡️ TripGuide는 여행의 출발부터 다시 집에 돌아오는 것까지 계획을 세워주는 여행을 계획 쉽고 빠르게 만들 수 있는 애플리케이션 입니다
 </p>
 
-<p align="center">
-<img src="previews/screenshot.png"/>
-</p>
 
 ## Tech stack & Open-source libraries
 - Minimum SDK level 24.
